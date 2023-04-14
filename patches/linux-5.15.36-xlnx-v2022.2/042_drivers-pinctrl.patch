@@ -1,0 +1,44 @@
+--- linux-5.15.36/Documentation/devicetree/bindings/pinctrl/xlnx,zynqmp-pinctrl.yaml	2023-04-14 12:25:42.901001800 +0900
++++ linux-xlnx-2022.2/Documentation/devicetree/bindings/pinctrl/xlnx,zynqmp-pinctrl.yaml	2023-04-14 12:23:49.833570300 +0900
+@@ -274,6 +274,10 @@
+           slew-rate:
+             enum: [0, 1]
+ 
++          output-enable:
++            description:
++              This will internally disable the tri-state for MIO pins.
++
+           drive-strength:
+             description:
+               Selects the drive strength for MIO pins, in mA.
+--- linux-5.15.36/drivers/pinctrl/pinctrl-zynq.c	2023-04-14 12:26:05.119444400 +0900
++++ linux-xlnx-2022.2/drivers/pinctrl/pinctrl-zynq.c	2023-04-14 12:24:12.235539600 +0900
+@@ -8,6 +8,7 @@
+  */
+ #include <linux/io.h>
+ #include <linux/mfd/syscon.h>
++#include <linux/module.h>
+ #include <linux/init.h>
+ #include <linux/of.h>
+ #include <linux/platform_device.h>
+@@ -1210,8 +1211,4 @@
+ 	.probe = zynq_pinctrl_probe,
+ };
+ 
+-static int __init zynq_pinctrl_init(void)
+-{
+-	return platform_driver_register(&zynq_pinctrl_driver);
+-}
+-arch_initcall(zynq_pinctrl_init);
++module_platform_driver(zynq_pinctrl_driver);
+--- linux-5.15.36/drivers/pinctrl/pinctrl-zynqmp.c	2023-04-14 12:26:05.119444400 +0900
++++ linux-xlnx-2022.2/drivers/pinctrl/pinctrl-zynqmp.c	2023-04-14 12:24:12.235539600 +0900
+@@ -163,6 +163,8 @@
+  * @num_groups:	Number of function groups.
+  *
+  * Get function's group count and group names.
++ *
++ * Return: 0
+  */
+ static int zynqmp_pmux_get_function_groups(struct pinctrl_dev *pctldev,
+ 					   unsigned int selector,

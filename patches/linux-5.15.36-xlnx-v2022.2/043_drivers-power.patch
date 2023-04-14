@@ -1,0 +1,137 @@
+--- /dev/null
++++ linux-xlnx-2022.2/include/dt-bindings/power/xlnx-versal-net-power.h	2023-04-14 12:24:18.041775000 +0900
+@@ -0,0 +1,35 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ *  Copyright (C) 2022 Xilinx, Inc.
++ */
++
++#ifndef _DT_BINDINGS_VERSAL_NET_POWER_H
++#define _DT_BINDINGS_VERSAL_NET_POWER_H
++
++#include <dt-bindings/power/xlnx-versal-power.h>
++
++#define PM_DEV_USB_1				(0x182240D7U)
++
++/* Remove Versal specific node IDs */
++#undef PM_DEV_RPU0_0
++#undef PM_DEV_RPU0_1
++#undef PM_DEV_OCM_0
++#undef PM_DEV_OCM_1
++#undef PM_DEV_OCM_2
++#undef PM_DEV_OCM_3
++#undef PM_DEV_TCM_0_A
++#undef PM_DEV_TCM_1_A
++#undef PM_DEV_TCM_0_B
++#undef PM_DEV_TCM_1_B
++#undef PM_DEV_SWDT_FPD
++#undef PM_DEV_ADMA_0
++#undef PM_DEV_ADMA_1
++#undef PM_DEV_ADMA_2
++#undef PM_DEV_ADMA_3
++#undef PM_DEV_ADMA_4
++#undef PM_DEV_ADMA_5
++#undef PM_DEV_ADMA_6
++#undef PM_DEV_ADMA_7
++#undef PM_DEV_AI
++
++#endif
+--- /dev/null
++++ linux-xlnx-2022.2/include/dt-bindings/power/xlnx-versal-power.h	2023-04-14 12:24:18.041775000 +0900
+@@ -0,0 +1,53 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ *  Copyright (C) 2019 - 2022 Xilinx, Inc.
++ */
++
++#ifndef _DT_BINDINGS_VERSAL_POWER_H
++#define _DT_BINDINGS_VERSAL_POWER_H
++
++#define PM_DEV_RPU0_0				(0x18110005U)
++#define PM_DEV_RPU0_1				(0x18110006U)
++#define PM_DEV_OCM_0				(0x18314007U)
++#define PM_DEV_OCM_1				(0x18314008U)
++#define PM_DEV_OCM_2				(0x18314009U)
++#define PM_DEV_OCM_3				(0x1831400aU)
++#define PM_DEV_TCM_0_A				(0x1831800bU)
++#define PM_DEV_TCM_0_B				(0x1831800cU)
++#define PM_DEV_TCM_1_A				(0x1831800dU)
++#define PM_DEV_TCM_1_B				(0x1831800eU)
++#define PM_DEV_USB_0				(0x18224018U)
++#define PM_DEV_GEM_0				(0x18224019U)
++#define PM_DEV_GEM_1				(0x1822401aU)
++#define PM_DEV_SPI_0				(0x1822401bU)
++#define PM_DEV_SPI_1				(0x1822401cU)
++#define PM_DEV_I2C_0				(0x1822401dU)
++#define PM_DEV_I2C_1				(0x1822401eU)
++#define PM_DEV_CAN_FD_0				(0x1822401fU)
++#define PM_DEV_CAN_FD_1				(0x18224020U)
++#define PM_DEV_UART_0				(0x18224021U)
++#define PM_DEV_UART_1				(0x18224022U)
++#define PM_DEV_GPIO				(0x18224023U)
++#define PM_DEV_TTC_0				(0x18224024U)
++#define PM_DEV_TTC_1				(0x18224025U)
++#define PM_DEV_TTC_2				(0x18224026U)
++#define PM_DEV_TTC_3				(0x18224027U)
++#define PM_DEV_SWDT_FPD				(0x18224029U)
++#define PM_DEV_OSPI				(0x1822402aU)
++#define PM_DEV_QSPI				(0x1822402bU)
++#define PM_DEV_GPIO_PMC				(0x1822402cU)
++#define PM_DEV_I2C_PMC				(0x1822402dU)
++#define PM_DEV_SDIO_0				(0x1822402eU)
++#define PM_DEV_SDIO_1				(0x1822402fU)
++#define PM_DEV_RTC				(0x18224034U)
++#define PM_DEV_ADMA_0				(0x18224035U)
++#define PM_DEV_ADMA_1				(0x18224036U)
++#define PM_DEV_ADMA_2				(0x18224037U)
++#define PM_DEV_ADMA_3				(0x18224038U)
++#define PM_DEV_ADMA_4				(0x18224039U)
++#define PM_DEV_ADMA_5				(0x1822403aU)
++#define PM_DEV_ADMA_6				(0x1822403bU)
++#define PM_DEV_ADMA_7				(0x1822403cU)
++#define PM_DEV_AI				(0x18224072U)
++
++#endif
+--- /dev/null
++++ linux-xlnx-2022.2/include/dt-bindings/power/xlnx-versal-regnode.h	2023-04-14 12:24:18.041775000 +0900
+@@ -0,0 +1,14 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ *  Copyright (C) 2022 Xilinx, Inc.
++ */
++
++#ifndef _DT_BINDINGS_VERSAL_REGNODE_H
++#define _DT_BINDINGS_VERSAL_REGNODE_H
++
++#define PM_REGNODE_SYSMON_ROOT_0			(0x18224055U)
++#define PM_REGNODE_SYSMON_ROOT_1			(0x18225055U)
++#define PM_REGNODE_SYSMON_ROOT_2			(0x18226055U)
++#define PM_REGNODE_SYSMON_ROOT_3			(0x18227055U)
++
++#endif
+--- linux-5.15.36/include/dt-bindings/power/xlnx-zynqmp-power.h	2023-04-14 12:26:10.788344000 +0900
++++ linux-xlnx-2022.2/include/dt-bindings/power/xlnx-zynqmp-power.h	2023-04-14 12:24:18.041775000 +0900
+@@ -6,6 +6,16 @@
+ #ifndef _DT_BINDINGS_ZYNQMP_POWER_H
+ #define _DT_BINDINGS_ZYNQMP_POWER_H
+ 
++#define		PD_RPU_0	6
++#define		PD_RPU_1	7
++#define		PD_OCM_BANK_0	11
++#define		PD_OCM_BANK_1	12
++#define		PD_OCM_BANK_2	13
++#define		PD_OCM_BANK_3	14
++#define		PD_TCM_BANK_0	15
++#define		PD_TCM_BANK_1	16
++#define		PD_TCM_BANK_2	17
++#define		PD_TCM_BANK_3	18
+ #define		PD_USB_0	22
+ #define		PD_USB_1	23
+ #define		PD_TTC_0	24
+@@ -35,5 +45,6 @@
+ #define		PD_CAN_1	48
+ #define		PD_GPU		58
+ #define		PD_PCIE		59
++#define		PD_PL		69
+ 
+ #endif

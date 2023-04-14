@@ -1,0 +1,641 @@
+--- /dev/null
++++ linux-xlnx-2022.2/Documentation/devicetree/bindings/gpio/gpio-slg7xl45106.yaml	2023-04-14 12:23:48.970498300 +0900
+@@ -0,0 +1,47 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/gpio/gpio-slg7xl45106.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: slg7xl45106 I2C GPO expander
++
++maintainers:
++  - Raviteja Narayanam <raviteja.narayanam@xilinx.com>
++
++properties:
++  compatible:
++    enum:
++      - dlg,slg7xl45106
++
++  reg:
++    maxItems: 1
++
++  gpio-controller: true
++
++  '#gpio-cells':
++    const: 2
++
++required:
++  - compatible
++  - reg
++  - gpio-controller
++  - "#gpio-cells"
++
++additionalProperties: false
++
++examples:
++  - |
++    i2c0 {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        gpio@10 {
++            compatible = "dlg,slg7xl45106";
++            reg = <0x10>;
++            gpio-controller;
++            #gpio-cells = <2>;
++        };
++    };
++
++...
+--- linux-5.15.36/Documentation/devicetree/bindings/gpio/gpio-zynq.yaml	2023-04-14 12:25:41.967856900 +0900
++++ linux-xlnx-2022.2/Documentation/devicetree/bindings/gpio/gpio-zynq.yaml	2023-04-14 12:23:48.986119000 +0900
+@@ -11,7 +11,11 @@
+ 
+ properties:
+   compatible:
+-    const: xlnx,zynq-gpio-1.0
++    enum:
++      - xlnx,zynq-gpio-1.0
++      - xlnx,zynqmp-gpio-1.0
++      - xlnx,versal-gpio-1.0
++      - xlnx,pmc-gpio-1.0
+ 
+   reg:
+     maxItems: 1
+--- /dev/null
++++ linux-xlnx-2022.2/Documentation/devicetree/bindings/gpio/xlnx,gpio-xilinx.yaml	2023-04-14 12:23:49.001740800 +0900
+@@ -0,0 +1,154 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/gpio/xlnx,gpio-xilinx.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Xilinx AXI GPIO controller
++
++maintainers:
++  - Neeli Srinivas <srinivas.neeli@xilinx.com>
++
++description:
++  The AXI GPIO design provides a general purpose input/output interface
++  to an AXI4-Lite interface. The AXI GPIO can be configured as either
++  a single or a dual-channel device. The width of each channel is
++  independently configurable. The channels can be configured to
++  generate an interrupt when a transition on any of their inputs occurs.
++
++properties:
++  compatible:
++    enum:
++      - xlnx,xps-gpio-1.00.a
++
++  reg:
++    maxItems: 1
++
++  "#gpio-cells":
++    const: 2
++
++  interrupts:
++    maxItems: 1
++
++  gpio-controller: true
++
++  gpio-line-names:
++    description: strings describing the names of each gpio line
++    minItems: 1
++    maxItems: 64
++
++  interrupt-controller: true
++
++  "#interrupt-cells":
++    const: 2
++
++  clocks:
++    maxItems: 1
++
++  interrupt-names: true
++
++  xlnx,all-inputs:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: This option sets this GPIO channel1 bits in input mode.
++
++  xlnx,all-inputs-2:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: This option sets this GPIO channel2 bits in input mode.
++
++  xlnx,all-outputs:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: This option sets this GPIO channel1 bits in output mode.
++
++  xlnx,all-outputs-2:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: This option sets this GPIO channel2 bits in output mode.
++
++  xlnx,dout-default:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: Sets the default value of all the enabled bits of
++                 channel1.
++    default: 0
++
++  xlnx,dout-default-2:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: Sets the default value of all the enabled bits of
++                 channel2.
++    default: 0
++
++  xlnx,gpio-width:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: The value defines the bit width of the GPIO channel1.
++    minimum: 1
++    maximum: 32
++    default: 32
++
++  xlnx,gpio2-width:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: The value defines the bit width of the GPIO channel2.
++    minimum: 1
++    maximum: 32
++    default: 32
++
++  xlnx,interrupt-present:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: This parameter enables interrupt control logic
++                 and interrupt registers in GPIO module.
++    minimum: 0
++    maximum: 1
++    default: 0
++
++  xlnx,is-dual:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: This parameter enables a second GPIO channel (GPIO2).
++    minimum: 0
++    maximum: 1
++    default: 0
++
++  xlnx,tri-default:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: This value configures the input or output mode
++                 of each bit of GPIO channel1.
++
++  xlnx,tri-default-2:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: This value configures the input or output mode
++                 of each bit of GPIO channel2.
++
++required:
++  - reg
++  - compatible
++  - gpio-controller
++  - "#gpio-cells"
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++
++        gpio@e000a000 {
++            compatible = "xlnx,xps-gpio-1.00.a";
++            reg = <0xa0020000 0x10000>;
++            #gpio-cells = <2>;
++            #interrupt-cells = <0x2>;
++            clocks = <&zynqmp_clk 71>;
++            gpio-controller;
++            interrupt-controller;
++            interrupt-names = "ip2intc_irpt";
++            interrupt-parent = <&gic>;
++            interrupts = <0 89 4>;
++            xlnx,all-inputs = <0x0>;
++            xlnx,all-inputs-2 = <0x0>;
++            xlnx,all-outputs = <0x0>;
++            xlnx,all-outputs-2 = <0x0>;
++            xlnx,dout-default = <0x0>;
++            xlnx,dout-default-2 = <0x0>;
++            xlnx,gpio-width = <0x20>;
++            xlnx,gpio2-width = <0x20>;
++            xlnx,interrupt-present = <0x1>;
++            xlnx,is-dual = <0x1>;
++            xlnx,tri-default = <0xFFFFFFFF>;
++            xlnx,tri-default-2 = <0xFFFFFFFF>;
++        };
++
++...
+--- /dev/null
++++ linux-xlnx-2022.2/Documentation/devicetree/bindings/gpio/xlnx,zynqmp-gpio-modepin.yaml	2023-04-14 12:23:49.001740800 +0900
+@@ -0,0 +1,43 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/gpio/xlnx,zynqmp-gpio-modepin.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++
++title: ZynqMP Mode Pin GPIO controller
++
++description:
++  PS_MODE is 4-bits boot mode pins sampled on POR deassertion. Mode Pin
++  GPIO controller with configurable from numbers of pins (from 0 to 3 per
++  PS_MODE). Every pin can be configured as input/output.
++
++maintainers:
++  - Piyush Mehta <piyush.mehta@xilinx.com>
++
++properties:
++  compatible:
++    const: xlnx,zynqmp-gpio-modepin
++
++  gpio-controller: true
++
++  "#gpio-cells":
++    const: 2
++
++required:
++  - compatible
++  - gpio-controller
++  - "#gpio-cells"
++
++additionalProperties: false
++
++examples:
++  - |
++    zynqmp-firmware {
++        gpio {
++            compatible = "xlnx,zynqmp-gpio-modepin";
++            gpio-controller;
++            #gpio-cells = <2>;
++        };
++    };
++
++...
+--- linux-5.15.36/drivers/gpio/Kconfig	2023-04-14 12:25:54.503370100 +0900
++++ linux-xlnx-2022.2/drivers/gpio/Kconfig	2023-04-14 12:24:01.591395200 +0900
+@@ -764,6 +764,18 @@
+ 	help
+ 	  Say yes here to support Xilinx Zynq GPIO controller.
+ 
++config GPIO_ZYNQMP_MODEPIN
++	tristate "ZynqMP ps-mode pin gpio configuration driver"
++	depends on ZYNQMP_FIRMWARE
++	default ZYNQMP_FIRMWARE
++	help
++	  Say yes here to support the ZynqMP ps-mode pin gpio configuration
++	  driver.
++
++	  This ps-mode pin gpio driver is based on GPIO framework, PS_MODE
++	  is 4-bits boot mode pins. It sets and gets the status of
++	  the ps-mode pin. Every pin can be configured as input/output.
++
+ config GPIO_LOONGSON1
+ 	tristate "Loongson1 GPIO support"
+ 	depends on MACH_LOONGSON32
+@@ -1080,6 +1092,15 @@
+ 	  This driver provides an in-kernel interface to those GPIOs using
+ 	  platform-neutral GPIO calls.
+ 
++config GPIO_SLG7XL45106
++	tristate "SLG7XL45106 8-Bit I2C GPO expander"
++	help
++	  Say yes here to enable the GPO driver for the Dialog SLG7XL45106 chip.
++	  This expander has 8 output pins.
++
++	  To compile this driver as a module, choose M here: the module will
++	  be called gpio-slg7xl45106.
++
+ config GPIO_TPIC2810
+ 	tristate "TPIC2810 8-Bit I2C GPO expander"
+ 	help
+--- linux-5.15.36/drivers/gpio/Makefile	2023-04-14 12:25:54.503370100 +0900
++++ linux-xlnx-2022.2/drivers/gpio/Makefile	2023-04-14 12:24:01.591395200 +0900
+@@ -135,6 +135,7 @@
+ obj-$(CONFIG_GPIO_SIFIVE)		+= gpio-sifive.o
+ obj-$(CONFIG_GPIO_SIOX)			+= gpio-siox.o
+ obj-$(CONFIG_GPIO_SL28CPLD)		+= gpio-sl28cpld.o
++obj-$(CONFIG_GPIO_SLG7XL45106)		+= gpio-slg7xl45106.o
+ obj-$(CONFIG_GPIO_SODAVILLE)		+= gpio-sodaville.o
+ obj-$(CONFIG_GPIO_SPEAR_SPICS)		+= gpio-spear-spics.o
+ obj-$(CONFIG_GPIO_SPRD)			+= gpio-sprd.o
+@@ -184,3 +185,4 @@
+ obj-$(CONFIG_GPIO_XTENSA)		+= gpio-xtensa.o
+ obj-$(CONFIG_GPIO_ZEVIO)		+= gpio-zevio.o
+ obj-$(CONFIG_GPIO_ZYNQ)			+= gpio-zynq.o
++obj-$(CONFIG_GPIO_ZYNQMP_MODEPIN)	+= gpio-zynqmp-modepin.o
+--- /dev/null
++++ linux-xlnx-2022.2/drivers/gpio/gpio-slg7xl45106.c	2023-04-14 12:24:01.653880600 +0900
+@@ -0,0 +1,127 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Driver for slg7xl45106 I2C GPO expander
++ * Based on gpio-pca9570.c
++ *
++ * Copyright (C) 2021 Xilinx, Inc.
++ */
++
++#include <linux/gpio/driver.h>
++#include <linux/i2c.h>
++#include <linux/module.h>
++#include <linux/mutex.h>
++#include <linux/property.h>
++
++#define SLG7XL45106_GPO_REG	0xDB
++
++/**
++ * struct slg7xl45106 - GPIO driver data
++ * @chip: GPIO controller chip
++ * @lock: Protects write sequences
++ */
++struct slg7xl45106 {
++	struct gpio_chip chip;
++	struct mutex lock;	/* To protect writes */
++};
++
++static int slg7xl45106_read(struct slg7xl45106 *gpio)
++{
++	struct i2c_client *client = to_i2c_client(gpio->chip.parent);
++
++	return i2c_smbus_read_byte_data(client, SLG7XL45106_GPO_REG);
++}
++
++static int slg7xl45106_write(struct slg7xl45106 *gpio, u8 value)
++{
++	struct i2c_client *client = to_i2c_client(gpio->chip.parent);
++
++	return i2c_smbus_write_byte_data(client, SLG7XL45106_GPO_REG, value);
++}
++
++static int slg7xl45106_get_direction(struct gpio_chip *chip,
++				     unsigned offset)
++{
++	/* This device always output */
++	return GPIO_LINE_DIRECTION_OUT;
++}
++
++static int slg7xl45106_get(struct gpio_chip *chip, unsigned offset)
++{
++	struct slg7xl45106 *gpio = gpiochip_get_data(chip);
++	int ret;
++
++	ret = slg7xl45106_read(gpio);
++	if (ret < 0)
++		return ret;
++
++	return !!(ret & BIT(offset));
++}
++
++static void slg7xl45106_set(struct gpio_chip *chip, unsigned offset, int value)
++{
++	struct slg7xl45106 *gpio = gpiochip_get_data(chip);
++	u8 buffer;
++
++	mutex_lock(&gpio->lock);
++
++	buffer = slg7xl45106_read(gpio);
++	if (value)
++		buffer |= BIT(offset);
++	else
++		buffer &= ~BIT(offset);
++
++	slg7xl45106_write(gpio, buffer);
++
++	mutex_unlock(&gpio->lock);
++}
++
++static int slg7xl45106_probe(struct i2c_client *client)
++{
++	struct slg7xl45106 *gpio;
++
++	gpio = devm_kzalloc(&client->dev, sizeof(*gpio), GFP_KERNEL);
++	if (!gpio)
++		return -ENOMEM;
++
++	gpio->chip.label = client->name;
++	gpio->chip.parent = &client->dev;
++	gpio->chip.owner = THIS_MODULE;
++	gpio->chip.get_direction = slg7xl45106_get_direction;
++	gpio->chip.get = slg7xl45106_get;
++	gpio->chip.set = slg7xl45106_set;
++	gpio->chip.base = -1;
++	gpio->chip.ngpio = (uintptr_t)device_get_match_data(&client->dev);
++	gpio->chip.can_sleep = true;
++
++	mutex_init(&gpio->lock);
++
++	i2c_set_clientdata(client, gpio);
++
++	return devm_gpiochip_add_data(&client->dev, &gpio->chip, gpio);
++}
++
++static const struct i2c_device_id slg7xl45106_id_table[] = {
++	{ "slg7xl45106", 8 },
++	{ }
++};
++MODULE_DEVICE_TABLE(i2c, slg7xl45106_id_table);
++
++static const struct of_device_id slg7xl45106_of_match_table[] = {
++	{ .compatible = "dlg,slg7xl45106", .data = (void *)8 },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, slg7xl45106_of_match_table);
++
++static struct i2c_driver slg7xl45106_driver = {
++	.driver = {
++		.name = "slg7xl45106",
++		.of_match_table = slg7xl45106_of_match_table,
++	},
++	.probe_new = slg7xl45106_probe,
++	.id_table = slg7xl45106_id_table,
++};
++module_i2c_driver(slg7xl45106_driver);
++
++MODULE_AUTHOR("Raviteja Narayanam <raviteja.narayanam@xilinx.com>");
++MODULE_DESCRIPTION("GPIO expander driver for slg7xl45106");
++MODULE_LICENSE("GPL v2");
+--- linux-5.15.36/drivers/gpio/gpio-xilinx.c	2023-04-14 12:25:54.581486400 +0900
++++ linux-xlnx-2022.2/drivers/gpio/gpio-xilinx.c	2023-04-14 12:24:01.669501900 +0900
+@@ -99,7 +99,7 @@
+ 	const unsigned long offset = (bit % BITS_PER_LONG) & BIT(5);
+ 
+ 	map[index] &= ~(0xFFFFFFFFul << offset);
+-	map[index] |= v << offset;
++	map[index] |= (unsigned long)v << offset;
+ }
+ 
+ static inline int xgpio_regoffset(struct xgpio_instance *chip, int ch)
+@@ -117,12 +117,14 @@
+ static void xgpio_read_ch(struct xgpio_instance *chip, int reg, int bit, unsigned long *a)
+ {
+ 	void __iomem *addr = chip->regs + reg + xgpio_regoffset(chip, bit / 32);
++
+ 	xgpio_set_value32(a, bit, xgpio_readreg(addr));
+ }
+ 
+ static void xgpio_write_ch(struct xgpio_instance *chip, int reg, int bit, unsigned long *a)
+ {
+ 	void __iomem *addr = chip->regs + reg + xgpio_regoffset(chip, bit / 32);
++
+ 	xgpio_writereg(addr, xgpio_get_value32(a, bit));
+ }
+ 
+--- /dev/null
++++ linux-xlnx-2022.2/drivers/gpio/gpio-zynqmp-modepin.c	2023-04-14 12:24:01.669501900 +0900
+@@ -0,0 +1,162 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Driver for the ps-mode pin configuration.
++ *
++ * Copyright (c) 2021 Xilinx, Inc.
++ */
++
++#include <linux/delay.h>
++#include <linux/err.h>
++#include <linux/gpio/driver.h>
++#include <linux/io.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/slab.h>
++#include <linux/firmware/xlnx-zynqmp.h>
++
++/* 4-bit boot mode pins */
++#define MODE_PINS			4
++
++/**
++ * modepin_gpio_get_value - Get the state of the specified pin of GPIO device
++ * @chip:	gpio_chip instance to be worked on
++ * @pin:	gpio pin number within the device
++ *
++ * This function reads the state of the specified pin of the GPIO device.
++ *
++ * Return: 0 if the pin is low, 1 if pin is high, -EINVAL wrong pin configured
++ *         or error value.
++ */
++static int modepin_gpio_get_value(struct gpio_chip *chip, unsigned int pin)
++{
++	u32 regval = 0;
++	int ret;
++
++	ret = zynqmp_pm_bootmode_read(&regval);
++	if (ret)
++		return ret;
++
++	/* When [0:3] corresponding bit is set, then read output bit [8:11],
++	 * if the bit is clear then read input bit [4:7] for status or value.
++	 */
++	if (regval & BIT(pin))
++		return !!(regval & BIT(pin + 8));
++	else
++		return !!(regval & BIT(pin + 4));
++}
++
++/**
++ * modepin_gpio_set_value - Modify the state of the pin with specified value
++ * @chip:	gpio_chip instance to be worked on
++ * @pin:	gpio pin number within the device
++ * @state:	value used to modify the state of the specified pin
++ *
++ * This function reads the state of the specified pin of the GPIO device, mask
++ * with the capture state of GPIO pin, and update pin of GPIO device.
++ *
++ * Return:	None.
++ */
++static void modepin_gpio_set_value(struct gpio_chip *chip, unsigned int pin,
++				   int state)
++{
++	u32 bootpin_val = 0;
++	int ret;
++
++	zynqmp_pm_bootmode_read(&bootpin_val);
++
++	/* Configure pin as an output by set bit [0:3] */
++	bootpin_val |= BIT(pin);
++
++	if (state)
++		bootpin_val |= BIT(pin + 8);
++	else
++		bootpin_val &= ~BIT(pin + 8);
++
++	/* Configure bootpin value */
++	ret = zynqmp_pm_bootmode_write(bootpin_val);
++	if (ret)
++		pr_err("modepin: set value error %d for pin %d\n", ret, pin);
++}
++
++/**
++ * modepin_gpio_dir_in - Set the direction of the specified GPIO pin as input
++ * @chip:	gpio_chip instance to be worked on
++ * @pin:	gpio pin number within the device
++ *
++ * Return: 0 always
++ */
++static int modepin_gpio_dir_in(struct gpio_chip *chip, unsigned int pin)
++{
++	return 0;
++}
++
++/**
++ * modepin_gpio_dir_out - Set the direction of the specified GPIO pin as output
++ * @chip:	gpio_chip instance to be worked on
++ * @pin:	gpio pin number within the device
++ * @state:	value to be written to specified pin
++ *
++ * Return: 0 always
++ */
++static int modepin_gpio_dir_out(struct gpio_chip *chip, unsigned int pin,
++				int state)
++{
++	return 0;
++}
++
++/**
++ * modepin_gpio_probe - Initialization method for modepin_gpio
++ * @pdev:		platform device instance
++ *
++ * Return: 0 on success, negative error otherwise.
++ */
++static int modepin_gpio_probe(struct platform_device *pdev)
++{
++	struct gpio_chip *chip;
++	int status;
++
++	chip = devm_kzalloc(&pdev->dev, sizeof(*chip), GFP_KERNEL);
++	if (!chip)
++		return -ENOMEM;
++
++	platform_set_drvdata(pdev, chip);
++
++	/* configure the gpio chip */
++	chip->base = -1;
++	chip->ngpio = MODE_PINS;
++	chip->owner = THIS_MODULE;
++	chip->parent = &pdev->dev;
++	chip->get = modepin_gpio_get_value;
++	chip->set = modepin_gpio_set_value;
++	chip->direction_input = modepin_gpio_dir_in;
++	chip->direction_output = modepin_gpio_dir_out;
++	chip->label = dev_name(&pdev->dev);
++
++	/* modepin gpio registration */
++	status = devm_gpiochip_add_data(&pdev->dev, chip, chip);
++	if (status)
++		return dev_err_probe(&pdev->dev, status,
++			      "Failed to add GPIO chip\n");
++
++	return status;
++}
++
++static const struct of_device_id modepin_platform_id[] = {
++	{ .compatible = "xlnx,zynqmp-gpio-modepin", },
++	{ }
++};
++
++static struct platform_driver modepin_platform_driver = {
++	.driver = {
++		.name = "modepin-gpio",
++		.of_match_table = modepin_platform_id,
++	},
++	.probe = modepin_gpio_probe,
++};
++
++module_platform_driver(modepin_platform_driver);
++
++MODULE_AUTHOR("Piyush Mehta <piyush.mehta@xilinx.com>");
++MODULE_DESCRIPTION("ZynqMP Boot PS_MODE Configuration");
++MODULE_LICENSE("GPL v2");

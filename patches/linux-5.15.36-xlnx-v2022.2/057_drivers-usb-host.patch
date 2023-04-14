@@ -1,0 +1,571 @@
+--- /dev/null
++++ linux-xlnx-2022.2/Documentation/devicetree/bindings/usb/ehci-xilinx.txt	2023-04-14 12:23:50.348366400 +0900
+@@ -0,0 +1,21 @@
++Xilinx USB EHCI controller
++
++Required properties:
++- compatible: must be "xlnx,xps-usb-host-1.00.a"
++- reg: physical base address of the controller and length of memory mapped
++  region.
++- interrupts: The EHCI interrupt
++
++Optional properties:
++- xlnx,ext-vbus-valid: Use external VBUS
++- xlnx,support-usb-fs: Support for Full Speed USB
++- xlnx,use-phy-bus-pwr: Use phy bus power in USB
++
++Example:
++
++	xps_usb_host_0: usb@82400000 {
++		compatible = "xlnx,xps-usb-host-1.00.a";
++		interrupt-parent = <&xps_intc_0>;
++		interrupts = < 0 2 >;
++		reg = < 0x82400000 0x200 >;
++	} ;
+--- linux-5.15.36/drivers/usb/host/ehci-xilinx-of.c	2023-04-14 12:26:08.484093100 +0900
++++ linux-xlnx-2022.2/drivers/usb/host/ehci-xilinx-of.c	2023-04-14 12:24:15.589737300 +0900
+@@ -32,6 +32,8 @@
+  * There are cases when the host controller fails to enable the port due to,
+  * for example, insufficient power that can be supplied to the device from
+  * the USB bus. In those cases, the messages printed here are not helpful.
++ *
++ * Return: Always return 0
+  */
+ static int ehci_xilinx_port_handed_over(struct usb_hcd *hcd, int portnum)
+ {
+@@ -46,11 +48,9 @@
+ 		dev_warn(hcd->self.controller,
+ 			"Maybe your device is not a high speed device?\n");
+ 		dev_warn(hcd->self.controller,
+-			"The USB host controller does not support full speed "
+-			"nor low speed devices\n");
++			"USB host controller doesn't support FS/LS devices\n");
+ 		dev_warn(hcd->self.controller,
+-			"You can reconfigure the host controller to have "
+-			"full speed support\n");
++			"You can reconfigure host controller to support FS\n");
+ 	}
+ 
+ 	return 0;
+@@ -112,6 +112,8 @@
+  * host controller. Because the Xilinx USB host controller can be configured
+  * as HS only or HS/FS only, it checks the configuration in the device tree
+  * entry, and sets an appropriate value for hcd->has_tt.
++ *
++ * Return: zero on success, 'rv' value on failure
+  */
+ static int ehci_hcd_xilinx_of_probe(struct platform_device *op)
+ {
+@@ -196,6 +198,8 @@
+  *
+  * Remove the hcd structure, and release resources that has been requested
+  * during probe.
++ *
++ * Return: Always return 0
+  */
+ static int ehci_hcd_xilinx_of_remove(struct platform_device *op)
+ {
+--- linux-5.15.36/drivers/usb/host/xhci-hub.c	2023-04-14 12:26:08.515355900 +0900
++++ linux-xlnx-2022.2/drivers/usb/host/xhci-hub.c	2023-04-14 12:24:15.628488400 +0900
+@@ -1930,6 +1930,13 @@
+ 		}
+ 	}
+ 
++	/* After resuming back from suspend, the controller may not initiate
++	 * LFPS.U3_exit signalling if not given a delay after updating the
++	 * link from U3->U0. So, lets wait for atleast 1ms
++	 */
++	if (next_state == XDEV_U0)
++		mdelay(1);
++
+ 	/* poll for U0 link state complete, both USB2 and USB3 */
+ 	for_each_set_bit(port_index, &bus_state->bus_suspended, BITS_PER_LONG) {
+ 		sret = xhci_handshake(ports[port_index]->addr, PORT_PLC,
+--- linux-5.15.36/drivers/usb/host/xhci-mem.c	2023-04-14 12:26:08.515355900 +0900
++++ linux-xlnx-2022.2/drivers/usb/host/xhci-mem.c	2023-04-14 12:24:15.628488400 +0900
+@@ -677,6 +677,16 @@
+ 		xhci_dbg(xhci, "Setting stream %d ring ptr to 0x%08llx\n",
+ 				cur_stream, (unsigned long long) addr);
+ 
++		if (xhci->quirks & XHCI_STREAM_QUIRK) {
++			/* dwc3 host controller has an issue where it doesn't
++			 * process BULK IN stream rings even after ringing
++			 * DoorBell, so setup a timer to aviod hang condition.
++			 */
++			timer_setup(&cur_ring->stream_timer,
++				    xhci_stream_timeout, 0);
++			cur_ring->xhci = xhci;
++		}
++
+ 		ret = xhci_update_stream_mapping(cur_ring, mem_flags);
+ 		if (ret) {
+ 			xhci_ring_free(xhci, cur_ring);
+@@ -763,6 +773,10 @@
+ 	for (cur_stream = 1; cur_stream < stream_info->num_streams;
+ 			cur_stream++) {
+ 		cur_ring = stream_info->stream_rings[cur_stream];
++
++		if (xhci->quirks & XHCI_STREAM_QUIRK)
++			del_timer_sync(&cur_ring->stream_timer);
++
+ 		if (cur_ring) {
+ 			xhci_ring_free(xhci, cur_ring);
+ 			stream_info->stream_rings[cur_stream] = NULL;
+--- linux-5.15.36/drivers/usb/host/xhci-plat.c	2023-04-14 12:26:08.530957400 +0900
++++ linux-xlnx-2022.2/drivers/usb/host/xhci-plat.c	2023-04-14 12:24:15.628488400 +0900
+@@ -19,6 +19,7 @@
+ #include <linux/slab.h>
+ #include <linux/acpi.h>
+ #include <linux/usb/of.h>
++#include <linux/usb/otg.h>
+ 
+ #include "xhci.h"
+ #include "xhci-plat.h"
+@@ -30,6 +31,8 @@
+ static int xhci_plat_setup(struct usb_hcd *hcd);
+ static int xhci_plat_start(struct usb_hcd *hcd);
+ 
++static host_wakeup_t host_wakeup_fn;
++
+ static const struct xhci_driver_overrides xhci_plat_overrides __initconst = {
+ 	.extra_priv_size = sizeof(struct xhci_plat_priv),
+ 	.reset = xhci_plat_setup,
+@@ -96,6 +99,17 @@
+ 	xhci->quirks |= XHCI_PLAT | priv->quirks;
+ }
+ 
++static void host_wakeup_register(host_wakeup_t func)
++{
++	host_wakeup_fn = func;
++}
++
++static void host_wakeup_capable(struct device *dev, bool wakeup)
++{
++	if (host_wakeup_fn)
++		host_wakeup_fn(dev, wakeup);
++}
++
+ /* called during probe() after chip reset completes */
+ static int xhci_plat_setup(struct usb_hcd *hcd)
+ {
+@@ -184,6 +198,35 @@
+ MODULE_DEVICE_TABLE(of, usb_xhci_of_match);
+ #endif
+ 
++static int usb_otg_set_host(struct device *dev, struct usb_hcd *hcd, bool yes)
++{
++	int ret = 0;
++
++	hcd->usb_phy = usb_get_phy(USB_PHY_TYPE_USB3);
++	if (!IS_ERR_OR_NULL(hcd->usb_phy) && hcd->usb_phy->otg) {
++		if (yes) {
++			if (otg_set_host(hcd->usb_phy->otg, &hcd->self)) {
++				usb_put_phy(hcd->usb_phy);
++				goto disable_phy;
++			}
++		} else {
++			ret = otg_set_host(hcd->usb_phy->otg, NULL);
++			usb_put_phy(hcd->usb_phy);
++			goto disable_phy;
++		}
++
++	} else {
++		goto disable_phy;
++	}
++
++	return 0;
++
++disable_phy:
++	hcd->usb_phy = NULL;
++
++	return ret;
++}
++
+ static int xhci_plat_probe(struct platform_device *pdev)
+ {
+ 	const struct xhci_plat_priv *priv_match;
+@@ -241,6 +284,9 @@
+ 			return ret;
+ 	}
+ 
++	/* Set the controller as wakeup capable */
++	device_set_wakeup_capable(&pdev->dev, true);
++
+ 	pm_runtime_set_active(&pdev->dev);
+ 	pm_runtime_enable(&pdev->dev);
+ 	pm_runtime_get_noresume(&pdev->dev);
+@@ -299,6 +345,7 @@
+ 	}
+ 
+ 	device_set_wakeup_capable(&pdev->dev, true);
++	host_wakeup_register(dwc3_host_wakeup_capable);
+ 
+ 	xhci->main_hcd = hcd;
+ 	xhci->shared_hcd = __usb_create_hcd(driver, sysdev, &pdev->dev,
+@@ -323,6 +370,9 @@
+ 		if (device_property_read_bool(tmpdev, "quirk-broken-port-ped"))
+ 			xhci->quirks |= XHCI_BROKEN_PORT_PED;
+ 
++		if (device_property_read_bool(tmpdev, "xhci-reset-on-resume"))
++			xhci->quirks |= XHCI_RESET_ON_RESUME;
++
+ 		device_property_read_u32(tmpdev, "imod-interval-ns",
+ 					 &xhci->imod_interval);
+ 	}
+@@ -365,6 +415,10 @@
+ 	if (ret)
+ 		goto dealloc_usb2_hcd;
+ 
++	ret = usb_otg_set_host(&pdev->dev, hcd, true);
++	if (ret)
++		goto dealloc_usb2_hcd;
++
+ 	device_enable_async_suspend(&pdev->dev);
+ 	pm_runtime_put_noidle(&pdev->dev);
+ 
+@@ -417,6 +471,9 @@
+ 	xhci->shared_hcd = NULL;
+ 	usb_phy_shutdown(hcd->usb_phy);
+ 
++	host_wakeup_register(NULL);
++	usb_otg_set_host(&dev->dev, hcd, false);
++
+ 	usb_remove_hcd(hcd);
+ 	usb_put_hcd(shared_hcd);
+ 
+@@ -443,6 +500,15 @@
+ 	ret = xhci_priv_suspend_quirk(hcd);
+ 	if (ret)
+ 		return ret;
++
++	/* Inform dwc3 driver about the device wakeup capability */
++	if (device_may_wakeup(&hcd->self.root_hub->dev)) {
++		host_wakeup_capable(dev, true);
++		enable_irq_wake(hcd->irq);
++	} else {
++		host_wakeup_capable(dev, false);
++	}
++
+ 	/*
+ 	 * xhci_suspend() needs `do_wakeup` to know whether host is allowed
+ 	 * to do wakeup during suspend.
+@@ -489,6 +555,9 @@
+ 	struct usb_hcd  *hcd = dev_get_drvdata(dev);
+ 	struct xhci_hcd *xhci = hcd_to_xhci(hcd);
+ 
++	if (device_may_wakeup(&hcd->self.root_hub->dev))
++		disable_irq_wake(hcd->irq);
++
+ 	return xhci_resume(xhci, 0);
+ }
+ 
+--- linux-5.15.36/drivers/usb/host/xhci-ring.c	2023-04-14 12:26:08.530957400 +0900
++++ linux-xlnx-2022.2/drivers/usb/host/xhci-ring.c	2023-04-14 12:24:15.644109100 +0900
+@@ -848,7 +848,16 @@
+ 		/* set isoc urb status to 0 just as EHCI, UHCI, and OHCI */
+ 		if (usb_pipetype(urb->pipe) == PIPE_ISOCHRONOUS)
+ 			status = 0;
+-		xhci_giveback_urb_in_irq(xhci, td, status);
++		if ((xhci->quirks & XHCI_STREAM_QUIRK) &&
++		    (ep_ring->stream_timeout_handler == true)) {
++			/* We get here if stream timer time-out and stop
++			 * command is issued. Send urb status as -EAGAIN
++			 * so that the same urb can be re-submitted.
++			 */
++			xhci_giveback_urb_in_irq(xhci, td, -EAGAIN);
++			ep_ring->stream_timeout_handler = false;
++		} else
++			xhci_giveback_urb_in_irq(xhci, td, status);
+ 	}
+ 
+ 	return 0;
+@@ -1248,6 +1257,84 @@
+ 		usb_hc_died(xhci_to_hcd(xhci));
+ }
+ 
++/* This function is called when the stream ring timer gets timedout.
++ * dwc3 host controller has an issue where it doesn't process the BULK IN
++ * stream ring TD's(once in a while) even after ringing DoorBell for that
++ * stream ring. Because of this behaviour there will be no transfer events
++ * generated by the controller on the stream ring, resulting in the hang
++ * condition. xhci_stream_timeout() solves this issue by sending a stop
++ * command on the stream ring after stream timer gets timedout.
++ */
++void xhci_stream_timeout(struct timer_list *arg)
++{
++	struct xhci_hcd *xhci;
++	struct xhci_virt_ep *ep;
++	struct xhci_ring *ep_ring;
++	unsigned int slot_id, ep_index, stream_id;
++	struct xhci_td *td = NULL;
++	struct urb *urb = NULL;
++	struct urb_priv *urb_priv;
++	struct xhci_command *command;
++	unsigned long flags;
++	int i;
++
++	ep_ring = from_timer(ep_ring, arg, stream_timer);
++	xhci = ep_ring->xhci;
++
++	spin_lock_irqsave(&xhci->lock, flags);
++
++	if (!list_empty(&ep_ring->td_list)) {
++		td = list_entry(ep_ring->td_list.next, struct xhci_td, td_list);
++		urb = td->urb;
++		urb_priv = urb->hcpriv;
++
++		slot_id = urb->dev->slot_id;
++		ep_index = xhci_get_endpoint_index(&urb->ep->desc);
++		stream_id = ep_ring->stream_id;
++		ep = &xhci->devs[slot_id]->eps[ep_index];
++		ep_ring->stream_timeout_handler = true;
++
++		/* Delete the stream ring timer */
++		del_timer(&ep_ring->stream_timer);
++
++		for (i = 0; i < urb_priv->num_tds; i++) {
++			td = &urb_priv->td[i];
++			list_add_tail(&td->cancelled_td_list,
++					&ep->cancelled_td_list);
++		}
++
++		/* Queue a stop endpoint command, but only if this is
++		 * the first cancellation to be handled.
++		 */
++		if (!(ep->ep_state & EP_STOP_CMD_PENDING)) {
++			command = xhci_alloc_command(xhci, false,
++					GFP_ATOMIC);
++			if (!command) {
++				xhci_warn(xhci,
++					"%s: Failed to allocate command\n",
++						__func__);
++				spin_unlock_irqrestore(&xhci->lock, flags);
++				return;
++			}
++
++			ep->ep_state |= EP_STOP_CMD_PENDING;
++			ep->stop_cmd_timer.expires = jiffies +
++				XHCI_STOP_EP_CMD_TIMEOUT * HZ;
++			add_timer(&ep->stop_cmd_timer);
++			xhci_queue_stop_endpoint(xhci, command,
++					urb->dev->slot_id, ep_index, 0);
++			xhci_ring_cmd_db(xhci);
++		}
++
++		spin_unlock_irqrestore(&xhci->lock, flags);
++		return;
++	}
++
++	spin_unlock_irqrestore(&xhci->lock, flags);
++	/* let the SCSI stack take care */
++	del_timer(&ep_ring->stream_timer);
++}
++
+ /* Watchdog timer function for when a stop endpoint command fails to complete.
+  * In this case, we assume the host controller is broken or dying or dead.  The
+  * host may still be completing some other events, so we have to be careful to
+@@ -2651,6 +2738,10 @@
+ 			td_num++;
+ 	}
+ 
++	if ((xhci->quirks & XHCI_STREAM_QUIRK) &&
++				(ep->ep_state & EP_HAS_STREAMS))
++		del_timer(&ep_ring->stream_timer);
++
+ 	/* Look for common error cases */
+ 	switch (trb_comp_code) {
+ 	/* Skip codes that require special handling depending on
+@@ -3729,6 +3820,15 @@
+ 	}
+ 
+ 	check_trb_math(urb, enqd_len);
++
++	if ((xhci->quirks & XHCI_STREAM_QUIRK) && (urb->stream_id > 0) &&
++				(usb_endpoint_dir_in(&urb->ep->desc) == 1)) {
++		/* Start the stream timer so that xhci_stream_timeout() can be
++		 * triggered if xhci is stuck while processing BULK IN streams.
++		 */
++		ring->stream_timeout_handler = false;
++		mod_timer(&ring->stream_timer, jiffies + 5 * HZ);
++	}
+ 	giveback_first_trb(xhci, slot_id, ep_index, urb->stream_id,
+ 			start_cycle, start_trb);
+ 	return 0;
+--- linux-5.15.36/drivers/usb/host/xhci.c	2023-04-14 12:26:08.530957400 +0900
++++ linux-xlnx-2022.2/drivers/usb/host/xhci.c	2023-04-14 12:24:15.644109100 +0900
+@@ -182,7 +182,11 @@
+ 
+ 	xhci_dbg_trace(xhci, trace_xhci_dbg_init, "// Reset the HC");
+ 	command = readl(&xhci->op_regs->command);
++#ifdef CONFIG_USB_DWC3_OTG
++	command |= CMD_LRESET;
++#else
+ 	command |= CMD_RESET;
++#endif
+ 	writel(command, &xhci->op_regs->command);
+ 
+ 	/* Existing Intel xHCI controllers require a delay of 1 mS,
+@@ -195,7 +199,13 @@
+ 	if (xhci->quirks & XHCI_INTEL_HOST)
+ 		udelay(1000);
+ 
+-	ret = xhci_handshake(&xhci->op_regs->command, CMD_RESET, 0, timeout_us);
++	ret = xhci_handshake(&xhci->op_regs->command,
++#ifdef CONFIG_USB_DWC3_OTG
++			CMD_LRESET,
++#else
++			CMD_RESET,
++#endif
++			0, timeout_us);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -1089,7 +1099,6 @@
+ 	int			retval = 0;
+ 	bool			comp_timer_running = false;
+ 	bool			pending_portevent = false;
+-	bool			reinit_xhc = false;
+ 
+ 	if (!hcd->state)
+ 		return 0;
+@@ -1106,11 +1115,10 @@
+ 	set_bit(HCD_FLAG_HW_ACCESSIBLE, &xhci->shared_hcd->flags);
+ 
+ 	spin_lock_irq(&xhci->lock);
++	if ((xhci->quirks & XHCI_RESET_ON_RESUME) || xhci->broken_suspend)
++		hibernated = true;
+ 
+-	if (hibernated || xhci->quirks & XHCI_RESET_ON_RESUME || xhci->broken_suspend)
+-		reinit_xhc = true;
+-
+-	if (!reinit_xhc) {
++	if (!hibernated) {
+ 		/*
+ 		 * Some controllers might lose power during suspend, so wait
+ 		 * for controller not ready bit to clear, just as in xHC init.
+@@ -1143,17 +1151,12 @@
+ 			spin_unlock_irq(&xhci->lock);
+ 			return -ETIMEDOUT;
+ 		}
++		temp = readl(&xhci->op_regs->status);
+ 	}
+ 
+-	temp = readl(&xhci->op_regs->status);
++	/* If restore operation fails, re-initialize the HC during resume */
++	if ((temp & STS_SRE) || hibernated) {
+ 
+-	/* re-initialize the HC on Restore Error, or Host Controller Error */
+-	if (temp & (STS_SRE | STS_HCE)) {
+-		reinit_xhc = true;
+-		xhci_warn(xhci, "xHC error in resume, USBSTS 0x%x, Reinit\n", temp);
+-	}
+-
+-	if (reinit_xhc) {
+ 		if ((xhci->quirks & XHCI_COMP_MODE_QUIRK) &&
+ 				!(xhci_all_ports_seen_u0(xhci))) {
+ 			del_timer_sync(&xhci->comp_mode_recovery_timer);
+@@ -1609,12 +1612,9 @@
+ 	struct urb_priv	*urb_priv;
+ 	int num_tds;
+ 
+-	if (!urb)
++	if (!urb || xhci_check_args(hcd, urb->dev, urb->ep,
++					true, true, __func__) <= 0)
+ 		return -EINVAL;
+-	ret = xhci_check_args(hcd, urb->dev, urb->ep,
+-					true, true, __func__);
+-	if (ret <= 0)
+-		return ret ? ret : -EINVAL;
+ 
+ 	slot_id = urb->dev->slot_id;
+ 	ep_index = xhci_get_endpoint_index(&urb->ep->desc);
+@@ -1815,8 +1815,21 @@
+ 		goto err_giveback;
+ 	}
+ 
++	ep_index = xhci_get_endpoint_index(&urb->ep->desc);
++	ep = &xhci->devs[urb->dev->slot_id]->eps[ep_index];
++	ep_ring = xhci_urb_to_transfer_ring(xhci, urb);
++	if (!ep_ring) {
++		ret = -EINVAL;
++		goto done;
++	}
++
++	/* Delete the stream timer */
++	if ((xhci->quirks & XHCI_STREAM_QUIRK) && (urb->stream_id > 0))
++		del_timer(&ep_ring->stream_timer);
++
+ 	i = urb_priv->num_tds_done;
+ 	if (i < urb_priv->num_tds)
++
+ 		xhci_dbg_trace(xhci, trace_xhci_dbg_cancel_urb,
+ 				"Cancel URB %p, dev %s, ep 0x%x, "
+ 				"starting at offset 0x%llx",
+@@ -3331,7 +3344,7 @@
+ 		return -EINVAL;
+ 	ret = xhci_check_args(xhci_to_hcd(xhci), udev, ep, 1, true, __func__);
+ 	if (ret <= 0)
+-		return ret ? ret : -EINVAL;
++		return -EINVAL;
+ 	if (usb_ss_max_streams(&ep->ss_ep_comp) == 0) {
+ 		xhci_warn(xhci, "WARN: SuperSpeed Endpoint Companion"
+ 				" descriptor for ep 0x%x does not support streams\n",
+--- linux-5.15.36/drivers/usb/host/xhci.h	2023-04-14 12:26:08.530957400 +0900
++++ linux-xlnx-2022.2/drivers/usb/host/xhci.h	2023-04-14 12:24:15.644109100 +0900
+@@ -1638,6 +1638,9 @@
+ 	enum xhci_ring_type	type;
+ 	bool			last_td_was_short;
+ 	struct radix_tree_root	*trb_address_map;
++	struct timer_list	stream_timer;
++	bool			stream_timeout_handler;
++	struct xhci_hcd		*xhci;
+ };
+ 
+ struct xhci_erst_entry {
+@@ -1903,6 +1906,7 @@
+ #define XHCI_NO_SOFT_RETRY	BIT_ULL(40)
+ #define XHCI_BROKEN_D3COLD	BIT_ULL(41)
+ #define XHCI_EP_CTX_BROKEN_DCS	BIT_ULL(42)
++#define XHCI_STREAM_QUIRK	BIT_ULL(43) /* FIXME this is wrong */
+ 
+ 	unsigned int		num_active_eps;
+ 	unsigned int		limit_active_eps;
+@@ -2086,6 +2090,8 @@
+ 
+ /* xHCI host controller glue */
+ typedef void (*xhci_get_quirks_t)(struct device *, struct xhci_hcd *);
++typedef void (*host_wakeup_t)(struct device *dev, bool wakeup);
++void dwc3_host_wakeup_capable(struct device *dev, bool wakeup);
+ int xhci_handshake(void __iomem *ptr, u32 mask, u32 done, u64 timeout_us);
+ void xhci_quiesce(struct xhci_hcd *xhci);
+ int xhci_halt(struct xhci_hcd *xhci);
+@@ -2153,6 +2159,7 @@
+ 			       unsigned int ep_index, unsigned int stream_id,
+ 			       struct xhci_td *td);
+ void xhci_stop_endpoint_command_watchdog(struct timer_list *t);
++void xhci_stream_timeout(struct timer_list *unused);
+ void xhci_handle_command_timeout(struct work_struct *work);
+ 
+ void xhci_ring_ep_doorbell(struct xhci_hcd *xhci, unsigned int slot_id,
+@@ -2470,8 +2477,6 @@
+ 	unsigned int	bit;
+ 	int		ret = 0;
+ 
+-	str[0] = '\0';
+-
+ 	if (drop) {
+ 		ret = sprintf(str, "Drop:");
+ 		for_each_set_bit(bit, &drop, 32)
+@@ -2629,11 +2634,8 @@
+ {
+ 	int ret = 0;
+ 
+-	ret = sprintf(str, " 0x%08x", usbsts);
+-
+ 	if (usbsts == ~(u32)0)
+-		return str;
+-
++		return " 0xffffffff";
+ 	if (usbsts & STS_HALT)
+ 		ret += sprintf(str + ret, " HCHalted");
+ 	if (usbsts & STS_FATAL)

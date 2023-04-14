@@ -1,0 +1,474 @@
+--- linux-5.15.36/Documentation/devicetree/bindings/serial/pl011.yaml	2023-04-14 12:25:43.213986400 +0900
++++ linux-xlnx-2022.2/Documentation/devicetree/bindings/serial/pl011.yaml	2023-04-14 12:23:50.066174800 +0900
+@@ -19,14 +19,19 @@
+       contains:
+         enum:
+           - arm,pl011
++          - arm,xlnx-sbsa-uart
+   required:
+     - compatible
+ 
+ properties:
+   compatible:
+-    items:
+-      - const: arm,pl011
+-      - const: arm,primecell
++    oneOf:
++      - items:
++          - const: arm,pl011
++          - const: arm,primecell
++      - items:
++          - const: arm,xlnx-sbsa-uart
++          - const: arm,primecell
+ 
+   reg:
+     maxItems: 1
+--- /dev/null
++++ linux-xlnx-2022.2/Documentation/devicetree/bindings/serial/xlnx,opb-uartlite.yaml	2023-04-14 12:23:50.066174800 +0900
+@@ -0,0 +1,54 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/serial/xlnx,opb-uartlite.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++maintainers:
++  - Michal Simek <michals@xilinx.com>
++
++title: Xilinx uartlite bindings
++
++properties:
++  compatible:
++    enum:
++      - xlnx,opb-uartlite-1.00.b
++      - xlnx,xps-uartlite-1.00.a
++      - xlnx,axi-uartlite-rs485
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++  clock-name:
++    const: s_axi_aclk
++    description: |
++      Input clock name.
++
++  port-number:
++    $ref: '/schemas/types.yaml#/definitions/uint32'
++    description:
++      The port number of the uartlite.
++
++required:
++  - compatible
++  - reg
++  - interrupts
++
++additionalProperties: false
++
++examples:
++  - |
++    serial@800c0000 {
++      compatible = "xlnx,xps-uartlite-1.00.a";
++      reg = <0x800c0000 0x10000>;
++      interrupts = <0x0 0x6e 0x1>;
++      port-number = <0>;
++    };
++
++...
+--- linux-5.15.36/drivers/tty/serial/Kconfig	2023-04-14 12:26:08.202908800 +0900
++++ linux-xlnx-2022.2/drivers/tty/serial/Kconfig	2023-04-14 12:24:15.277310800 +0900
+@@ -531,7 +531,7 @@
+ 	int "Maximum number of uartlite serial ports"
+ 	depends on SERIAL_UARTLITE
+ 	range 1 256
+-	default 1
++	default 16
+ 	help
+ 	  Set this to the number of uartlites in your system, or the number
+ 	  you think you might implement.
+--- linux-5.15.36/drivers/tty/serial/amba-pl011.c	2023-04-14 12:26:08.202908800 +0900
++++ linux-xlnx-2022.2/drivers/tty/serial/amba-pl011.c	2023-04-14 12:24:15.292932000 +0900
+@@ -2178,6 +2178,55 @@
+ 	spin_unlock_irqrestore(&port->lock, flags);
+ }
+ 
++static void
++xlnx_sbsa_uart_set_termios(struct uart_port *port, struct ktermios *termios,
++			   struct ktermios *old)
++{
++	struct uart_amba_port *uap =
++	    container_of(port, struct uart_amba_port, port);
++	unsigned long flags;
++	unsigned int lcr_h, old_cr;
++
++	tty_termios_encode_baud_rate(termios, uap->fixed_baud, uap->fixed_baud);
++	/* The SBSA UART only supports 8n1 without hardware flow control. */
++	termios->c_cflag &= ~(CMSPAR | CRTSCTS);
++	switch (termios->c_cflag & CSIZE) {
++	case CS5:
++		lcr_h = UART01x_LCRH_WLEN_5;
++		break;
++	case CS6:
++		lcr_h = UART01x_LCRH_WLEN_6;
++		break;
++	case CS7:
++		lcr_h = UART01x_LCRH_WLEN_7;
++		break;
++	default:
++		lcr_h = UART01x_LCRH_WLEN_8;
++		break;
++	}
++	if (termios->c_cflag & CSTOPB)
++		lcr_h |= UART01x_LCRH_STP2;
++	if (termios->c_cflag & PARENB) {
++		lcr_h |= UART01x_LCRH_PEN;
++		if (!(termios->c_cflag & PARODD))
++			lcr_h |= UART01x_LCRH_EPS;
++		if (termios->c_cflag & CMSPAR)
++			lcr_h |= UART011_LCRH_SPS;
++	}
++	if (uap->fifosize > 1)
++		lcr_h |= UART01x_LCRH_FEN;
++
++	spin_lock_irqsave(&port->lock, flags);
++	uart_update_timeout(port, CS8, uap->fixed_baud);
++	pl011_setup_status_masks(port, termios);
++	/* first, disable everything */
++	old_cr = pl011_read(uap, REG_CR);
++	pl011_write(0, uap, REG_CR);
++	pl011_write_lcr_h(uap, lcr_h);
++	pl011_write(old_cr, uap, REG_CR);
++	spin_unlock_irqrestore(&port->lock, flags);
++}
++
+ static const char *pl011_type(struct uart_port *port)
+ {
+ 	struct uart_amba_port *uap =
+@@ -2298,6 +2347,26 @@
+ #endif
+ };
+ 
++static const struct uart_ops xlnx_sbsa_uart_pops = {
++	.tx_empty	= pl011_tx_empty,
++	.set_mctrl	= sbsa_uart_set_mctrl,
++	.get_mctrl	= sbsa_uart_get_mctrl,
++	.stop_tx	= pl011_stop_tx,
++	.start_tx	= pl011_start_tx,
++	.stop_rx	= pl011_stop_rx,
++	.startup	= sbsa_uart_startup,
++	.shutdown	= sbsa_uart_shutdown,
++	.set_termios	= xlnx_sbsa_uart_set_termios,
++	.type		= pl011_type,
++	.config_port	= pl011_config_port,
++	.verify_port	= pl011_verify_port,
++#ifdef CONFIG_CONSOLE_POLL
++	.poll_init     = pl011_hwinit,
++	.poll_get_char = pl011_get_poll_char,
++	.poll_put_char = pl011_put_poll_char,
++#endif
++};
++
+ static struct uart_amba_port *amba_ports[UART_NR];
+ 
+ #ifdef CONFIG_SERIAL_AMBA_PL011_CONSOLE
+@@ -2895,7 +2964,10 @@
+ 	uap->reg_offset	= uap->vendor->reg_offset;
+ 	uap->fifosize	= 32;
+ 	uap->port.iotype = uap->vendor->access_32b ? UPIO_MEM32 : UPIO_MEM;
+-	uap->port.ops	= &sbsa_uart_pops;
++	if (of_device_is_compatible(pdev->dev.of_node, "arm,xlnx-sbsa-uart"))
++		uap->port.ops	= &xlnx_sbsa_uart_pops;
++	else
++		uap->port.ops	= &sbsa_uart_pops;
+ 	uap->fixed_baud = baudrate;
+ 
+ 	snprintf(uap->type, sizeof(uap->type), "SBSA");
+@@ -2922,6 +2994,7 @@
+ 
+ static const struct of_device_id sbsa_uart_of_match[] = {
+ 	{ .compatible = "arm,sbsa-uart", },
++	{ .compatible = "arm,xlnx-sbsa-uart", },
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(of, sbsa_uart_of_match);
+--- linux-5.15.36/drivers/tty/serial/uartlite.c	2023-04-14 12:26:08.249773300 +0900
++++ linux-xlnx-2022.2/drivers/tty/serial/uartlite.c	2023-04-14 12:24:15.339796100 +0900
+@@ -368,7 +368,7 @@
+ 	}
+ 
+ 	pdata->reg_ops = &uartlite_be;
+-	ret = uart_in32(ULITE_CONTROL, port);
++	uart_in32(ULITE_CONTROL, port);
+ 	uart_out32(ULITE_CONTROL_RST_TX, ULITE_CONTROL, port);
+ 	ret = uart_in32(ULITE_STATUS, port);
+ 	/* Endianess detection */
+--- linux-5.15.36/drivers/tty/serial/xilinx_uartps.c	2023-04-14 12:26:08.249773300 +0900
++++ linux-xlnx-2022.2/drivers/tty/serial/xilinx_uartps.c	2023-04-14 12:24:15.339796100 +0900
+@@ -2,7 +2,7 @@
+ /*
+  * Cadence UART driver (found in Xilinx Zynq)
+  *
+- * 2011 - 2014 (C) Xilinx Inc.
++ * Copyright (c) 2011 - 2014 Xilinx, Inc.
+  *
+  * This driver has originally been pushed by Xilinx using a Zynq-branding. This
+  * still shows in the naming of this file, the kconfig symbols and some symbols
+@@ -34,12 +34,12 @@
+ #define TX_TIMEOUT		500000
+ 
+ /* Rx Trigger level */
+-static int rx_trigger_level = 56;
++static uint rx_trigger_level = 56;
+ module_param(rx_trigger_level, uint, 0444);
+ MODULE_PARM_DESC(rx_trigger_level, "Rx trigger level, 1-63 bytes");
+ 
+ /* Rx Timeout */
+-static int rx_timeout = 10;
++static uint rx_timeout = 10;
+ module_param(rx_timeout, uint, 0444);
+ MODULE_PARM_DESC(rx_timeout, "Rx timeout, 1-255");
+ 
+@@ -229,6 +229,13 @@
+ 
+ 	is_rxbs_support = cdns_uart->quirks & CDNS_UART_RXBS_SUPPORT;
+ 
++	/*
++	 * RXEMPTY will never be set if RX is disabled as read bytes
++	 * will not be removed from the FIFO
++	 */
++	if (readl(port->membase + CDNS_UART_CR) & CDNS_UART_CR_RX_DIS)
++		return;
++
+ 	while ((readl(port->membase + CDNS_UART_SR) &
+ 		CDNS_UART_SR_RXEMPTY) != CDNS_UART_SR_RXEMPTY) {
+ 		if (is_rxbs_support)
+@@ -375,6 +382,8 @@
+ 		isrstatus &= ~CDNS_UART_IXR_TXEMPTY;
+ 	}
+ 
++	isrstatus &= port->read_status_mask;
++	isrstatus &= ~port->ignore_status_mask;
+ 	/*
+ 	 * Skip RX processing if RX is disabled as RXEMPTY will never be set
+ 	 * as read bytes will not be removed from the FIFO.
+@@ -1100,13 +1109,17 @@
+ static void cdns_uart_pm(struct uart_port *port, unsigned int state,
+ 		   unsigned int oldstate)
+ {
++	int ret;
++
+ 	switch (state) {
+ 	case UART_PM_STATE_OFF:
+ 		pm_runtime_mark_last_busy(port->dev);
+ 		pm_runtime_put_autosuspend(port->dev);
+ 		break;
+ 	default:
+-		pm_runtime_get_sync(port->dev);
++		ret = pm_runtime_get_sync(port->dev);
++		if (ret < 0)
++			dev_err(port->dev, "Failed to enable clocks\n");
+ 		break;
+ 	}
+ }
+@@ -1144,6 +1157,13 @@
+  */
+ static void cdns_uart_console_putchar(struct uart_port *port, int ch)
+ {
++	unsigned int ctrl_reg;
++
++	ctrl_reg = readl(port->membase + CDNS_UART_CR);
++	while (ctrl_reg & CDNS_UART_CR_TX_DIS) {
++		ctrl_reg = readl(port->membase + CDNS_UART_CR);
++		cpu_relax();
++	}
+ 	while (readl(port->membase + CDNS_UART_SR) & CDNS_UART_SR_TXFULL)
+ 		cpu_relax();
+ 	writel(ch, port->membase + CDNS_UART_FIFO);
+@@ -1343,12 +1363,18 @@
+ 	unsigned long flags;
+ 	u32 ctrl_reg;
+ 	int may_wake;
++	int ret;
+ 
+ 	may_wake = device_may_wakeup(device);
+ 
+ 	if (console_suspend_enabled && uart_console(port) && !may_wake) {
+-		clk_enable(cdns_uart->pclk);
+-		clk_enable(cdns_uart->uartclk);
++		ret = clk_enable(cdns_uart->pclk);
++		if (ret)
++			return ret;
++
++		ret = clk_enable(cdns_uart->uartclk);
++		if (ret)
++			return ret;
+ 
+ 		spin_lock_irqsave(&port->lock, flags);
+ 
+@@ -1397,9 +1423,17 @@
+ {
+ 	struct uart_port *port = dev_get_drvdata(dev);
+ 	struct cdns_uart *cdns_uart = port->private_data;
++	int ret;
+ 
+-	clk_enable(cdns_uart->pclk);
+-	clk_enable(cdns_uart->uartclk);
++	ret = clk_enable(cdns_uart->pclk);
++	if (ret)
++		return ret;
++
++	ret = clk_enable(cdns_uart->uartclk);
++	if (ret) {
++		clk_disable(cdns_uart->pclk);
++		return ret;
++	}
+ 	return 0;
+ };
+ 
+@@ -1425,6 +1459,84 @@
+ /* Temporary variable for storing number of instances */
+ static int instances;
+ 
++/* Stores static aliases list */
++static DECLARE_BITMAP(alias_bitmap, CDNS_UART_NR_PORTS);
++static int alias_bitmap_initialized;
++
++/* Stores actual bitmap of allocated IDs with alias IDs together */
++static DECLARE_BITMAP(bitmap, CDNS_UART_NR_PORTS);
++/* Protect bitmap operations to have unique IDs */
++static DEFINE_MUTEX(bitmap_lock);
++
++static int cdns_get_id(struct platform_device *pdev)
++{
++	int id, ret;
++
++	mutex_lock(&bitmap_lock);
++
++	/* Alias list is stable that's why get alias bitmap only once */
++	if (!alias_bitmap_initialized) {
++		ret = of_alias_get_alias_list(cdns_uart_of_match, "serial",
++					      alias_bitmap, CDNS_UART_NR_PORTS);
++		if (ret) {
++			mutex_unlock(&bitmap_lock);
++			return ret;
++		}
++
++		alias_bitmap_initialized++;
++	}
++
++	/* Make sure that alias ID is not taken by instance without alias */
++	bitmap_or(bitmap, bitmap, alias_bitmap, CDNS_UART_NR_PORTS);
++
++	dev_dbg(&pdev->dev, "Alias bitmap: %*pb\n",
++		CDNS_UART_NR_PORTS, bitmap);
++
++	/* Look for a serialN alias */
++	id = of_alias_get_id(pdev->dev.of_node, "serial");
++	if (id < 0) {
++		dev_warn(&pdev->dev,
++			 "No serial alias passed. Using the first free id\n");
++
++		/*
++		 * Start with id 0 and check if there is no serial0 alias
++		 * which points to device which is compatible with this driver.
++		 * If alias exists then try next free position.
++		 */
++		id = 0;
++
++		for (;;) {
++			dev_info(&pdev->dev, "Checking id %d\n", id);
++			id = find_next_zero_bit(bitmap, CDNS_UART_NR_PORTS, id);
++
++			/* No free empty instance */
++			if (id == CDNS_UART_NR_PORTS) {
++				dev_err(&pdev->dev, "No free ID\n");
++				mutex_unlock(&bitmap_lock);
++				return -EINVAL;
++			}
++
++			dev_dbg(&pdev->dev, "The empty id is %d\n", id);
++			/* Check if ID is empty */
++			if (!test_and_set_bit(id, bitmap)) {
++				/* Break the loop if bit is taken */
++				dev_dbg(&pdev->dev,
++					"Selected ID %d allocation passed\n",
++					id);
++				break;
++			}
++			dev_dbg(&pdev->dev,
++				"Selected ID %d allocation failed\n", id);
++			/* if taking bit fails then try next one */
++			id++;
++		}
++	}
++
++	mutex_unlock(&bitmap_lock);
++
++	return id;
++}
++
+ /**
+  * cdns_uart_probe - Platform driver probe
+  * @pdev: Pointer to the platform device structure
+@@ -1447,15 +1559,9 @@
+ 	if (!port)
+ 		return -ENOMEM;
+ 
+-	/* Look for a serialN alias */
+-	id = of_alias_get_id(pdev->dev.of_node, "serial");
++	id = cdns_get_id(pdev);
+ 	if (id < 0)
+-		id = 0;
+-
+-	if (id >= CDNS_UART_NR_PORTS) {
+-		dev_err(&pdev->dev, "Cannot get uart_port structure\n");
+-		return -ENODEV;
+-	}
++		return id;
+ 
+ 	if (!cdns_uart_uart_driver.state) {
+ 		cdns_uart_uart_driver.owner = THIS_MODULE;
+@@ -1464,6 +1570,7 @@
+ 		cdns_uart_uart_driver.major = CDNS_UART_MAJOR;
+ 		cdns_uart_uart_driver.minor = CDNS_UART_MINOR;
+ 		cdns_uart_uart_driver.nr = CDNS_UART_NR_PORTS;
++
+ #ifdef CONFIG_SERIAL_XILINX_PS_UART_CONSOLE
+ 		cdns_uart_uart_driver.cons = &cdns_uart_console;
+ #endif
+@@ -1565,6 +1672,8 @@
+ 	port->dev = &pdev->dev;
+ 	port->uartclk = clk_get_rate(cdns_uart_data->uartclk);
+ 	port->private_data = cdns_uart_data;
++	port->read_status_mask = CDNS_UART_IXR_TXEMPTY | CDNS_UART_IXR_RXTRIG |
++			CDNS_UART_IXR_OVERRUN | CDNS_UART_IXR_TOUT;
+ 	cdns_uart_data->port = port;
+ 	platform_set_drvdata(pdev, port);
+ 
+@@ -1625,6 +1734,11 @@
+ err_out_unregister_driver:
+ 	if (!instances)
+ 		uart_unregister_driver(cdns_uart_data->cdns_uart_driver);
++
++	mutex_lock(&bitmap_lock);
++	clear_bit(port->line, bitmap);
++	mutex_unlock(&bitmap_lock);
++
+ 	return rc;
+ }
+ 
+@@ -1647,6 +1761,9 @@
+ #endif
+ 	rc = uart_remove_one_port(cdns_uart_data->cdns_uart_driver, port);
+ 	port->mapbase = 0;
++	mutex_lock(&bitmap_lock);
++	clear_bit(port->line, bitmap);
++	mutex_unlock(&bitmap_lock);
+ 	clk_disable_unprepare(cdns_uart_data->uartclk);
+ 	clk_disable_unprepare(cdns_uart_data->pclk);
+ 	pm_runtime_disable(&pdev->dev);

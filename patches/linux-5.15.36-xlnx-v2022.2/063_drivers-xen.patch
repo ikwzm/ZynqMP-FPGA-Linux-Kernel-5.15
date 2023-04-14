@@ -1,0 +1,315 @@
+--- /dev/null
++++ linux-xlnx-2022.2/include/xen/pvcalls.h	2023-04-14 12:24:20.339077600 +0900
+@@ -0,0 +1,13 @@
++#ifndef __LINUX_NET_PVCALLS_H
++#define __LINUX_NET_PVCALLS_H
++
++#include <linux/net.h>
++
++#ifdef CONFIG_XEN_PVCALLS_FRONTEND
++extern bool pvcalls;
++#else
++#define pvcalls (0)
++#endif
++extern const struct proto_ops pvcalls_stream_ops;
++
++#endif
+--- linux-5.15.36/include/xen/xen.h	2023-04-14 12:26:13.048696900 +0900
++++ linux-xlnx-2022.2/include/xen/xen.h	2023-04-14 12:24:20.339077600 +0900
+@@ -61,4 +61,9 @@
+ #include <xen/balloon.h>
+ #endif
+ 
++static inline int xen_vring_use_dma(void)
++{
++	return xen_pv_domain();
++}
++
+ #endif	/* _XEN_XEN_H */
+--- linux-5.15.36/drivers/xen/Kconfig	2023-04-14 12:26:09.211114700 +0900
++++ linux-xlnx-2022.2/drivers/xen/Kconfig	2023-04-14 12:24:16.326349200 +0900
+@@ -205,7 +205,7 @@
+ 	  If in doubt, say m.
+ 
+ config XEN_PVCALLS_FRONTEND
+-	tristate "XEN PV Calls frontend driver"
++	bool "XEN PV Calls frontend driver"
+ 	depends on INET && XEN
+ 	select XEN_XENBUS_FRONTEND
+ 	help
+--- linux-5.15.36/drivers/xen/Makefile	2023-04-14 12:26:09.211114700 +0900
++++ linux-xlnx-2022.2/drivers/xen/Makefile	2023-04-14 12:24:16.326349200 +0900
+@@ -32,6 +32,7 @@
+ obj-$(CONFIG_XEN_AUTO_XLATE)		+= xlate_mmu.o
+ obj-$(CONFIG_XEN_PVCALLS_BACKEND)	+= pvcalls-back.o
+ obj-$(CONFIG_XEN_PVCALLS_FRONTEND)	+= pvcalls-front.o
++obj-$(CONFIG_XEN_PVCALLS_FRONTEND)	+= pvcalls.o
+ xen-evtchn-y				:= evtchn.o
+ xen-gntdev-y				:= gntdev.o
+ xen-gntdev-$(CONFIG_XEN_GNTDEV_DMABUF)	+= gntdev-dmabuf.o
+--- /dev/null
++++ linux-xlnx-2022.2/drivers/xen/pvcalls.c	2023-04-14 12:24:16.341970800 +0900
+@@ -0,0 +1,134 @@
++#include <linux/types.h>
++#include <linux/bitops.h>
++#include <linux/cred.h>
++#include <linux/init.h>
++#include <linux/io.h>
++#include <linux/kernel.h>
++#include <linux/kmod.h>
++#include <linux/list.h>
++#include <linux/miscdevice.h>
++#include <linux/module.h>
++#include <linux/mutex.h>
++#include <linux/net.h>
++#include <linux/poll.h>
++#include <linux/skbuff.h>
++#include <linux/smp.h>
++#include <linux/socket.h>
++#include <linux/stddef.h>
++#include <linux/unistd.h>
++#include <linux/wait.h>
++#include <linux/workqueue.h>
++#include <net/sock.h>
++#include <net/inet_common.h>
++
++#include "pvcalls-front.h"
++
++static int
++pvcalls_bind(struct socket *sock, struct sockaddr *addr, int addr_len)
++{
++	int ret;
++	ret = pvcalls_front_socket(sock);
++	if (ret < 0)
++		return ret;
++	return pvcalls_front_bind(sock, addr, addr_len);
++}
++
++static int pvcalls_stream_connect(struct socket *sock, struct sockaddr *addr,
++				int addr_len, int flags)
++{
++	int ret;
++	ret = pvcalls_front_socket(sock);
++	if (ret < 0)
++		return ret;
++	return pvcalls_front_connect(sock, addr, addr_len, flags);
++}
++
++static int pvcalls_accept(struct socket *sock, struct socket *newsock, int flags, bool kern)
++{
++	return pvcalls_front_accept(sock, newsock, flags);
++}
++
++static int pvcalls_getname(struct socket *sock,
++			 struct sockaddr *uaddr, int peer)
++{
++	DECLARE_SOCKADDR(struct sockaddr_in *, sin, uaddr);
++
++	sin->sin_family = AF_INET;
++	memset(sin->sin_zero, 0, sizeof(sin->sin_zero));
++	return 0;
++}
++
++static unsigned int pvcalls_poll(struct file *file, struct socket *sock,
++			       poll_table *wait)
++{
++	return pvcalls_front_poll(file, sock, wait);
++}
++
++static int pvcalls_listen(struct socket *sock, int backlog)
++{
++	return pvcalls_front_listen(sock, backlog);
++}
++
++static int pvcalls_stream_sendmsg(struct socket *sock, struct msghdr *msg,
++				size_t len)
++{
++	return pvcalls_front_sendmsg(sock, msg, len);
++}
++
++static int
++pvcalls_stream_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
++		     int flags)
++{
++	return pvcalls_front_recvmsg(sock, msg, len, flags);
++}
++
++static int pvcalls_release(struct socket *s)
++{
++	return pvcalls_front_release(s);
++}
++
++static int pvcalls_shutdown(struct socket *s, int h)
++{
++	return -ENOTSUPP;
++}
++
++static int sock_no_setsockopt(struct socket *sock, int level, int optname,
++			   sockptr_t optval, unsigned int optlen)
++{
++	return -ENOTSUPP;
++}
++
++static int sock_no_getsockopt(struct socket *sock, int level, int optname,
++			   char __user *optval, int __user *optlen)
++{
++	return -ENOTSUPP;
++}
++
++const struct proto_ops pvcalls_stream_ops = {
++	.family = PF_INET,
++	.owner = THIS_MODULE,
++	.release = pvcalls_release,
++	.bind = pvcalls_bind,
++	.connect = pvcalls_stream_connect,
++	.socketpair = sock_no_socketpair,
++	.accept = pvcalls_accept,
++	.getname = pvcalls_getname,
++	.poll = pvcalls_poll,
++	.ioctl = sock_no_ioctl,
++	.listen = pvcalls_listen,
++	.shutdown = pvcalls_shutdown,
++	.setsockopt = sock_no_setsockopt,
++	.getsockopt = sock_no_getsockopt,
++	.sendmsg = pvcalls_stream_sendmsg,
++	.recvmsg = pvcalls_stream_recvmsg,
++	.mmap = sock_no_mmap,
++	.sendpage = sock_no_sendpage,
++};
++
++bool pvcalls = false;
++static __init int xen_parse_pvcalls(char *arg)
++{
++       pvcalls = true;
++       return 0;
++}
++early_param("pvcalls", xen_parse_pvcalls);
+--- linux-5.15.36/drivers/xen/xenbus/xenbus_probe.c	2023-04-14 12:26:09.242357100 +0900
++++ linux-xlnx-2022.2/drivers/xen/xenbus/xenbus_probe.c	2023-04-14 12:24:16.341970800 +0900
+@@ -65,6 +65,7 @@
+ #include "xenbus.h"
+ 
+ 
++static int xs_init_irq;
+ int xen_store_evtchn;
+ EXPORT_SYMBOL_GPL(xen_store_evtchn);
+ 
+@@ -750,6 +751,17 @@
+ {
+ 	xenstored_ready = 1;
+ 
++	if (!xen_store_interface) {
++		xen_store_interface = xen_remap(xen_store_gfn << XEN_PAGE_SHIFT,
++						XEN_PAGE_SIZE);
++		/*
++		 * Now it is safe to free the IRQ used for xenstore late
++		 * initialization. No need to unbind: it is about to be
++		 * bound again.
++		 */
++		free_irq(xs_init_irq, &xb_waitq);
++	}
++
+ 	/*
+ 	 * In the HVM case, xenbus_init() deferred its call to
+ 	 * xs_init() in case callbacks were not operational yet.
+@@ -798,20 +810,22 @@
+ {
+ 	/*
+ 	 * Probe XenBus here in the XS_PV case, and also XS_HVM unless we
+-	 * need to wait for the platform PCI device to come up.
++	 * need to wait for the platform PCI device to come up or
++	 * xen_store_interface is not ready.
+ 	 */
+ 	if (xen_store_domain_type == XS_PV ||
+ 	    (xen_store_domain_type == XS_HVM &&
+-	     !xs_hvm_defer_init_for_callback()))
++	     !xs_hvm_defer_init_for_callback() &&
++	     xen_store_interface != NULL))
+ 		xenbus_probe();
+ 
+ 	/*
+-	 * For XS_LOCAL, spawn a thread which will wait for xenstored
+-	 * or a xenstore-stubdom to be started, then probe. It will be
+-	 * triggered when communication starts happening, by waiting
+-	 * on xb_waitq.
++	 * For XS_LOCAL or when xen_store_interface is not ready, spawn a
++	 * thread which will wait for xenstored or a xenstore-stubdom to be
++	 * started, then probe.  It will be triggered when communication
++	 * starts happening, by waiting on xb_waitq.
+ 	 */
+-	if (xen_store_domain_type == XS_LOCAL) {
++	if (xen_store_domain_type == XS_LOCAL || xen_store_interface == NULL) {
+ 		struct task_struct *probe_task;
+ 
+ 		probe_task = kthread_run(xenbus_probe_thread, NULL,
+@@ -907,6 +921,20 @@
+ 	.notifier_call = xenbus_resume_cb,
+ };
+ 
++static irqreturn_t xenbus_late_init(int irq, void *unused)
++{
++	int err = 0;
++	uint64_t v = 0;
++
++	err = hvm_get_parameter(HVM_PARAM_STORE_PFN, &v);
++	if (err || !v || !~v)
++		return IRQ_HANDLED;
++	xen_store_gfn = (unsigned long)v;
++
++	wake_up(&xb_waitq);
++	return IRQ_HANDLED;
++}
++
+ static int __init xenbus_init(void)
+ {
+ 	int err;
+@@ -959,23 +987,37 @@
+ 		 *
+ 		 * Also recognize all bits set as an invalid value.
+ 		 */
+-		if (!v || !~v) {
++		if (!v) {
+ 			err = -ENOENT;
+ 			goto out_error;
+ 		}
+-		/* Avoid truncation on 32-bit. */
++		if (v == ~0ULL) {
++			err = bind_evtchn_to_irqhandler(xen_store_evtchn,
++							xenbus_late_init,
++							0, "xenstore_late_init",
++							&xb_waitq);
++			if (err < 0) {
++				pr_err("xenstore_late_init couldn't bind irq err=%d\n",
++				       err);
++				return err;
++			}
++
++			xs_init_irq = err;
++		} else {
++			/* Avoid truncation on 32-bit. */
+ #if BITS_PER_LONG == 32
+-		if (v > ULONG_MAX) {
+-			pr_err("%s: cannot handle HVM_PARAM_STORE_PFN=%llx > ULONG_MAX\n",
+-			       __func__, v);
+-			err = -EINVAL;
+-			goto out_error;
+-		}
++			if (v > ULONG_MAX) {
++				pr_err("%s: cannot handle HVM_PARAM_STORE_PFN=%llx > ULONG_MAX\n",
++						__func__, v);
++				err = -EINVAL;
++				goto out_error;
++			}
+ #endif
+-		xen_store_gfn = (unsigned long)v;
+-		xen_store_interface =
+-			xen_remap(xen_store_gfn << XEN_PAGE_SHIFT,
+-				  XEN_PAGE_SIZE);
++			xen_store_gfn = (unsigned long)v;
++			xen_store_interface =
++				xen_remap(xen_store_gfn << XEN_PAGE_SHIFT,
++					  XEN_PAGE_SIZE);
++		}
+ 		break;
+ 	default:
+ 		pr_warn("Xenstore state unknown\n");
