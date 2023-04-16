@@ -3,7 +3,7 @@
 CURRENT_DIR=`pwd`
 KERNEL_VERSION=5.15.36
 LOCAL_VERSION=zynqmp-fpga-generic
-BUILD_VERSION=2
+BUILD_VERSION=3
 KERNEL_RELEASE=$KERNEL_VERSION-$LOCAL_VERSION
 LINUX_BUILD_DIR=linux-$KERNEL_RELEASE
 
@@ -30,7 +30,7 @@ sh ../patches/linux-$KERNEL_VERSION-xlnx-v2022.2/0xx_patch.sh
 
 ### Patch for builddeb
 
-patch -p1 < ../patches/linux-$KERNEL_VERSION-builddeb.diff 
+patch -p1 < ../patches/linux-$KERNEL_VERSION-zynqmp-fpga-builddeb.diff 
 git add --all
 git commit -m "[update] scripts/package/builddeb to add tools/include and postinst script to header package."
 
@@ -79,7 +79,7 @@ git commit -m "[add] zynqmp_fpga_generic_defconfig to arch/arm64/configs"
 ### Create tag and .version
 
 git tag -a $KERNEL_RELEASE-$BUILD_VERSION -m "release $KERNEL_RELEASE-$BUILD_VERSION"
-echo `expr $BUILD_VERSION - 1` > .version
+echo $BUILD_VERSION > .version
 
 ### Setup for Build 
 
