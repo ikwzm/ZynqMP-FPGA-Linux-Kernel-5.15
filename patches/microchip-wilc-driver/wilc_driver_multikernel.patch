@@ -1,0 +1,1574 @@
+From 0458edbdff01e05ef1794be1e25007d15e49bfe8 Mon Sep 17 00:00:00 2001
+From: Ajay Singh <ajay.kathat@microchip.com>
+Date: Tue, 12 Apr 2022 18:21:17 +0530
+Subject: [PATCH] wilc1000: multi-kernel version support patch based on WILC
+ 15.7 release
+
+This patch contains the kernel specific featurization code that will allow
+the WILC driver to compile on earlier versions of kernel.
+
+WILC version : 15.7
+Linux4microchip : linux4microchip-2022.04
+
+Signed-off-by: Ajay Singh <ajay.kathat@microchip.com>
+---
+ .../wireless/microchip/wilc1000/cfg80211.c    | 206 +++++++++++-
+ .../wireless/microchip/wilc1000/cfg80211.h    |   5 +
+ .../net/wireless/microchip/wilc1000/debugfs.c | 315 ++++++++++++++++++
+ .../net/wireless/microchip/wilc1000/debugfs.h |   6 +
+ drivers/net/wireless/microchip/wilc1000/hif.c |  80 ++++-
+ drivers/net/wireless/microchip/wilc1000/mon.c |  27 +-
+ .../net/wireless/microchip/wilc1000/netdev.c  |  60 +++-
+ .../net/wireless/microchip/wilc1000/netdev.h  | 159 ++++++++-
+ .../net/wireless/microchip/wilc1000/sdio.c    |   6 +
+ drivers/net/wireless/microchip/wilc1000/spi.c |  34 +-
+ .../net/wireless/microchip/wilc1000/wlan.c    |   4 +
+ .../net/wireless/microchip/wilc1000/wlan.h    |   9 +
+ .../wireless/microchip/wilc1000/wlan_cfg.c    |   6 +-
+ 13 files changed, 877 insertions(+), 40 deletions(-)
+
+diff --git a/drivers/net/wireless/microchip/wilc1000/cfg80211.c b/drivers/net/wireless/microchip/wilc1000/cfg80211.c
+index 86da7d2fd0d7..cc08e9d66b69 100644
+--- a/drivers/net/wireless/microchip/wilc1000/cfg80211.c
++++ b/drivers/net/wireless/microchip/wilc1000/cfg80211.c
+@@ -145,11 +145,15 @@ static void cfg_scan_result(enum scan_event scan_event,
+ 		mutex_lock(&priv->scan_req_lock);
+ 
+ 		if (priv->scan_req) {
++#if KERNEL_VERSION(4, 7, 0) <= LINUX_VERSION_CODE
+ 			struct cfg80211_scan_info info = {
+ 				.aborted = false,
+ 			};
+ 
+ 			cfg80211_scan_done(priv->scan_req, &info);
++#else
++			cfg80211_scan_done(priv->scan_req, false);
++#endif
+ 			priv->cfg_scanning = false;
+ 			priv->scan_req = NULL;
+ 		}
+@@ -159,11 +163,16 @@ static void cfg_scan_result(enum scan_event scan_event,
+ 
+ 		PRINT_INFO(priv->dev, CFG80211_DBG, "Scan Aborted\n");
+ 		if (priv->scan_req) {
++#if KERNEL_VERSION(4, 7, 0) <= LINUX_VERSION_CODE
+ 			struct cfg80211_scan_info info = {
+ 				.aborted = false,
+ 			};
+ 
+ 			cfg80211_scan_done(priv->scan_req, &info);
++#else
++			cfg80211_scan_done(priv->scan_req, false);
++#endif
++
+ 			priv->cfg_scanning = false;
+ 			priv->scan_req = NULL;
+ 		}
+@@ -180,7 +189,9 @@ static void cfg_connect_result(enum conn_event conn_disconn_evt, u8 mac_status,
+ 	struct wilc *wl = vif->wilc;
+ 	struct host_if_drv *wfi_drv = priv->hif_drv;
+ 	struct wilc_conn_info *conn_info = &wfi_drv->conn_info;
++#if KERNEL_VERSION(4, 7, 0) <= LINUX_VERSION_CODE
+ 	struct wiphy *wiphy = dev->ieee80211_ptr->wiphy;
++#endif
+ 
+ 	vif->connecting = false;
+ 
+@@ -217,6 +228,7 @@ static void cfg_connect_result(enum conn_event conn_disconn_evt, u8 mac_status,
+ 		PRINT_INFO(vif->ndev, CFG80211_DBG,
+ 			   "Association response info elements length = %d\n",
+ 			   conn_info->resp_ies_len);
++#if KERNEL_VERSION(4, 11, 0) <= LINUX_VERSION_CODE
+ 		cfg80211_ref_bss(wiphy, vif->bss);
+ 		cfg80211_connect_bss(dev, conn_info->bssid, vif->bss,
+ 				     conn_info->req_ies,
+@@ -225,7 +237,22 @@ static void cfg_connect_result(enum conn_event conn_disconn_evt, u8 mac_status,
+ 				     conn_info->resp_ies_len,
+ 				     connect_status, GFP_KERNEL,
+ 				     NL80211_TIMEOUT_UNSPECIFIED);
+-
++#elif KERNEL_VERSION(4, 7, 0) <= LINUX_VERSION_CODE
++		cfg80211_ref_bss(wiphy, vif->bss);
++		cfg80211_connect_bss(dev, conn_info->bssid, vif->bss,
++				     conn_info->req_ies,
++				     conn_info->req_ies_len,
++				     conn_info->resp_ies,
++				     conn_info->resp_ies_len,
++				     connect_status, GFP_KERNEL);
++#else
++		cfg80211_connect_result(dev, conn_info->bssid,
++					conn_info->req_ies,
++					conn_info->req_ies_len,
++					conn_info->resp_ies,
++					conn_info->resp_ies_len, connect_status,
++					GFP_KERNEL);
++#endif
+ 		vif->bss = NULL;
+ 	} else if (conn_disconn_evt == CONN_DISCONN_EVENT_DISCONN_NOTIF) {
+ 		u16 reason = 0;
+@@ -244,8 +271,11 @@ static void cfg_connect_result(enum conn_event conn_disconn_evt, u8 mac_status,
+ 			else
+ 				reason = 1;
+ 		}
+-
++#if KERNEL_VERSION(4, 2, 0) > LINUX_VERSION_CODE
++		cfg80211_disconnected(dev, reason, NULL, 0, GFP_KERNEL);
++#else
+ 		cfg80211_disconnected(dev, reason, NULL, 0, false, GFP_KERNEL);
++#endif
+ 	}
+ }
+ 
+@@ -478,9 +508,15 @@ static int connect(struct wiphy *wiphy, struct net_device *dev,
+ 		goto out_error;
+ 	}
+ 
++#if KERNEL_VERSION(4, 1, 0) > LINUX_VERSION_CODE
++	bss = cfg80211_get_bss(wiphy, sme->channel, sme->bssid, sme->ssid,
++			       sme->ssid_len, WLAN_CAPABILITY_ESS,
++			       WLAN_CAPABILITY_ESS);
++#else
+ 	bss = cfg80211_get_bss(wiphy, sme->channel, sme->bssid, sme->ssid,
+ 			       sme->ssid_len, IEEE80211_BSS_TYPE_ANY,
+ 			       IEEE80211_PRIVACY(sme->privacy));
++#endif
+ 	if (!bss) {
+ 		ret = -EINVAL;
+ 		goto out_error;
+@@ -852,8 +888,13 @@ static int set_default_mgmt_key (struct wiphy *wiphy,struct net_device *netdev,
+     return 0;
+ }
+ 
++#if KERNEL_VERSION(3, 16, 0) <= LINUX_VERSION_CODE
+ static int get_station(struct wiphy *wiphy, struct net_device *dev,
+ 		       const u8 *mac, struct station_info *sinfo)
++#else
++static int get_station(struct wiphy *wiphy, struct net_device *dev,
++		       u8 *mac, struct station_info *sinfo)
++#endif
+ {
+ 	struct wilc_vif *vif = netdev_priv(dev);
+ 	struct wilc_priv *priv = &vif->priv;
+@@ -879,7 +920,11 @@ static int get_station(struct wiphy *wiphy, struct net_device *dev,
+ 			return -ENOENT;
+ 		}
+ 
++#if KERNEL_VERSION(3, 19, 0) <= LINUX_VERSION_CODE
+ 		sinfo->filled |= BIT(NL80211_STA_INFO_INACTIVE_TIME);
++#else
++		sinfo->filled |= STATION_INFO_INACTIVE_TIME;
++#endif
+ 
+ 		wilc_get_inactive_time(vif, mac, &inactive_time);
+ 		sinfo->inactive_time = 1000 * inactive_time;
+@@ -895,13 +940,19 @@ static int get_station(struct wiphy *wiphy, struct net_device *dev,
+ 		}
+ 
+ 		wilc_get_statistics(vif, &stats);
+-
++#if KERNEL_VERSION(3, 19, 0) <= LINUX_VERSION_CODE
+ 		sinfo->filled |= BIT(NL80211_STA_INFO_SIGNAL) |
+-				 BIT(NL80211_STA_INFO_RX_PACKETS) |
+-				 BIT(NL80211_STA_INFO_TX_PACKETS) |
+-				 BIT(NL80211_STA_INFO_TX_FAILED) |
+-				 BIT(NL80211_STA_INFO_TX_BITRATE);
+-
++			      BIT(NL80211_STA_INFO_RX_PACKETS) |
++			      BIT(NL80211_STA_INFO_TX_PACKETS) |
++			      BIT(NL80211_STA_INFO_TX_FAILED) |
++			      BIT(NL80211_STA_INFO_TX_BITRATE);
++#else
++		sinfo->filled |= STATION_INFO_SIGNAL |
++			      STATION_INFO_RX_PACKETS |
++			      STATION_INFO_TX_PACKETS |
++			      STATION_INFO_TX_FAILED |
++			      STATION_INFO_TX_BITRATE;
++#endif
+ 		sinfo->signal = stats.rssi;
+ 		sinfo->rx_packets = stats.rx_cnt;
+ 		sinfo->tx_packets = stats.tx_cnt + stats.tx_fail_cnt;
+@@ -1161,7 +1212,11 @@ bool wilc_wfi_mgmt_frame_rx(struct wilc_vif *vif, u8 *buff, u32 size)
+ 	struct wilc_priv *priv = &vif->priv;
+ 	int freq, ret;
+ 
++#if KERNEL_VERSION(4, 7, 0) <= LINUX_VERSION_CODE
+ 	freq = ieee80211_channel_to_frequency(wl->op_ch, NL80211_BAND_2GHZ);
++ #else
++	freq = ieee80211_channel_to_frequency(wl->op_ch, IEEE80211_BAND_2GHZ);
++ #endif
+ 	PRINT_D(vif->ndev, GENERIC_DBG, "%s Frame Type:%x\n", __func__,
+ 		((struct ieee80211_mgmt *)buff)->frame_control);
+ 
+@@ -1199,8 +1254,11 @@ bool wilc_wfi_p2p_rx(struct wilc_vif *vif, u8 *buff, u32 size)
+ 		return true;
+ 	}
+ 
++#if KERNEL_VERSION(4, 7, 0) <= LINUX_VERSION_CODE
+ 	freq = ieee80211_channel_to_frequency(wl->op_ch, NL80211_BAND_2GHZ);
+-
++ #else
++	freq = ieee80211_channel_to_frequency(wl->op_ch, IEEE80211_BAND_2GHZ);
++ #endif
+ 	mgmt = (struct ieee80211_mgmt *)buff;
+ 	PRINT_D(vif->ndev, GENERIC_DBG, "Rx Frame Type:%x\n",
+ 		mgmt->frame_control);
+@@ -1304,6 +1362,10 @@ static int remain_on_channel(struct wiphy *wiphy,
+ 	priv->remain_on_ch_params.listen_duration = duration;
+ 
+ 	cfg80211_ready_on_channel(wdev, *cookie, chan, duration, GFP_KERNEL);
++
++#if KERNEL_VERSION(4, 15, 0) > LINUX_VERSION_CODE
++	vif->hif_drv->remain_on_ch_timer.data = (unsigned long)vif->hif_drv;
++#endif
+ 	mod_timer(&vif->hif_drv->remain_on_ch_timer,
+ 		  jiffies + msecs_to_jiffies(duration + 1000));
+ 
+@@ -1330,15 +1392,25 @@ static int cancel_remain_on_channel(struct wiphy *wiphy,
+ 	return wilc_listen_state_expired(vif, cookie);
+ }
+ 
++#if KERNEL_VERSION(3, 14, 0) <= LINUX_VERSION_CODE
+ static int mgmt_tx(struct wiphy *wiphy,
+ 		   struct wireless_dev *wdev,
+ 		   struct cfg80211_mgmt_tx_params *params,
+ 		   u64 *cookie)
++#else
++static int mgmt_tx(struct wiphy *wiphy,
++		   struct wireless_dev *wdev,
++		   struct ieee80211_channel *chan, bool offchan,
++		   unsigned int wait, const u8 *buf, size_t len,
++		   bool no_cck, bool dont_wait_for_ack, u64 *cookie)
++#endif
+ {
++#if KERNEL_VERSION(3, 14, 0) <= LINUX_VERSION_CODE
+ 	struct ieee80211_channel *chan = params->chan;
+ 	unsigned int wait = params->wait;
+ 	const u8 *buf = params->buf;
+ 	size_t len = params->len;
++#endif
+ 	const struct ieee80211_mgmt *mgmt;
+ 	struct wilc_p2p_mgmt_data *mgmt_tx;
+ 	struct wilc_vif *vif = netdev_priv(wdev->netdev);
+@@ -1474,6 +1546,7 @@ static int mgmt_tx_cancel_wait(struct wiphy *wiphy,
+ 	return 0;
+ }
+ 
++#if KERNEL_VERSION(5, 8, 0) <= LINUX_VERSION_CODE
+ void wilc_update_mgmt_frame_registrations(struct wiphy *wiphy,
+ 					  struct wireless_dev *wdev,
+ 					  struct mgmt_frame_regs *upd)
+@@ -1507,6 +1580,47 @@ void wilc_update_mgmt_frame_registrations(struct wiphy *wiphy,
+ 	vif->mgmt_reg_stypes =
+ 		upd->interface_stypes & (presp_bit | action_bit | pauth_bit);
+ }
++#else
++void wilc_mgmt_frame_register(struct wiphy *wiphy, struct wireless_dev *wdev,
++			      u16 frame_type, bool reg)
++{
++	struct wilc *wl = wiphy_priv(wiphy);
++	struct wilc_vif *vif = netdev_priv(wdev->netdev);
++
++	if (!frame_type)
++		return;
++
++	PRINT_D(vif->ndev, GENERIC_DBG,
++		"Frame registering Frame Type: %x: Boolean: %d\n", frame_type,
++		reg);
++
++	switch (frame_type) {
++	case IEEE80211_STYPE_PROBE_REQ:
++		vif->frame_reg[0].type = frame_type;
++		vif->frame_reg[0].reg = reg;
++		break;
++
++	case IEEE80211_STYPE_ACTION:
++		vif->frame_reg[1].type = frame_type;
++		vif->frame_reg[1].reg = reg;
++		break;
++	case IEEE80211_STYPE_AUTH:
++		vif->frame_reg[2].type = frame_type;
++		vif->frame_reg[2].reg = reg;
++		break;
++
++	default:
++		break;
++	}
++
++	if (!wl->initialized) {
++		PRINT_INFO(vif->ndev, GENERIC_DBG,
++			   "Return since mac is closed\n");
++		return;
++	}
++	wilc_frame_register(vif, frame_type, reg);
++}
++#endif
+ 
+ static int set_cqm_rssi_config(struct wiphy *wiphy, struct net_device *dev,
+ 			       s32 rssi_thold, u32 rssi_hyst)
+@@ -1530,7 +1644,11 @@ static int dump_station(struct wiphy *wiphy, struct net_device *dev,
+ 	if (ret)
+ 		return ret;
+ 
+-	sinfo->filled |=  BIT(NL80211_STA_INFO_SIGNAL);
++#if KERNEL_VERSION(3, 19, 0) <= LINUX_VERSION_CODE
++	sinfo->filled |= BIT(NL80211_STA_INFO_SIGNAL);
++#else
++	sinfo->filled |= STATION_INFO_SIGNAL;
++#endif
+ 
+ 	return 0;
+ }
+@@ -1556,9 +1674,15 @@ static int set_power_mgmt(struct wiphy *wiphy, struct net_device *dev,
+ 	return 0;
+ }
+ 
++#if KERNEL_VERSION(4, 11, 0) <= LINUX_VERSION_CODE
+ static int change_virtual_intf(struct wiphy *wiphy, struct net_device *dev,
+ 			       enum nl80211_iftype type,
+ 			       struct vif_params *params)
++#else
++static int change_virtual_intf(struct wiphy *wiphy, struct net_device *dev,
++			       enum nl80211_iftype type, u32 *flags,
++			       struct vif_params *params)
++#endif
+ {
+ 	struct wilc *wl = wiphy_priv(wiphy);
+ 	struct wilc_vif *vif = netdev_priv(dev);
+@@ -1703,8 +1827,13 @@ static int stop_ap(struct wiphy *wiphy, struct net_device *dev)
+ 	return ret;
+ }
+ 
++#if KERNEL_VERSION(3, 16, 0) <= LINUX_VERSION_CODE
+ static int add_station(struct wiphy *wiphy, struct net_device *dev,
+ 		       const u8 *mac, struct station_parameters *params)
++#else
++static int add_station(struct wiphy *wiphy, struct net_device *dev,
++		       u8 *mac, struct station_parameters *params)
++#endif
+ {
+ 	int ret = 0;
+ 	struct wilc_vif *vif = netdev_priv(dev);
+@@ -1758,10 +1887,20 @@ static int add_station(struct wiphy *wiphy, struct net_device *dev,
+ 	return ret;
+ }
+ 
++#if KERNEL_VERSION(3, 19, 0) <= LINUX_VERSION_CODE
+ static int del_station(struct wiphy *wiphy, struct net_device *dev,
+ 		       struct station_del_parameters *params)
++#elif KERNEL_VERSION(3, 16, 0) <= LINUX_VERSION_CODE
++static int del_station(struct wiphy *wiphy, struct net_device *dev,
++		       const u8 *mac)
++#else
++static int del_station(struct wiphy *wiphy, struct net_device *dev,
++		       u8 *mac)
++#endif
+ {
++#if KERNEL_VERSION(3, 19, 0) <= LINUX_VERSION_CODE
+ 	const u8 *mac = params->mac;
++#endif
+ 	int ret = 0;
+ 	struct wilc_vif *vif = netdev_priv(dev);
+ 	struct wilc_priv *priv = &vif->priv;
+@@ -1790,8 +1929,13 @@ static int del_station(struct wiphy *wiphy, struct net_device *dev,
+ 	return ret;
+ }
+ 
++#if KERNEL_VERSION(3, 16, 0) <= LINUX_VERSION_CODE
+ static int change_station(struct wiphy *wiphy, struct net_device *dev,
+ 			  const u8 *mac, struct station_parameters *params)
++#else
++static int change_station(struct wiphy *wiphy, struct net_device *dev,
++			  u8 *mac, struct station_parameters *params)
++#endif
+ {
+ 	int ret = 0;
+ 	struct wilc_vif *vif = netdev_priv(dev);
+@@ -1848,11 +1992,32 @@ struct wilc_vif *wilc_get_vif_from_type(struct wilc *wl, int type)
+ 	return NULL;
+ }
+ 
++#if KERNEL_VERSION(4, 12, 0) <= LINUX_VERSION_CODE
++static struct wireless_dev *add_virtual_intf(struct wiphy *wiphy,
++					     const char *name,
++					     unsigned char name_assign_type,
++					     enum nl80211_iftype type,
++					     struct vif_params *params)
++#elif KERNEL_VERSION(4, 1, 0) <= LINUX_VERSION_CODE
+ static struct wireless_dev *add_virtual_intf(struct wiphy *wiphy,
+ 					     const char *name,
+ 					     unsigned char name_assign_type,
+ 					     enum nl80211_iftype type,
++					     u32 *flags,
++					     struct vif_params *params)
++#elif KERNEL_VERSION(3, 7, 0) <= LINUX_VERSION_CODE
++static struct wireless_dev *add_virtual_intf(struct wiphy *wiphy,
++					     const char *name,
++					     enum nl80211_iftype type,
++					     u32 *flags,
+ 					     struct vif_params *params)
++#else
++static struct wireless_dev *add_virtual_intf(struct wiphy *wiphy,
++					     char *name,
++					     enum nl80211_iftype type,
++					     u32 *flags,
++					     struct vif_params *params)
++#endif
+ {
+ 	struct wilc *wl = wiphy_priv(wiphy);
+ 	struct wilc_vif *vif;
+@@ -1948,7 +2113,11 @@ static int del_virtual_intf(struct wiphy *wiphy, struct wireless_dev *wdev)
+ 	    wdev->iftype == NL80211_IFTYPE_P2P_GO)
+ 		wilc_wfi_deinit_mon_interface(wl, true);
+ 	vif = netdev_priv(wdev->netdev);
++#if KERNEL_VERSION(5, 12, 0) > LINUX_VERSION_CODE
++	unregister_netdevice(vif->ndev);
++#else
+ 	cfg80211_unregister_netdevice(vif->ndev);
++#endif
+ 	vif->monitor_flag = 0;
+ 
+ 	/* update the vif list */
+@@ -2117,7 +2286,11 @@ static const struct cfg80211_ops wilc_cfg80211_ops = {
+ 	.cancel_remain_on_channel = cancel_remain_on_channel,
+ 	.mgmt_tx_cancel_wait = mgmt_tx_cancel_wait,
+ 	.mgmt_tx = mgmt_tx,
++#if KERNEL_VERSION(5, 8, 0) <= LINUX_VERSION_CODE
+ 	.update_mgmt_frame_registrations = wilc_update_mgmt_frame_registrations,
++#else
++	.mgmt_frame_register = wilc_mgmt_frame_register,
++#endif
+ 	.set_power_mgmt = set_power_mgmt,
+ 	.set_cqm_rssi_config = set_cqm_rssi_config,
+ 
+@@ -2251,11 +2424,19 @@ struct wilc *wilc_create_wiphy(struct device *dev)
+ 	wl->band.ht_cap.ampdu_factor = IEEE80211_HT_MAX_AMPDU_8K;
+ 	wl->band.ht_cap.ampdu_density = IEEE80211_HT_MPDU_DENSITY_NONE;
+ 
++#if KERNEL_VERSION(4, 7, 0) <= LINUX_VERSION_CODE
+ 	wiphy->bands[NL80211_BAND_2GHZ] = &wl->band;
++#else
++	wiphy->bands[IEEE80211_BAND_2GHZ] = &wl->band;
++#endif
+ 
+ 	wiphy->max_scan_ssids = WILC_MAX_NUM_PROBED_SSID;
+ #ifdef CONFIG_PM
++#if KERNEL_VERSION(3, 11, 0) <= LINUX_VERSION_CODE
+ 	wiphy->wowlan = &wowlan_support;
++#else
++	wiphy->wowlan = wowlan_support;
++#endif
+ #endif
+ 	wiphy->max_num_pmkids = WILC_MAX_NUM_PMKIDS;
+ 	wiphy->max_scan_ie_len = 1000;
+@@ -2298,7 +2479,12 @@ int wilc_init_host_int(struct net_device *net)
+ 	struct wilc_priv *priv = &vif->priv;
+ 
+ 	PRINT_INFO(net, INIT_DBG, "Host[%p][%p]\n", net, net->ieee80211_ptr);
++
++#if KERNEL_VERSION(4, 15, 0) <= LINUX_VERSION_CODE
+ 	timer_setup(&priv->eap_buff_timer, eap_buff_timeout, 0);
++#else
++	setup_timer(&priv->eap_buff_timer, eap_buff_timeout, 0);
++#endif
+ 
+ 	vif->p2p_listen_state = false;
+ 
+diff --git a/drivers/net/wireless/microchip/wilc1000/cfg80211.h b/drivers/net/wireless/microchip/wilc1000/cfg80211.h
+index c0a51cca1b89..212a769dafb6 100644
+--- a/drivers/net/wireless/microchip/wilc1000/cfg80211.h
++++ b/drivers/net/wireless/microchip/wilc1000/cfg80211.h
+@@ -18,9 +18,14 @@ void wilc_wfi_deinit_mon_interface(struct wilc *wl, bool rtnl_locked);
+ struct net_device *wilc_wfi_init_mon_interface(struct wilc *wl,
+ 					       const char *name,
+ 					       struct net_device *real_dev);
++#if KERNEL_VERSION(5, 8, 0) <= LINUX_VERSION_CODE
+ void wilc_update_mgmt_frame_registrations(struct wiphy *wiphy,
+ 					  struct wireless_dev *wdev,
+ 					  struct mgmt_frame_regs *upd);
++#else
++void wilc_mgmt_frame_register(struct wiphy *wiphy, struct wireless_dev *wdev,
++			      u16 frame_type, bool reg);
++#endif
+ void wilc_sysfs_init(struct wilc *wilc);
+ void wilc_sysfs_exit(void);
+ struct wilc_vif *wilc_get_vif_from_type(struct wilc *wl, int type);
+diff --git a/drivers/net/wireless/microchip/wilc1000/debugfs.c b/drivers/net/wireless/microchip/wilc1000/debugfs.c
+index a88fe15e434b..132066f3a8c9 100644
+--- a/drivers/net/wireless/microchip/wilc1000/debugfs.c
++++ b/drivers/net/wireless/microchip/wilc1000/debugfs.c
+@@ -12,6 +12,321 @@
+ atomic_t WILC_DEBUG_REGION = ATOMIC_INIT(INIT_DBG | GENERIC_DBG |
+ 					 CFG80211_DBG | HOSTAPD_DBG |
+ 					 PWRDEV_DBG);
++#if KERNEL_VERSION(3, 15, 0) > LINUX_VERSION_CODE
++/**
++ * of_irq_parse_raw - Low level interrupt tree parsing
++ * @parent:	the device interrupt parent
++ * @addr:	address specifier (start of "reg" property of the device)
++ *              in be32 format
++ * @out_irq:	structure of_irq updated by this function
++ *
++ * Returns 0 on success and a negative number on error
++ *
++ * This function is a low-level interrupt tree walking function. It
++ * can be used to do a partial walk with synthetized reg and interrupts
++ * properties, for example when resolving PCI interrupts when no device
++ * node exist for the parent. It takes an interrupt specifier structure as
++ * input, walks the tree looking for any interrupt-map properties, translates
++ * the specifier for each map, and then returns the translated map.
++ */
++int of_irq_parse_raw(const __be32 *addr, struct of_phandle_args *out_irq)
++{
++	struct device_node *ipar, *tnode, *old = NULL, *newpar = NULL;
++	__be32 initial_match_array[MAX_PHANDLE_ARGS];
++	const __be32 *match_array = initial_match_array;
++	const __be32 *tmp, *imap, *imask;
++	const __be32 dummy_imask[] = { [0 ... MAX_PHANDLE_ARGS] = ~0 };
++	u32 intsize = 1, addrsize, newintsize = 0, newaddrsize = 0;
++	int imaplen, match, i;
++
++#ifdef DEBUG
++	of_print_phandle_args("of_irq_parse_raw: ", out_irq);
++#endif
++
++	ipar = of_node_get(out_irq->np);
++
++	/* First get the #interrupt-cells property of the current cursor
++	 * that tells us how to interpret the passed-in intspec. If there
++	 * is none, we are nice and just walk up the tree
++	 */
++	do {
++		tmp = of_get_property(ipar, "#interrupt-cells", NULL);
++		if (tmp != NULL) {
++			intsize = be32_to_cpu(*tmp);
++			break;
++		}
++		tnode = ipar;
++		ipar = of_irq_find_parent(ipar);
++		of_node_put(tnode);
++	} while (ipar);
++	if (ipar == NULL) {
++		pr_debug(" -> no parent found !\n");
++		goto fail;
++	}
++
++	pr_debug("of_irq_parse_raw: ipar=%s, size=%d\n",
++		 of_node_full_name(ipar), intsize);
++
++	if (out_irq->args_count != intsize)
++		return -EINVAL;
++
++	/* Look for this #address-cells. We have to implement the old linux
++	 * trick of looking for the parent here as some device-trees rely on it
++	 */
++	old = of_node_get(ipar);
++	do {
++		tmp = of_get_property(old, "#address-cells", NULL);
++		tnode = of_get_parent(old);
++		of_node_put(old);
++		old = tnode;
++	} while (old && tmp == NULL);
++	of_node_put(old);
++	old = NULL;
++	addrsize = (tmp == NULL) ? 2 : be32_to_cpu(*tmp);
++
++	pr_debug(" -> addrsize=%d\n", addrsize);
++
++	/* Range check so that the temporary buffer doesn't overflow */
++	if (WARN_ON(addrsize + intsize > MAX_PHANDLE_ARGS))
++		goto fail;
++
++	/* Precalculate the match array - this simplifies match loop */
++	for (i = 0; i < addrsize; i++)
++		initial_match_array[i] = addr ? addr[i] : 0;
++	for (i = 0; i < intsize; i++)
++		initial_match_array[addrsize + i] =
++			cpu_to_be32(out_irq->args[i]);
++
++	/* Now start the actual "proper" walk of the interrupt tree */
++	while (ipar != NULL) {
++		/* Now check if cursor is an interrupt-controller and if it is
++		 * then we are done
++		 */
++		if (of_get_property(ipar, "interrupt-controller", NULL) !=
++				NULL) {
++			pr_debug(" -> got it !\n");
++			return 0;
++		}
++
++		/*
++		 * interrupt-map parsing does not work without a reg
++		 * property when #address-cells != 0
++		 */
++		if (addrsize && !addr) {
++			pr_debug(" -> no reg passed in when needed !\n");
++			goto fail;
++		}
++
++		/* Now look for an interrupt-map */
++		imap = of_get_property(ipar, "interrupt-map", &imaplen);
++		/* No interrupt map, check for an interrupt parent */
++		if (imap == NULL) {
++			pr_debug(" -> no map, getting parent\n");
++			newpar = of_irq_find_parent(ipar);
++			goto skiplevel;
++		}
++		imaplen /= sizeof(u32);
++
++		/* Look for a mask */
++		imask = of_get_property(ipar, "interrupt-map-mask", NULL);
++		if (!imask)
++			imask = dummy_imask;
++
++		/* Parse interrupt-map */
++		match = 0;
++		while (imaplen > (addrsize + intsize + 1) && !match) {
++			/* Compare specifiers */
++			match = 1;
++			for (i = 0; i < (addrsize + intsize); i++, imaplen--)
++				match &= !((match_array[i] ^ *imap++) &
++					   imask[i]);
++
++			pr_debug(" -> match=%d (imaplen=%d)\n", match, imaplen);
++
++			/* Get the interrupt parent */
++			if (of_irq_workarounds & OF_IMAP_NO_PHANDLE)
++				newpar = of_node_get(of_irq_dflt_pic);
++			else
++				newpar =
++				of_find_node_by_phandle(be32_to_cpup(imap));
++			imap++;
++			--imaplen;
++
++			/* Check if not found */
++			if (newpar == NULL) {
++				pr_debug(" -> imap parent not found !\n");
++				goto fail;
++			}
++
++			if (!of_device_is_available(newpar))
++				match = 0;
++
++			/* Get #interrupt-cells and #address-cells of new
++			 * parent
++			 */
++			tmp = of_get_property(newpar, "#interrupt-cells", NULL);
++			if (tmp == NULL) {
++				pr_debug(" -> parent lacks #interrupt-cells!\n");
++				goto fail;
++			}
++			newintsize = be32_to_cpu(*tmp);
++			tmp = of_get_property(newpar, "#address-cells", NULL);
++			newaddrsize = (tmp == NULL) ? 0 : be32_to_cpu(*tmp);
++
++			pr_debug(" -> newintsize=%d, newaddrsize=%d\n",
++			    newintsize, newaddrsize);
++
++			/* Check for malformed properties */
++			if (WARN_ON(newaddrsize + newintsize >
++				    MAX_PHANDLE_ARGS))
++				goto fail;
++			if (imaplen < (newaddrsize + newintsize))
++				goto fail;
++
++			imap += newaddrsize + newintsize;
++			imaplen -= newaddrsize + newintsize;
++
++			pr_debug(" -> imaplen=%d\n", imaplen);
++		}
++		if (!match)
++			goto fail;
++
++		/*
++		 * Successfully parsed an interrrupt-map translation; copy new
++		 * interrupt specifier into the out_irq structure
++		 */
++		out_irq->np = newpar;
++
++		match_array = imap - newaddrsize - newintsize;
++		for (i = 0; i < newintsize; i++)
++			out_irq->args[i] = be32_to_cpup(imap - newintsize + i);
++		out_irq->args_count = intsize = newintsize;
++		addrsize = newaddrsize;
++
++skiplevel:
++		/* Iterate again with new parent */
++		pr_debug(" -> new parent: %s\n", of_node_full_name(newpar));
++		of_node_put(ipar);
++		ipar = newpar;
++		newpar = NULL;
++	}
++ fail:
++	of_node_put(ipar);
++	of_node_put(newpar);
++
++	return -EINVAL;
++}
++
++static inline int of_irq_parse_oldworld(struct device_node *device, int index,
++				      struct of_phandle_args *out_irq)
++{
++	return -EINVAL;
++}
++/**
++ * of_irq_parse_one - Resolve an interrupt for a device
++ * @device: the device whose interrupt is to be resolved
++ * @index: index of the interrupt to resolve
++ * @out_irq: structure of_irq filled by this function
++ *
++ * This function resolves an interrupt for a node by walking the interrupt tree,
++ * finding which interrupt controller node it is attached to, and returning the
++ * interrupt specifier that can be used to retrieve a Linux IRQ number.
++ */
++int of_irq_parse_one(struct device_node *device, int index,
++		     struct of_phandle_args *out_irq)
++{
++	struct device_node *p;
++	const __be32 *intspec, *tmp, *addr;
++	u32 intsize, intlen;
++	int i, res;
++
++	pr_debug("of_irq_parse_one: dev=%s, index=%d\n",
++		 of_node_full_name(device), index);
++
++	/* OldWorld mac stuff is "special", handle out of line */
++	if (of_irq_workarounds & OF_IMAP_OLDWORLD_MAC)
++		return of_irq_parse_oldworld(device, index, out_irq);
++
++	/* Get the reg property (if any) */
++	addr = of_get_property(device, "reg", NULL);
++
++	/* Try the new-style interrupts-extended first */
++	res = of_parse_phandle_with_args(device, "interrupts-extended",
++					"#interrupt-cells", index, out_irq);
++	if (!res)
++		return of_irq_parse_raw(addr, out_irq);
++
++	/* Get the interrupts property */
++	intspec = of_get_property(device, "interrupts", &intlen);
++	if (intspec == NULL)
++		return -EINVAL;
++
++	intlen /= sizeof(*intspec);
++
++	pr_debug(" intspec=%d intlen=%d\n", be32_to_cpup(intspec), intlen);
++
++	/* Look for the interrupt parent. */
++	p = of_irq_find_parent(device);
++	if (p == NULL)
++		return -EINVAL;
++
++	/* Get size of interrupt specifier */
++	tmp = of_get_property(p, "#interrupt-cells", NULL);
++	if (tmp == NULL) {
++		res = -EINVAL;
++		goto out;
++	}
++	intsize = be32_to_cpu(*tmp);
++
++	pr_debug(" intsize=%d intlen=%d\n", intsize, intlen);
++
++	/* Check index */
++	if ((index + 1) * intsize > intlen) {
++		res = -EINVAL;
++		goto out;
++	}
++
++	/* Copy intspec into irq structure */
++	intspec += index * intsize;
++	out_irq->np = p;
++	out_irq->args_count = intsize;
++	for (i = 0; i < intsize; i++)
++		out_irq->args[i] = be32_to_cpup(intspec++);
++
++	/* Check if there are any interrupt-map translations to process */
++	res = of_irq_parse_raw(addr, out_irq);
++ out:
++	of_node_put(p);
++	return res;
++}
++
++/**
++ * of_irq_get - Decode a node's IRQ and return it as a Linux IRQ number
++ * @dev: pointer to device tree node
++ * @index: zero-based index of the IRQ
++ *
++ * Returns Linux IRQ number on success, or 0 on the IRQ mapping failure, or
++ * -EPROBE_DEFER if the IRQ domain is not yet created, or error code in case
++ * of any other failure.
++ */
++int of_irq_get(struct device_node *dev, int index)
++{
++	int rc;
++	struct of_phandle_args oirq;
++	struct irq_domain *domain;
++
++	rc = of_irq_parse_one(dev, index, &oirq);
++	if (rc)
++		return rc;
++
++	domain = irq_find_host(oirq.np);
++	if (!domain)
++		return -EPROBE_DEFER;
++
++	return irq_create_of_mapping(oirq.np, (const u32 *)&oirq.args,
++				     oirq.args_count);
++}
++#endif
+ 
+ #if defined(WILC_DEBUGFS)
+ static struct dentry *wilc_dir;
+diff --git a/drivers/net/wireless/microchip/wilc1000/debugfs.h b/drivers/net/wireless/microchip/wilc1000/debugfs.h
+index 13b0e40d568c..2de82a19489b 100644
+--- a/drivers/net/wireless/microchip/wilc1000/debugfs.h
++++ b/drivers/net/wireless/microchip/wilc1000/debugfs.h
+@@ -9,6 +9,9 @@
+ 
+ #include <linux/kern_levels.h>
+ #include <linux/version.h>
++#if KERNEL_VERSION(3, 15, 0) > LINUX_VERSION_CODE
++#include <linux/of_irq.h>
++#endif
+ 
+ #define GENERIC_DBG		BIT(0)
+ #define HOSTAPD_DBG		BIT(1)
+@@ -51,4 +54,7 @@ int wilc_debugfs_init(void);
+ void wilc_debugfs_remove(void);
+ #endif
+ 
++#if KERNEL_VERSION(3, 15, 0) > LINUX_VERSION_CODE
++int of_irq_get(struct device_node *dev, int index);
++#endif
+ #endif /* WILC_DEBUGFS_H */
+diff --git a/drivers/net/wireless/microchip/wilc1000/hif.c b/drivers/net/wireless/microchip/wilc1000/hif.c
+index 71057d0bfb6f..3f672a06f775 100644
+--- a/drivers/net/wireless/microchip/wilc1000/hif.c
++++ b/drivers/net/wireless/microchip/wilc1000/hif.c
+@@ -9,7 +9,29 @@
+ #define WILC_HIF_SCAN_TIMEOUT_MS                5000
+ #define WILC_HIF_CONNECT_TIMEOUT_MS             9500
+ 
+-#define WILC_FALSE_FRMWR_CHANNEL		100
++#define WILC_FALSE_FRMWR_CHANNEL		    100
++
++#if KERNEL_VERSION(3, 17, 0) > LINUX_VERSION_CODE
++struct ieee80211_wmm_ac_param {
++	u8 aci_aifsn; /* AIFSN, ACM, ACI */
++	u8 cw; /* ECWmin, ECWmax (CW = 2^ECW - 1) */
++	__le16 txop_limit;
++} __packed;
++
++struct ieee80211_wmm_param_ie {
++	u8 element_id; /* Element ID: 221 (0xdd); */
++	u8 len; /* Length: 24 */
++	u8 oui[3]; /* 00:50:f2 */
++	u8 oui_type; /* 2 */
++	u8 oui_subtype; /* 1 */
++	u8 version; /* 1 for WMM version 1.0 */
++	u8 qos_info; /* AP/STA specific QoS info */
++	u8 reserved; /* 0 */
++	/* AC_BE, AC_BK, AC_VI, AC_VO */
++	struct ieee80211_wmm_ac_param ac[4];
++} __packed;
++#endif
++
+ struct send_buffered_eap {
+ 	void (*deliver_to_stack)(struct wilc_vif *vif, u8 *buff, u32 size,
+ 			      u32 pkt_offset, u8 status);
+@@ -319,6 +341,9 @@ int wilc_scan(struct wilc_vif *vif, u8 scan_source, u8 scan_type,
+ 	wid_list[index].val = (s8 *)&scan_type;
+ 	index++;
+ 
++#if KERNEL_VERSION(4, 8, 0) > LINUX_VERSION_CODE
++	scan_timeout = WILC_HIF_SCAN_TIMEOUT_MS;
++#else
+ 	if (scan_type == WILC_FW_PASSIVE_SCAN && request->duration) {
+ 		wid_list[index].id = WID_PASSIVE_SCAN_TIME;
+ 		wid_list[index].type = WID_SHORT;
+@@ -330,7 +355,7 @@ int wilc_scan(struct wilc_vif *vif, u8 scan_source, u8 scan_type,
+ 	} else {
+ 		scan_timeout = WILC_HIF_SCAN_TIMEOUT_MS;
+ 	}
+-
++#endif
+ 	wid_list[index].id = WID_SCAN_CHANNEL_LIST;
+ 	wid_list[index].type = WID_BIN_DATA;
+ 
+@@ -362,6 +387,9 @@ int wilc_scan(struct wilc_vif *vif, u8 scan_source, u8 scan_type,
+ 		hif_drv->scan_timer_vif = vif;
+ 		PRINT_INFO(vif->ndev, HOSTINF_DBG,
+ 			   ">> Starting the SCAN timer\n");
++#if KERNEL_VERSION(4, 15, 0) > LINUX_VERSION_CODE
++		hif_drv->scan_timer.data = (unsigned long)hif_drv;
++#endif
+ 		mod_timer(&hif_drv->scan_timer,
+ 			  jiffies + msecs_to_jiffies(scan_timeout));
+ 	}
+@@ -1193,10 +1221,18 @@ static void wilc_handle_listen_state_expired(struct work_struct *work)
+ 	kfree(msg);
+ }
+ 
++#if KERNEL_VERSION(4, 15, 0) <= LINUX_VERSION_CODE
+ static void listen_timer_cb(struct timer_list *t)
++#else
++static void listen_timer_cb(unsigned long arg)
++#endif
+ {
++#if KERNEL_VERSION(4, 15, 0) <= LINUX_VERSION_CODE
+ 	struct host_if_drv *hif_drv = from_timer(hif_drv, t,
+ 						      remain_on_ch_timer);
++#else
++	struct host_if_drv *hif_drv = (struct host_if_drv *)arg;
++#endif
+ 	struct wilc_vif *vif = hif_drv->remain_on_ch_timer_vif;
+ 	int result;
+ 	struct host_if_msg *msg;
+@@ -1324,9 +1360,17 @@ static void handle_scan_complete(struct work_struct *work)
+ 	kfree(msg);
+ }
+ 
++#if KERNEL_VERSION(4, 15, 0) <= LINUX_VERSION_CODE
+ static void timer_scan_cb(struct timer_list *t)
++#else
++static void timer_scan_cb(unsigned long arg)
++#endif
+ {
++#if KERNEL_VERSION(4, 15, 0) <= LINUX_VERSION_CODE
+ 	struct host_if_drv *hif_drv = from_timer(hif_drv, t, scan_timer);
++#else
++	struct host_if_drv *hif_drv = (struct host_if_drv *)arg;
++#endif
+ 	struct wilc_vif *vif = hif_drv->scan_timer_vif;
+ 	struct host_if_msg *msg;
+ 	int result;
+@@ -1340,10 +1384,17 @@ static void timer_scan_cb(struct timer_list *t)
+ 		kfree(msg);
+ }
+ 
++#if KERNEL_VERSION(4, 15, 0) <= LINUX_VERSION_CODE
+ static void timer_connect_cb(struct timer_list *t)
+-{
+-	struct host_if_drv *hif_drv = from_timer(hif_drv, t,
+-						      connect_timer);
++#else
++static void timer_connect_cb(unsigned long arg)
++#endif
++{
++#if KERNEL_VERSION(4, 15, 0) <= LINUX_VERSION_CODE
++	struct host_if_drv *hif_drv = from_timer(hif_drv, t, connect_timer);
++#else
++	struct host_if_drv *hif_drv = (struct host_if_drv *)arg;
++#endif
+ 	struct wilc_vif *vif = hif_drv->connect_timer_vif;
+ 	struct host_if_msg *msg;
+ 	int result;
+@@ -1629,6 +1680,9 @@ int wilc_set_join_req(struct wilc_vif *vif, u8 *bssid, const u8 *ies,
+ 		goto free_ies;
+ 	}
+ 
++#if KERNEL_VERSION(4, 15, 0) > LINUX_VERSION_CODE
++	hif_drv->connect_timer.data = (unsigned long)hif_drv;
++#endif
+ 	hif_drv->connect_timer_vif = vif;
+ 	mod_timer(&hif_drv->connect_timer,
+ 		  jiffies + msecs_to_jiffies(WILC_HIF_CONNECT_TIMEOUT_MS));
+@@ -1796,9 +1850,17 @@ int wilc_hif_set_cfg(struct wilc_vif *vif, struct cfg_param_attr *param)
+ 	return wilc_send_config_pkt(vif, WILC_SET_CFG, wid_list, i);
+ }
+ 
++#if KERNEL_VERSION(4, 15, 0) <= LINUX_VERSION_CODE
+ static void get_periodic_rssi(struct timer_list *t)
++#else
++static void get_periodic_rssi(unsigned long arg)
++#endif
+ {
++#if KERNEL_VERSION(4, 15, 0) <= LINUX_VERSION_CODE
+ 	struct wilc_vif *vif = from_timer(vif, t, periodic_rssi);
++#else
++	struct wilc_vif *vif = (struct wilc_vif *)arg;
++#endif
+ 
+ 	if (!vif->hif_drv) {
+ 		netdev_err(vif->ndev, "%s: hif driver is NULL", __func__);
+@@ -1824,10 +1886,18 @@ int wilc_init(struct net_device *dev, struct host_if_drv **hif_drv_handler)
+ 	*hif_drv_handler = hif_drv;
+ 	vif->hif_drv = hif_drv;
+ 
++#if KERNEL_VERSION(4, 15, 0) <= LINUX_VERSION_CODE
+ 	timer_setup(&hif_drv->scan_timer, timer_scan_cb, 0);
+ 	timer_setup(&hif_drv->connect_timer, timer_connect_cb, 0);
+ 	timer_setup(&hif_drv->remain_on_ch_timer, listen_timer_cb, 0);
+ 	timer_setup(&vif->periodic_rssi, get_periodic_rssi, 0);
++#else
++	setup_timer(&hif_drv->scan_timer, timer_scan_cb, 0);
++	setup_timer(&hif_drv->connect_timer, timer_connect_cb, 0);
++	setup_timer(&hif_drv->remain_on_ch_timer, listen_timer_cb, 0);
++	setup_timer(&vif->periodic_rssi, get_periodic_rssi,
++		    (unsigned long)vif);
++#endif
+ 	mod_timer(&vif->periodic_rssi, jiffies + msecs_to_jiffies(5000));
+ 
+ 	hif_drv->hif_state = HOST_IF_IDLE;
+diff --git a/drivers/net/wireless/microchip/wilc1000/mon.c b/drivers/net/wireless/microchip/wilc1000/mon.c
+index 31ff66352e6f..55dabe9b0bfc 100644
+--- a/drivers/net/wireless/microchip/wilc1000/mon.c
++++ b/drivers/net/wireless/microchip/wilc1000/mon.c
+@@ -39,8 +39,13 @@ void wilc_wfi_handle_monitor_rx(struct wilc *wilc, u8 *buff, u32 size)
+ 			"Monitor if: No memory to allocate skb");
+ 		return;
+ 	}
++#if KERNEL_VERSION(4, 13, 0) <= LINUX_VERSION_CODE
+ 	skb_put_data(skb, buff, size);
+ 	hdr = skb_push(skb, sizeof(*hdr));
++#else
++	memcpy(skb_put(skb, size), buff, size);
++	hdr = (struct wilc_wfi_radiotap_hdr *)skb_push(skb, sizeof(*hdr));
++#endif
+ 	memset(hdr, 0, sizeof(*hdr));
+ 	hdr->hdr.it_version = 0; /* PKTHDR_RADIOTAP_VERSION; */
+ 	hdr->hdr.it_len = cpu_to_le16(sizeof(*hdr));
+@@ -93,9 +98,15 @@ void wilc_wfi_monitor_rx(struct net_device *mon_dev, u8 *buff, u32 size)
+ 				"Monitor if : No memory to allocate skb");
+ 			return;
+ 		}
++	#if KERNEL_VERSION(4, 13, 0) <= LINUX_VERSION_CODE
+ 		skb_put_data(skb, buff, size);
+ 
+ 		cb_hdr = skb_push(skb, sizeof(*cb_hdr));
++	#else
++		memcpy(skb_put(skb, size), buff, size);
++		cb_hdr = (struct wilc_wfi_radiotap_cb_hdr *)skb_push(skb,
++							    sizeof(*cb_hdr));
++	#endif
+ 		memset(cb_hdr, 0, sizeof(*cb_hdr));
+ 
+ 		cb_hdr->hdr.it_version = 0; /* PKTHDR_RADIOTAP_VERSION; */
+@@ -116,11 +127,19 @@ void wilc_wfi_monitor_rx(struct net_device *mon_dev, u8 *buff, u32 size)
+ 	} else {
+ 		skb = dev_alloc_skb(size + sizeof(*hdr));
+ 
+-		if (!skb)
++		if (!skb) {
++			PRINT_D(mon_dev, HOSTAPD_DBG,
++				"Monitor if : No memory to allocate skb");
+ 			return;
+-
++		}
++	#if KERNEL_VERSION(4, 13, 0) <= LINUX_VERSION_CODE
+ 		skb_put_data(skb, buff, size);
+ 		hdr = skb_push(skb, sizeof(*hdr));
++	#else
++		memcpy(skb_put(skb, size), buff, size);
++		hdr = (struct wilc_wfi_radiotap_hdr *)skb_push(skb,
++							       sizeof(*hdr));
++	#endif
+ 		memset(hdr, 0, sizeof(*hdr));
+ 		hdr->hdr.it_version = 0; /* PKTHDR_RADIOTAP_VERSION; */
+ 		hdr->hdr.it_len = cpu_to_le16(sizeof(*hdr));
+@@ -270,7 +289,11 @@ struct net_device *wilc_wfi_init_mon_interface(struct wilc *wl,
+ 	wl->monitor_dev->type = ARPHRD_IEEE80211_RADIOTAP;
+ 	strlcpy(wl->monitor_dev->name, name, IFNAMSIZ);
+ 	wl->monitor_dev->netdev_ops = &wilc_wfi_netdev_ops;
++#if KERNEL_VERSION(4, 11, 9) <= LINUX_VERSION_CODE
+ 	wl->monitor_dev->needs_free_netdev = true;
++#else
++	wl->monitor_dev->destructor = free_netdev;
++#endif
+ 
+ 	if (register_netdevice(wl->monitor_dev)) {
+ 		PRINT_ER(real_dev, "register_netdevice failed\n");
+diff --git a/drivers/net/wireless/microchip/wilc1000/netdev.c b/drivers/net/wireless/microchip/wilc1000/netdev.c
+index a209f873d92c..2dab9101bb95 100644
+--- a/drivers/net/wireless/microchip/wilc1000/netdev.c
++++ b/drivers/net/wireless/microchip/wilc1000/netdev.c
+@@ -255,13 +255,21 @@ static void free_eap_buff_params(void *vp)
+ 	}
+ }
+ 
++#if KERNEL_VERSION(4, 15, 0) <= LINUX_VERSION_CODE
+ void eap_buff_timeout(struct timer_list *t)
++#else
++void eap_buff_timeout(unsigned long user)
++#endif
+ {
+ 	u8 null_bssid[ETH_ALEN] = {0};
+ 	u8 *assoc_bss;
+ 	static u8 timeout = 5;
+ 	int status = -1;
++#if KERNEL_VERSION(4, 15, 0) <= LINUX_VERSION_CODE
+ 	struct wilc_priv *priv = from_timer(priv, t, eap_buff_timer);
++#else
++	struct wilc_priv *priv = (struct wilc_priv *)user;
++#endif
+ 	struct wilc_vif *vif = netdev_priv(priv->dev);
+ 
+ 	assoc_bss = priv->associated_bss;
+@@ -855,7 +863,9 @@ static int wilc_mac_open(struct net_device *ndev)
+ 	struct wilc_vif *vif = netdev_priv(ndev);
+ 	struct wilc *wl = vif->wilc;
+ 	int ret = 0;
++#if KERNEL_VERSION(5, 8, 0) <= LINUX_VERSION_CODE
+ 	struct mgmt_frame_regs mgmt_regs = {};
++#endif
+ 
+ 	if (!wl || !wl->dev) {
+ 		netdev_err(ndev, "device not ready\n");
+@@ -901,12 +911,24 @@ static int wilc_mac_open(struct net_device *ndev)
+ 		return -EINVAL;
+ 	}
+ 
++#if KERNEL_VERSION(5, 8, 0) <= LINUX_VERSION_CODE
+ 	mgmt_regs.interface_stypes = vif->mgmt_reg_stypes;
+ 	/* so we detect a change */
+ 	vif->mgmt_reg_stypes = 0;
++
+ 	wilc_update_mgmt_frame_registrations(vif->ndev->ieee80211_ptr->wiphy,
+ 					     vif->ndev->ieee80211_ptr,
+ 					     &mgmt_regs);
++#else
++	wilc_mgmt_frame_register(vif->ndev->ieee80211_ptr->wiphy,
++				 vif->ndev->ieee80211_ptr,
++				 vif->frame_reg[0].type,
++				 vif->frame_reg[0].reg);
++	wilc_mgmt_frame_register(vif->ndev->ieee80211_ptr->wiphy,
++				 vif->ndev->ieee80211_ptr,
++				 vif->frame_reg[1].type,
++				 vif->frame_reg[1].reg);
++#endif
+ 	netif_wake_queue(ndev);
+ 	wl->open_ifcs++;
+ 	vif->mac_opened = 1;
+@@ -1164,6 +1186,9 @@ void wilc_frmw_to_host(struct wilc_vif *vif, u8 *buff, u32 size,
+ 		priv->buffered_eap->pkt_offset = pkt_offset;
+ 		memcpy(priv->buffered_eap->buff, buff -
+ 		       pkt_offset, size + pkt_offset);
++	#if KERNEL_VERSION(4, 15, 0) > LINUX_VERSION_CODE
++		priv->eap_buff_timer.data = (unsigned long)priv;
++	#endif
+ 		mod_timer(&priv->eap_buff_timer, (jiffies +
+ 			  msecs_to_jiffies(10)));
+ 		return;
+@@ -1175,7 +1200,11 @@ void wilc_frmw_to_host(struct wilc_vif *vif, u8 *buff, u32 size,
+ 	}
+ 
+ 	skb->dev = vif->ndev;
++#if KERNEL_VERSION(4, 13, 0) <= LINUX_VERSION_CODE
+ 	skb_put_data(skb, buff_to_send, frame_len);
++#else
++	memcpy(skb_put(skb, frame_len), buff_to_send, frame_len);
++#endif
+ 
+ 	skb->protocol = eth_type_trans(skb, vif->ndev);
+ 	vif->netstats.rx_packets++;
+@@ -1194,21 +1223,38 @@ void wilc_wfi_mgmt_rx(struct wilc *wilc, u8 *buff, u32 size, bool is_auth)
+ 	list_for_each_entry_rcu(vif, &wilc->vif_list, list) {
+ 		u16 type = le16_to_cpup((__le16 *)buff);
+ 		struct wilc_priv *priv;
++#if KERNEL_VERSION(5, 8, 0) <= LINUX_VERSION_CODE
+ 		struct ieee80211_mgmt *mgmt = (struct ieee80211_mgmt *)buff;
+ 		u32 type_bit = BIT(type >> 4);
+ 		u32 auth_bit = BIT(IEEE80211_STYPE_AUTH >> 4);
++#endif
+ 
+ 		priv = &vif->priv;
++#if KERNEL_VERSION(5, 8, 0) <= LINUX_VERSION_CODE
+ 		if ((vif->mgmt_reg_stypes & auth_bit &&
+ 		     ieee80211_is_auth(mgmt->frame_control)) &&
+ 		     vif->iftype == WILC_STATION_MODE && is_auth) {
+ 			wilc_wfi_mgmt_frame_rx(vif, buff, size);
+ 			break;
+ 		}
++#else
++		if ((type == vif->frame_reg[2].type && vif->frame_reg[2].reg) &&
++		    vif->iftype == WILC_STATION_MODE) {
++			wilc_wfi_mgmt_frame_rx(vif, buff, size);
++			break;
++		}
++#endif
+ 
++#if KERNEL_VERSION(5, 8, 0) <= LINUX_VERSION_CODE
+ 		if (vif->mgmt_reg_stypes & type_bit &&
+ 		    vif->p2p_listen_state)
+ 			wilc_wfi_p2p_rx(vif, buff, size);
++#else
++		if (((type == vif->frame_reg[0].type && vif->frame_reg[0].reg) ||
++		     (type == vif->frame_reg[1].type && vif->frame_reg[1].reg)) &&
++		    vif->p2p_listen_state)
++			wilc_wfi_p2p_rx(vif, buff, size);
++#endif
+ 
+ 		if (vif->monitor_flag)
+ 			wilc_wfi_monitor_rx(wilc->monitor_dev, buff, size);
+@@ -1332,18 +1378,26 @@ struct wilc_vif *wilc_netdev_ifc_init(struct wilc *wl, const char *name,
+ 	vif->priv.dev = ndev;
+ 
+ 	vif->priv.dev = ndev;
+-	if (rtnl_locked)
++	if (rtnl_locked) {
++#if KERNEL_VERSION(5, 12, 0) > LINUX_VERSION_CODE
++		ret = register_netdevice(ndev);
++#else
+ 		ret = cfg80211_register_netdevice(ndev);
+-	else
++#endif
++	} else {
+ 		ret = register_netdev(ndev);
++	}
+ 
+ 	if (ret) {
+ 		pr_err("Device couldn't be registered - %s\n", ndev->name);
+ 		free_netdev(ndev);
+ 		return ERR_PTR(-EFAULT);
+ 	}
+-
++#if KERNEL_VERSION(4, 11, 9) <= LINUX_VERSION_CODE
+ 	ndev->needs_free_netdev = true;
++#else
++	ndev->destructor = free_netdev;
++#endif
+ 	vif->iftype = vif_type;
+ 	vif->idx = wilc_get_available_idx(wl);
+ 	vif->mac_opened = 0;
+diff --git a/drivers/net/wireless/microchip/wilc1000/netdev.h b/drivers/net/wireless/microchip/wilc1000/netdev.h
+index 9516e575b9d7..f06d45a22ca5 100644
+--- a/drivers/net/wireless/microchip/wilc1000/netdev.h
++++ b/drivers/net/wireless/microchip/wilc1000/netdev.h
+@@ -20,6 +20,129 @@
+ 
+ extern int wait_for_recovery;
+ 
++#if KERNEL_VERSION(3, 14, 0) > LINUX_VERSION_CODE
++static inline void ether_addr_copy(u8 *dst, const u8 *src)
++{
++#if defined(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS)
++	*(u32 *)dst = *(const u32 *)src;
++	*(u16 *)(dst + 4) = *(const u16 *)(src + 4);
++#else
++	u16 *a = (u16 *)dst;
++	const u16 *b = (const u16 *)src;
++
++	a[0] = b[0];
++	a[1] = b[1];
++	a[2] = b[2];
++#endif
++}
++
++static inline bool ether_addr_equal_unaligned(const u8 *addr1, const u8 *addr2)
++{
++#if defined(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS)
++	return ether_addr_equal(addr1, addr2);
++#else
++	return memcmp(addr1, addr2, ETH_ALEN) == 0;
++#endif
++}
++#endif /* LINUX_VERSION_CODE < KERNEL_VERSION(3, 14, 0) */
++
++#if KERNEL_VERSION(3, 12, 0) > LINUX_VERSION_CODE
++#define PTR_ERR_OR_ZERO(ptr) PTR_RET(ptr)
++#endif
++
++#if KERNEL_VERSION(3, 13, 0) > LINUX_VERSION_CODE
++/*
++ * Create a contiguous bitmask starting at bit position @l and ending at
++ * position @h. For example
++ * GENMASK_ULL(39, 21) gives us the 64bit vector 0x000000ffffe00000.
++ */
++#define GENMASK(h, l) \
++	(((~UL(0)) - (UL(1) << (l)) + 1) & \
++	 (~UL(0) >> (BITS_PER_LONG - 1 - (h))))
++#endif
++
++#if KERNEL_VERSION(4, 9, 0) > LINUX_VERSION_CODE
++#ifdef __CHECKER__
++#define __BUILD_BUG_ON_NOT_POWER_OF_2(n) (0)
++#else
++/* Force a compilation error if a constant expression is not a power of 2 */
++#define __BUILD_BUG_ON_NOT_POWER_OF_2(n)	\
++	BUILD_BUG_ON(((n) & ((n) - 1)) != 0)
++#endif
++
++/*
++ * Bitfield access macros
++ *
++ * FIELD_{GET,PREP} macros take as first parameter shifted mask
++ * from which they extract the base mask and shift amount.
++ * Mask must be a compilation time constant.
++ *
++ * Example:
++ *
++ *  #define REG_FIELD_A  GENMASK(6, 0)
++ *  #define REG_FIELD_B  BIT(7)
++ *  #define REG_FIELD_C  GENMASK(15, 8)
++ *  #define REG_FIELD_D  GENMASK(31, 16)
++ *
++ * Get:
++ *  a = FIELD_GET(REG_FIELD_A, reg);
++ *  b = FIELD_GET(REG_FIELD_B, reg);
++ *
++ * Set:
++ *  reg = FIELD_PREP(REG_FIELD_A, 1) |
++ *	  FIELD_PREP(REG_FIELD_B, 0) |
++ *	  FIELD_PREP(REG_FIELD_C, c) |
++ *	  FIELD_PREP(REG_FIELD_D, 0x40);
++ *
++ * Modify:
++ *  reg &= ~REG_FIELD_C;
++ *  reg |= FIELD_PREP(REG_FIELD_C, c);
++ */
++
++#define __bf_shf(x) (__builtin_ffsll(x) - 1)
++
++#define __BF_FIELD_CHECK(_mask, _reg, _val, _pfx)			\
++	({								\
++		BUILD_BUG_ON_MSG(!__builtin_constant_p(_mask),		\
++				 _pfx "mask is not constant");		\
++		BUILD_BUG_ON_MSG(!(_mask), _pfx "mask is zero");	\
++		BUILD_BUG_ON_MSG(__builtin_constant_p(_val) ?		\
++				 ~((_mask) >> __bf_shf(_mask)) & (_val) : 0, \
++				 _pfx "value too large for the field"); \
++		BUILD_BUG_ON_MSG((_mask) > (typeof(_reg))~0ull,		\
++				 _pfx "type of reg too small for mask"); \
++		__BUILD_BUG_ON_NOT_POWER_OF_2((_mask) +			\
++					      (1ULL << __bf_shf(_mask))); \
++	})
++/**
++ * FIELD_GET() - extract a bitfield element
++ * @_mask: shifted mask defining the field's length and position
++ * @_reg:  32bit value of entire bitfield
++ *
++ * FIELD_GET() extracts the field specified by @_mask from the
++ * bitfield passed in as @_reg by masking and shifting it down.
++ */
++#define FIELD_GET(_mask, _reg)						\
++	({								\
++		__BF_FIELD_CHECK(_mask, _reg, 0U, "FIELD_GET: ");	\
++		(typeof(_mask))(((_reg) & (_mask)) >> __bf_shf(_mask));	\
++	})
++
++/**
++ * FIELD_PREP() - prepare a bitfield element
++ * @_mask: shifted mask defining the field's length and position
++ * @_val:  value to put in the field
++ *
++ * FIELD_PREP() masks and shifts up the value.  The result should
++ * be combined with other fields of the bitfield using logical OR.
++ */
++#define FIELD_PREP(_mask, _val)						\
++	({								\
++		__BF_FIELD_CHECK(_mask, 0ULL, _val, "FIELD_PREP: ");	\
++		((typeof(_mask))(_val) << __bf_shf(_mask)) & (_mask);	\
++	})
++#endif
++
+ #define FLOW_CONTROL_LOWER_THRESHOLD		128
+ #define FLOW_CONTROL_UPPER_THRESHOLD		256
+ 
+@@ -81,14 +204,25 @@ static const u32 wilc_cipher_suites[] = {
+ 	WLAN_CIPHER_SUITE_AES_CMAC
+ };
+ 
+-#define CHAN2G(_channel, _freq, _flags) {	 \
++#if KERNEL_VERSION(4, 7, 0) > LINUX_VERSION_CODE
++#define CHAN2G(_channel, _freq, _flags) {       \
++	.band             = IEEE80211_BAND_2GHZ, \
++	.center_freq      = (_freq),             \
++	.hw_value         = (_channel),          \
++	.flags            = (_flags),            \
++	.max_antenna_gain = 0,                   \
++	.max_power        = 30,                  \
++}
++#else
++#define CHAN2G(_channel, _freq, _flags) {       \
+ 	.band             = NL80211_BAND_2GHZ, \
+-	.center_freq      = (_freq),		 \
+-	.hw_value         = (_channel),		 \
+-	.flags            = (_flags),		 \
+-	.max_antenna_gain = 0,			 \
+-	.max_power        = 30,			 \
++	.center_freq      = (_freq),             \
++	.hw_value         = (_channel),          \
++	.flags            = (_flags),            \
++	.max_antenna_gain = 0,                   \
++	.max_power        = 30,                  \
+ }
++#endif
+ 
+ static const struct ieee80211_channel wilc_2ghz_channels[] = {
+ 	CHAN2G(1,  2412, 0),
+@@ -162,6 +296,15 @@ struct wilc_priv {
+ 	u64 inc_roc_cookie;
+ };
+ 
++#if KERNEL_VERSION(5, 8, 0) > LINUX_VERSION_CODE
++struct frame_reg {
++	u16 type;
++	bool reg;
++};
++
++#define NUM_REG_FRAME				3
++#endif
++
+ #define MAX_TCP_SESSION                25
+ #define MAX_PENDING_ACKS               256
+ 
+@@ -203,7 +346,11 @@ struct wilc_vif {
+ 	u8 iftype;
+ 	int monitor_flag;
+ 	int mac_opened;
++#if KERNEL_VERSION(5, 8, 0) <= LINUX_VERSION_CODE
+ 	u32 mgmt_reg_stypes;
++#else
++	struct frame_reg frame_reg[NUM_REG_FRAME];
++#endif
+ 	struct net_device_stats netstats;
+ 	struct wilc *wilc;
+ 	u8 bssid[ETH_ALEN];
+diff --git a/drivers/net/wireless/microchip/wilc1000/sdio.c b/drivers/net/wireless/microchip/wilc1000/sdio.c
+index 492ac0e9116d..fac2f6b55f98 100644
+--- a/drivers/net/wireless/microchip/wilc1000/sdio.c
++++ b/drivers/net/wireless/microchip/wilc1000/sdio.c
+@@ -25,8 +25,14 @@ enum sdio_host_lock {
+ 
+ static enum sdio_host_lock	sdio_intr_lock = WILC_SDIO_HOST_NO_TAKEN;
+ static wait_queue_head_t sdio_intr_waitqueue;
++
+ #define SDIO_MODALIAS "wilc_sdio"
+ 
++#if KERNEL_VERSION(5, 8, 0) >= LINUX_VERSION_CODE
++#define SDIO_VENDOR_ID_MICROCHIP_WILC 0x0296
++#define SDIO_DEVICE_ID_MICROCHIP_WILC1000 0x5347
++#endif
++
+ static const struct sdio_device_id wilc_sdio_ids[] = {
+ 	{ SDIO_DEVICE(SDIO_VENDOR_ID_MICROCHIP_WILC, SDIO_DEVICE_ID_MICROCHIP_WILC1000) },
+ 	{ },
+diff --git a/drivers/net/wireless/microchip/wilc1000/spi.c b/drivers/net/wireless/microchip/wilc1000/spi.c
+index 11c72d23b700..473ad4836228 100644
+--- a/drivers/net/wireless/microchip/wilc1000/spi.c
++++ b/drivers/net/wireless/microchip/wilc1000/spi.c
+@@ -313,10 +313,14 @@ static int wilc_spi_tx(struct wilc *wilc, u8 *b, u32 len)
+ 		struct spi_transfer tr = {
+ 			.tx_buf = b,
+ 			.len = len,
++#if KERNEL_VERSION(5, 5, 0) <= LINUX_VERSION_CODE
+ 			.delay = {
+-				.value = 0,
+-				.unit = SPI_DELAY_UNIT_USECS
++			.value = 0,
++			.unit = SPI_DELAY_UNIT_USECS
+ 			},
++#else
++			.delay_usecs = 0,
++#endif
+ 		};
+ 		char *r_buffer = kzalloc(len, GFP_KERNEL);
+ 
+@@ -357,11 +361,14 @@ static int wilc_spi_rx(struct wilc *wilc, u8 *rb, u32 rlen)
+ 		struct spi_transfer tr = {
+ 			.rx_buf = rb,
+ 			.len = rlen,
+-			.delay = {
+-				.value = 0,
+-				.unit = SPI_DELAY_UNIT_USECS
+-			},
+-
++#if KERNEL_VERSION(5, 5, 0) <= LINUX_VERSION_CODE
++						.delay = {
++						.value = 0,
++						.unit = SPI_DELAY_UNIT_USECS
++						},
++#else
++			.delay_usecs = 0,
++#endif
+ 		};
+ 		char *t_buffer = kzalloc(rlen, GFP_KERNEL);
+ 
+@@ -402,11 +409,14 @@ static int wilc_spi_tx_rx(struct wilc *wilc, u8 *wb, u8 *rb, u32 rlen)
+ 			.tx_buf = wb,
+ 			.len = rlen,
+ 			.bits_per_word = 8,
+-			.delay = {
+-				.value = 0,
+-				.unit = SPI_DELAY_UNIT_USECS
+-			},
+-
++#if KERNEL_VERSION(5, 5, 0) <= LINUX_VERSION_CODE
++						.delay = {
++						.value = 0,
++						.unit = SPI_DELAY_UNIT_USECS
++						},
++#else
++			.delay_usecs = 0,
++#endif
+ 		};
+ 
+ 		memset(&msg, 0, sizeof(msg));
+diff --git a/drivers/net/wireless/microchip/wilc1000/wlan.c b/drivers/net/wireless/microchip/wilc1000/wlan.c
+index 59adbf224e20..9e521c507494 100644
+--- a/drivers/net/wireless/microchip/wilc1000/wlan.c
++++ b/drivers/net/wireless/microchip/wilc1000/wlan.c
+@@ -12,6 +12,10 @@
+ 
+ #define WAKE_UP_TRIAL_RETRY		10000
+ 
++#if KERNEL_VERSION(3, 12, 21) > LINUX_VERSION_CODE
++#define list_next_entry(pos, member) \
++	list_entry((pos)->member.next, typeof(*(pos)), member)
++#endif
+ 
+ void acquire_bus(struct wilc *wilc, enum bus_acquire acquire, int source)
+ {
+diff --git a/drivers/net/wireless/microchip/wilc1000/wlan.h b/drivers/net/wireless/microchip/wilc1000/wlan.h
+index 053f747df332..c6a1e11d24b1 100644
+--- a/drivers/net/wireless/microchip/wilc1000/wlan.h
++++ b/drivers/net/wireless/microchip/wilc1000/wlan.h
+@@ -8,7 +8,12 @@
+ #define WILC_WLAN_H
+ 
+ #include <linux/types.h>
++#include <linux/version.h>
++
++#if KERNEL_VERSION(4, 9, 0) <= LINUX_VERSION_CODE
+ #include <linux/bitfield.h>
++#endif
++
+ 
+ /********************************************
+  *
+@@ -475,7 +480,11 @@ int wilc_send_config_pkt(struct wilc_vif *vif, u8 mode, struct wid *wids,
+ 			 u32 count);
+ void wilc_bt_init(struct wilc *wilc);
+ void wilc_bt_deinit(void);
++#if KERNEL_VERSION(4, 15, 0) <= LINUX_VERSION_CODE
+ void eap_buff_timeout(struct timer_list *t);
++#else
++void eap_buff_timeout(unsigned long user);
++#endif
+ void acquire_bus(struct wilc *wilc, enum bus_acquire acquire, int source);
+ void release_bus(struct wilc *wilc, enum bus_release release, int source);
+ int wilc_wlan_init(struct net_device *dev);
+diff --git a/drivers/net/wireless/microchip/wilc1000/wlan_cfg.c b/drivers/net/wireless/microchip/wilc1000/wlan_cfg.c
+index 029ae7ae9a00..7b7d7dc1002e 100644
+--- a/drivers/net/wireless/microchip/wilc1000/wlan_cfg.c
++++ b/drivers/net/wireless/microchip/wilc1000/wlan_cfg.c
+@@ -3,13 +3,15 @@
+  * Copyright (c) 2012 - 2018 Microchip Technology Inc., and its subsidiaries.
+  * All rights reserved.
+  */
+-
+-#include <linux/bitfield.h>
+ #include "wlan_if.h"
+ #include "wlan.h"
+ #include "wlan_cfg.h"
+ #include "netdev.h"
+ 
++#if KERNEL_VERSION(4, 9, 0) <= LINUX_VERSION_CODE
++#include <linux/bitfield.h>
++#endif
++
+ enum cfg_cmd_type {
+ 	CFG_BYTE_CMD	= 0,
+ 	CFG_HWORD_CMD	= 1,
+-- 
+2.25.1
+
