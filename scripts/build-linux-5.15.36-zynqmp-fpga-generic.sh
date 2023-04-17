@@ -3,7 +3,7 @@
 CURRENT_DIR=`pwd`
 KERNEL_VERSION=5.15.36
 LOCAL_VERSION=zynqmp-fpga-generic
-BUILD_VERSION=3
+BUILD_VERSION=4
 KERNEL_RELEASE=$KERNEL_VERSION-$LOCAL_VERSION
 LINUX_BUILD_DIR=linux-$KERNEL_RELEASE
 
@@ -61,12 +61,6 @@ git commit -m "[patch] for Ultra96-V2."
 patch -p1 < ../patches/linux-$KERNEL_VERSION-zynqmp-fpga-uz3eg-iocc.diff 
 git add --all
 git commit -m "[patch] for UltraZed-EG IO Carrier Card."
-
-### Patch for Kria KV260
-
-patch -p1 < ../patches/linux-$KERNEL_VERSION-zynqmp-fpga-kv260.diff
-git add --all
-git commit -m "[patch] for Kria KV260."
 
 ### Add zynqmp_fpga_generic_defconfig
 
