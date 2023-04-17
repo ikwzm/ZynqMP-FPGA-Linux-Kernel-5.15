@@ -1,5 +1,8 @@
+diff --git a/Documentation/devicetree/bindings/crypto/zynqmp-rsa.txt b/Documentation/devicetree/bindings/crypto/zynqmp-rsa.txt
+new file mode 100644
+index 000000000..6b4c0e044
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/crypto/zynqmp-rsa.txt	2023-04-14 12:23:48.773533700 +0900
++++ b/Documentation/devicetree/bindings/crypto/zynqmp-rsa.txt
 @@ -0,0 +1,12 @@
 +Xilinx ZynqMP RSA hw acceleration support
 +
@@ -13,8 +16,11 @@
 +	xlnx_rsa: zynqmp_rsa {
 +		compatible = "xlnx,zynqmp-rsa";
 +	};
+diff --git a/Documentation/devicetree/bindings/crypto/zynqmp-sha.txt b/Documentation/devicetree/bindings/crypto/zynqmp-sha.txt
+new file mode 100644
+index 000000000..c7be6e2ce
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/crypto/zynqmp-sha.txt	2023-04-14 12:23:48.773533700 +0900
++++ b/Documentation/devicetree/bindings/crypto/zynqmp-sha.txt
 @@ -0,0 +1,12 @@
 +Xilinx ZynqMP SHA3(keccak-384) hw acceleration support.
 +
@@ -28,9 +34,11 @@
 +	xlnx_keccak_384: sha384 {
 +		compatible = "xlnx,zynqmp-keccak-384";
 +	};
---- linux-5.15.36/drivers/crypto/Kconfig	2023-04-14 12:25:53.812567700 +0900
-+++ linux-xlnx-2022.2/drivers/crypto/Kconfig	2023-04-14 12:24:01.023121400 +0900
-@@ -784,6 +784,39 @@
+diff --git a/drivers/crypto/Kconfig b/drivers/crypto/Kconfig
+index b46343b5c..ff01b8683 100644
+--- a/drivers/crypto/Kconfig
++++ b/drivers/crypto/Kconfig
+@@ -789,6 +789,39 @@ config CRYPTO_DEV_ROCKCHIP
  	  This driver interfaces with the hardware crypto accelerator.
  	  Supporting cbc/ecb chainmode, and aes/des/des3_ede cipher mode.
  
@@ -70,13 +78,10 @@
  config CRYPTO_DEV_ZYNQMP_AES
  	tristate "Support for Xilinx ZynqMP AES hw accelerator"
  	depends on ZYNQMP_FIRMWARE || COMPILE_TEST
-@@ -793,6 +826,18 @@
- 	help
- 	  Xilinx ZynqMP has AES-GCM engine used for symmetric key
- 	  encryption and decryption. This driver interfaces with AES hw
-+	  accelerator. Select this if you want to use the ZynqMP module
-+	  for AES algorithms.
-+
+@@ -801,6 +834,18 @@ config CRYPTO_DEV_ZYNQMP_AES
+ 	  accelerator. Select this if you want to use the ZynqMP module
+ 	  for AES algorithms.
+ 
 +config CRYPTO_DEV_ZYNQMP_AES_SKCIPHER
 +	tristate "Support for Xilinx ZynqMP AES hw accelerator (skcipher)"
 +	depends on ZYNQMP_FIRMWARE || COMPILE_TEST
@@ -86,12 +91,17 @@
 +	help
 +	  Xilinx ZynqMP has AES-GCM engine used for symmetric key
 +	  encryption and decryption. This driver interfaces with AES hw
- 	  accelerator. Select this if you want to use the ZynqMP module
- 	  for AES algorithms.
++	  accelerator. Select this if you want to use the ZynqMP module
++	  for AES algorithms.
++
+ source "drivers/crypto/chelsio/Kconfig"
  
---- linux-5.15.36/drivers/crypto/Makefile	2023-04-14 12:25:53.812567700 +0900
-+++ linux-xlnx-2022.2/drivers/crypto/Makefile	2023-04-14 12:24:01.023121400 +0900
-@@ -47,7 +47,7 @@
+ source "drivers/crypto/virtio/Kconfig"
+diff --git a/drivers/crypto/Makefile b/drivers/crypto/Makefile
+index 1fe5120eb..0a4fff23d 100644
+--- a/drivers/crypto/Makefile
++++ b/drivers/crypto/Makefile
+@@ -47,7 +47,7 @@ obj-$(CONFIG_CRYPTO_DEV_VMX) += vmx/
  obj-$(CONFIG_CRYPTO_DEV_BCM_SPU) += bcm/
  obj-$(CONFIG_CRYPTO_DEV_SAFEXCEL) += inside-secure/
  obj-$(CONFIG_CRYPTO_DEV_ARTPEC6) += axis/
@@ -100,8 +110,10 @@
  obj-y += hisilicon/
  obj-$(CONFIG_CRYPTO_DEV_AMLOGIC_GXL) += amlogic/
  obj-y += keembay/
---- linux-5.15.36/drivers/crypto/xilinx/Makefile	2023-04-14 12:25:54.076464700 +0900
-+++ linux-xlnx-2022.2/drivers/crypto/xilinx/Makefile	2023-04-14 12:24:01.248312200 +0900
+diff --git a/drivers/crypto/xilinx/Makefile b/drivers/crypto/xilinx/Makefile
+index 534e32daf..6fa808c78 100644
+--- a/drivers/crypto/xilinx/Makefile
++++ b/drivers/crypto/xilinx/Makefile
 @@ -1,2 +1,6 @@
  # SPDX-License-Identifier: GPL-2.0-only
  obj-$(CONFIG_CRYPTO_DEV_ZYNQMP_AES) += zynqmp-aes-gcm.o
@@ -109,8 +121,11 @@
 +obj-$(CONFIG_CRYPTO_DEV_ZYNQMP_KECCAK_384) += zynqmp-sha-deprecated.o
 +obj-$(CONFIG_CRYPTO_DEV_ZYNQMP_SHA3) += zynqmp-sha.o
 +obj-$(CONFIG_CRYPTO_DEV_XILINX_RSA) += zynqmp-rsa.o
+diff --git a/drivers/crypto/xilinx/zynqmp-aes.c b/drivers/crypto/xilinx/zynqmp-aes.c
+new file mode 100644
+index 000000000..c07ffb288
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/crypto/xilinx/zynqmp-aes.c	2023-04-14 12:24:01.248312200 +0900
++++ b/drivers/crypto/xilinx/zynqmp-aes.c
 @@ -0,0 +1,286 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
@@ -398,8 +413,11 @@
 +MODULE_LICENSE("GPL v2");
 +MODULE_AUTHOR("Nava kishore Manne <nava.manne@xilinx.com>");
 +MODULE_AUTHOR("Kalyani Akula <kalyani.akula@xilinx.com>");
+diff --git a/drivers/crypto/xilinx/zynqmp-rsa.c b/drivers/crypto/xilinx/zynqmp-rsa.c
+new file mode 100644
+index 000000000..c606a1f1f
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/crypto/xilinx/zynqmp-rsa.c	2023-04-14 12:24:01.248312200 +0900
++++ b/drivers/crypto/xilinx/zynqmp-rsa.c
 @@ -0,0 +1,252 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
@@ -653,8 +671,11 @@
 +MODULE_DESCRIPTION("ZynqMP RSA hw acceleration support.");
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("Nava kishore Manne <navam@xilinx.com>");
+diff --git a/drivers/crypto/xilinx/zynqmp-sha-deprecated.c b/drivers/crypto/xilinx/zynqmp-sha-deprecated.c
+new file mode 100644
+index 000000000..f0445e8f4
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/crypto/xilinx/zynqmp-sha-deprecated.c	2023-04-14 12:24:01.248312200 +0900
++++ b/drivers/crypto/xilinx/zynqmp-sha-deprecated.c
 @@ -0,0 +1,297 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
@@ -953,8 +974,11 @@
 +MODULE_DESCRIPTION("ZynqMP SHA3 hw acceleration support.");
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("Nava kishore Manne <navam@xilinx.com>");
+diff --git a/drivers/crypto/xilinx/zynqmp-sha.c b/drivers/crypto/xilinx/zynqmp-sha.c
+new file mode 100644
+index 000000000..2caa8b92a
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/crypto/xilinx/zynqmp-sha.c	2023-04-14 12:24:01.248312200 +0900
++++ b/drivers/crypto/xilinx/zynqmp-sha.c
 @@ -0,0 +1,264 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
