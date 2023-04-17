@@ -1,6 +1,8 @@
---- linux-5.15.36/drivers/bluetooth/hci_ll.c	2023-04-14 12:25:52.970455100 +0900
-+++ linux-xlnx-2022.2/drivers/bluetooth/hci_ll.c	2023-04-14 12:24:00.182672600 +0900
-@@ -626,7 +626,7 @@
+diff --git a/drivers/bluetooth/hci_ll.c b/drivers/bluetooth/hci_ll.c
+index e4e5b26e2..050996f8c 100644
+--- a/drivers/bluetooth/hci_ll.c
++++ b/drivers/bluetooth/hci_ll.c
+@@ -626,7 +626,7 @@ static int ll_setup(struct hci_uart *hu)
  		gpiod_set_value_cansleep(lldev->enable_gpio, 0);
  		msleep(5);
  		gpiod_set_value_cansleep(lldev->enable_gpio, 1);
