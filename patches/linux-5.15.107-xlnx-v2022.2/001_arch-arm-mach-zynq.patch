@@ -1,6 +1,8 @@
---- linux-5.15.36/arch/arm/mach-zynq/Kconfig	2023-04-14 12:25:47.004859000 +0900
-+++ linux-xlnx-2022.2/arch/arm/mach-zynq/Kconfig	2023-04-14 12:23:53.986581800 +0900
-@@ -16,3 +16,19 @@
+diff --git a/arch/arm/mach-zynq/Kconfig b/arch/arm/mach-zynq/Kconfig
+index a56748d67..d6948720b 100644
+--- a/arch/arm/mach-zynq/Kconfig
++++ b/arch/arm/mach-zynq/Kconfig
+@@ -16,3 +16,19 @@ config ARCH_ZYNQ
  	select SOC_BUS
  	help
  	  Support for Xilinx Zynq ARM Cortex A9 Platform
@@ -20,8 +22,10 @@
 +endmenu
 +
 +endif
---- linux-5.15.36/arch/arm/mach-zynq/Makefile	2023-04-14 12:25:47.004859000 +0900
-+++ linux-xlnx-2022.2/arch/arm/mach-zynq/Makefile	2023-04-14 12:23:53.986581800 +0900
+diff --git a/arch/arm/mach-zynq/Makefile b/arch/arm/mach-zynq/Makefile
+index 9df74cd85..16fc653ed 100644
+--- a/arch/arm/mach-zynq/Makefile
++++ b/arch/arm/mach-zynq/Makefile
 @@ -4,5 +4,8 @@
  #
  
@@ -32,9 +36,11 @@
  obj-$(CONFIG_SMP)		+= headsmp.o platsmp.o
 +obj-$(CONFIG_SUSPEND)	+= suspend.o
 +AFLAGS_suspend.o		+=-Wa,-march=armv7-a
---- linux-5.15.36/arch/arm/mach-zynq/common.c	2023-04-14 12:25:47.004859000 +0900
-+++ linux-xlnx-2022.2/arch/arm/mach-zynq/common.c	2023-04-14 12:23:53.986581800 +0900
-@@ -95,6 +95,7 @@
+diff --git a/arch/arm/mach-zynq/common.c b/arch/arm/mach-zynq/common.c
+index 15e8a321a..35e7fc131 100644
+--- a/arch/arm/mach-zynq/common.c
++++ b/arch/arm/mach-zynq/common.c
+@@ -96,6 +96,7 @@ static void __init zynq_init_late(void)
  {
  	zynq_core_pm_init();
  	zynq_pm_late_init();
@@ -42,7 +48,7 @@
  }
  
  /**
-@@ -175,6 +176,7 @@
+@@ -176,6 +177,7 @@ static void __init zynq_map_io(void)
  
  static void __init zynq_irq_init(void)
  {
@@ -50,7 +56,7 @@
  	zynq_early_slcr_init();
  	irqchip_init();
  }
-@@ -186,8 +188,13 @@
+@@ -187,8 +189,13 @@ static const char * const zynq_dt_match[] = {
  
  DT_MACHINE_START(XILINX_EP107, "Xilinx Zynq Platform")
  	/* 64KB way size, 8-way associativity, parity disabled */
@@ -65,9 +71,11 @@
  	.smp		= smp_ops(zynq_smp_ops),
  	.map_io		= zynq_map_io,
  	.init_irq	= zynq_irq_init,
---- linux-5.15.36/arch/arm/mach-zynq/common.h	2023-04-14 12:25:47.004859000 +0900
-+++ linux-xlnx-2022.2/arch/arm/mach-zynq/common.h	2023-04-14 12:23:53.986581800 +0900
-@@ -17,6 +17,9 @@
+diff --git a/arch/arm/mach-zynq/common.h b/arch/arm/mach-zynq/common.h
+index 60e662324..f4fde3c34 100644
+--- a/arch/arm/mach-zynq/common.h
++++ b/arch/arm/mach-zynq/common.h
+@@ -17,6 +17,9 @@ extern bool zynq_slcr_cpu_state_read(int cpu);
  extern void zynq_slcr_cpu_state_write(int cpu, bool die);
  extern u32 zynq_slcr_get_device_id(void);
  
@@ -77,7 +85,7 @@
  #ifdef CONFIG_SMP
  extern char zynq_secondary_trampoline;
  extern char zynq_secondary_trampoline_jump;
-@@ -25,9 +28,31 @@
+@@ -25,9 +28,31 @@ extern int zynq_cpun_start(u32 address, int cpu);
  extern const struct smp_operations zynq_smp_ops;
  #endif
  
@@ -109,8 +117,11 @@
  
  static inline void zynq_core_pm_init(void)
  {
+diff --git a/arch/arm/mach-zynq/efuse.c b/arch/arm/mach-zynq/efuse.c
+new file mode 100644
+index 000000000..b7d142b74
 --- /dev/null
-+++ linux-xlnx-2022.2/arch/arm/mach-zynq/efuse.c	2023-04-14 12:23:53.986581800 +0900
++++ b/arch/arm/mach-zynq/efuse.c
 @@ -0,0 +1,78 @@
 +/*
 + * Xilinx EFUSE driver
@@ -190,9 +201,11 @@
 +
 +	return 0;
 +}
---- linux-5.15.36/arch/arm/mach-zynq/platsmp.c	2023-04-14 12:25:47.004859000 +0900
-+++ linux-xlnx-2022.2/arch/arm/mach-zynq/platsmp.c	2023-04-14 12:23:53.986581800 +0900
-@@ -83,6 +83,9 @@
+diff --git a/arch/arm/mach-zynq/platsmp.c b/arch/arm/mach-zynq/platsmp.c
+index 68ec303fa..4568f68c3 100644
+--- a/arch/arm/mach-zynq/platsmp.c
++++ b/arch/arm/mach-zynq/platsmp.c
+@@ -83,6 +83,9 @@ EXPORT_SYMBOL(zynq_cpun_start);
  
  static int zynq_boot_secondary(unsigned int cpu, struct task_struct *idle)
  {
@@ -202,7 +215,7 @@
  	return zynq_cpun_start(__pa_symbol(secondary_startup_arm), cpu);
  }
  
-@@ -115,6 +118,7 @@
+@@ -115,6 +118,7 @@ static void __init zynq_smp_prepare_cpus(unsigned int max_cpus)
  static void zynq_secondary_init(unsigned int cpu)
  {
  	zynq_core_pm_init();
@@ -210,8 +223,10 @@
  }
  
  #ifdef CONFIG_HOTPLUG_CPU
---- linux-5.15.36/arch/arm/mach-zynq/pm.c	2023-04-14 12:25:47.004859000 +0900
-+++ linux-xlnx-2022.2/arch/arm/mach-zynq/pm.c	2023-04-14 12:23:53.986581800 +0900
+diff --git a/arch/arm/mach-zynq/pm.c b/arch/arm/mach-zynq/pm.c
+index 8ba450ab5..609766366 100644
+--- a/arch/arm/mach-zynq/pm.c
++++ b/arch/arm/mach-zynq/pm.c
 @@ -7,6 +7,14 @@
   *  Sören Brinkmann <soren.brinkmann@xilinx.com>
   */
@@ -393,7 +408,7 @@
  /**
   * zynq_pm_ioremap() - Create IO mappings
   * @comp:	DT compatible string
-@@ -68,4 +235,7 @@
+@@ -68,4 +235,7 @@ void __init zynq_pm_late_init(void)
  		reg |= DDRC_CLOCKSTOP_MASK;
  		writel(reg, ddrc_base + DDRC_DRAM_PARAM_REG3_OFFS);
  	}
@@ -401,8 +416,10 @@
 +	/* set up suspend */
 +	zynq_pm_suspend_init();
  }
---- linux-5.15.36/arch/arm/mach-zynq/slcr.c	2023-04-14 12:25:47.004859000 +0900
-+++ linux-xlnx-2022.2/arch/arm/mach-zynq/slcr.c	2023-04-14 12:23:53.986581800 +0900
+diff --git a/arch/arm/mach-zynq/slcr.c b/arch/arm/mach-zynq/slcr.c
+index 9765b3f4c..2fd8a8570 100644
+--- a/arch/arm/mach-zynq/slcr.c
++++ b/arch/arm/mach-zynq/slcr.c
 @@ -16,10 +16,12 @@
  /* register offsets */
  #define SLCR_UNLOCK_OFFSET		0x8   /* SCLR unlock register */
@@ -425,10 +442,11 @@
  static struct regmap *zynq_slcr_regmap;
  
  /**
-@@ -116,6 +118,35 @@
+@@ -115,6 +117,35 @@ static struct notifier_block zynq_slcr_restart_nb = {
+ 	.priority	= 192,
  };
  
- /**
++/**
 + * zynq_slcr_init_preload_fpga - Disable communication from the PL to PS.
 + */
 +void zynq_slcr_init_preload_fpga(void)
@@ -457,12 +475,14 @@
 +}
 +EXPORT_SYMBOL(zynq_slcr_init_postload_fpga);
 +
-+/**
+ /**
   * zynq_slcr_cpu_start - Start cpu
   * @cpu:	cpu number
-  */
+diff --git a/arch/arm/mach-zynq/suspend.S b/arch/arm/mach-zynq/suspend.S
+new file mode 100644
+index 000000000..f130bd218
 --- /dev/null
-+++ linux-xlnx-2022.2/arch/arm/mach-zynq/suspend.S	2023-04-14 12:23:53.986581800 +0900
++++ b/arch/arm/mach-zynq/suspend.S
 @@ -0,0 +1,177 @@
 +/* SPDX-License-Identifier: GPL-2.0-only */
 +/*
