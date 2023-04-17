@@ -30,13 +30,13 @@ For Linux Kernel image and Debian Packages, please refer to the respective relea
 
 | Version  | Local Name          | Build Version | Release Tag |
 |:---------|:--------------------|:--------------|:------------|
-| 5.15.36  | zynqmp-fpga-generic | 3             | [5.15.36-zynqmp-fpga-generic-3](https://github.com/ikwzm/ZynqMP-FPGA-Linux-Kernel-5.15/tree/5.15.36-zynqmp-fpga-generic-3) |
+| 5.15.36  | zynqmp-fpga-generic | 4             | [5.15.36-zynqmp-fpga-generic-4](https://github.com/ikwzm/ZynqMP-FPGA-Linux-Kernel-5.15/tree/5.15.36-zynqmp-fpga-generic-4) |
 
 Download
 ------------------------------------------------------------------------------------
 
 ```console
-shell$ export RELEASE_TAG=5.15.36-zynqmp-fpga-generic-3
+shell$ export RELEASE_TAG=5.15.36-zynqmp-fpga-generic-4
 shell$ wget https://github.com/ikwzm/ZynqMP-FPGA-Linux-Kernel-5.15/archive/refs/tags/$RELEASE_TAG.tar.gz
 shell$ tar xfz $RELEASE_TAG.tar.gz
 shell$ cd ZynqMP-FPGA-Linux-Kernel-5.15-$RELEASE_TAG
