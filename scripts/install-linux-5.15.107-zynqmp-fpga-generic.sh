@@ -1,9 +1,9 @@
 #!/bin/bash
 
 CURRENT_DIR=`pwd`
-KERNEL_VERSION=5.15.36
+KERNEL_VERSION=5.15.107
 LOCAL_VERSION=zynqmp-fpga-generic
-BUILD_VERSION=4
+BUILD_VERSION=1
 
 set -e
 script_name=$0
