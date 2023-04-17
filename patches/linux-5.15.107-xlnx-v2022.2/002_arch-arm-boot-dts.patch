@@ -1,6 +1,8 @@
---- linux-5.15.36/Documentation/devicetree/bindings/arm/cpus.yaml	2023-04-14 12:25:41.501021000 +0900
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/arm/cpus.yaml	2023-04-14 12:23:48.523592500 +0900
-@@ -137,6 +137,7 @@
+diff --git a/Documentation/devicetree/bindings/arm/cpus.yaml b/Documentation/devicetree/bindings/arm/cpus.yaml
+index 9a2432a88..901d0e63a 100644
+--- a/Documentation/devicetree/bindings/arm/cpus.yaml
++++ b/Documentation/devicetree/bindings/arm/cpus.yaml
+@@ -137,6 +137,7 @@ properties:
        - arm,cortex-a75
        - arm,cortex-a76
        - arm,cortex-a77
@@ -8,9 +10,11 @@
        - arm,cortex-m0
        - arm,cortex-m0+
        - arm,cortex-m1
---- linux-5.15.36/Documentation/devicetree/bindings/arm/xilinx.yaml	2023-04-14 12:25:41.579121900 +0900
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/arm/xilinx.yaml	2023-04-14 12:23:48.601698600 +0900
-@@ -61,12 +61,6 @@
+diff --git a/Documentation/devicetree/bindings/arm/xilinx.yaml b/Documentation/devicetree/bindings/arm/xilinx.yaml
+index f52c7e8ce..8ede2d13a 100644
+--- a/Documentation/devicetree/bindings/arm/xilinx.yaml
++++ b/Documentation/devicetree/bindings/arm/xilinx.yaml
+@@ -61,12 +61,6 @@ properties:
            - const: xlnx,zynqmp-zc1254
            - const: xlnx,zynqmp
  
@@ -23,7 +27,7 @@
        - description: Xilinx 96boards compatible board zcu100
          items:
            - const: xlnx,zynqmp-zcu100-revC
-@@ -87,6 +81,7 @@
+@@ -87,6 +81,7 @@ properties:
                - xlnx,zynqmp-zcu102-revA
                - xlnx,zynqmp-zcu102-revB
                - xlnx,zynqmp-zcu102-rev1.0
@@ -31,7 +35,7 @@
            - const: xlnx,zynqmp-zcu102
            - const: xlnx,zynqmp
  
-@@ -115,6 +110,54 @@
+@@ -115,6 +110,54 @@ properties:
            - const: xlnx,zynqmp-zcu111
            - const: xlnx,zynqmp
  
@@ -86,9 +90,11 @@
  additionalProperties: true
  
  ...
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/Documentation/devicetree/bindings/arm/zynq/zynq-efuse.txt
+diff --git a/Documentation/devicetree/bindings/arm/zynq/zynq-efuse.txt b/Documentation/devicetree/bindings/arm/zynq/zynq-efuse.txt
+new file mode 100644
+index 000000000..39817e975
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/arm/zynq/zynq-efuse.txt	2023-04-14 12:23:48.601698600 +0900
++++ b/Documentation/devicetree/bindings/arm/zynq/zynq-efuse.txt
 @@ -0,0 +1,15 @@
 +Device tree bindings for Zynq's eFuse Controller
 +
@@ -105,8 +111,10 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/Documentation/devicetr
 +	compatible = "xlnx,zynq-efuse";
 +	reg = <0xf800d000 0x20>;
 +};
---- linux-5.15.36/arch/arm/boot/dts/zynq-7000.dtsi	2023-04-14 12:25:46.098607800 +0900
-+++ linux-xlnx-2022.2/arch/arm/boot/dts/zynq-7000.dtsi	2023-04-14 12:23:53.001980800 +0900
+diff --git a/arch/arm/boot/dts/zynq-7000.dtsi b/arch/arm/boot/dts/zynq-7000.dtsi
+index 47c2a4b14..8a4f72166 100644
+--- a/arch/arm/boot/dts/zynq-7000.dtsi
++++ b/arch/arm/boot/dts/zynq-7000.dtsi
 @@ -1,6 +1,9 @@
 -// SPDX-License-Identifier: GPL-2.0
 +// SPDX-License-Identifier: GPL-2.0+
@@ -235,8 +243,10 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/Documentation/devicetr
  		global_timer: timer@f8f00200 {
  			compatible = "arm,cortex-a9-global-timer";
  			reg = <0xf8f00200 0x20>;
---- linux-5.15.36/arch/arm/boot/dts/zynq-cc108.dts	2023-04-14 12:25:46.098607800 +0900
-+++ linux-xlnx-2022.2/arch/arm/boot/dts/zynq-cc108.dts	2023-04-14 12:23:53.001980800 +0900
+diff --git a/arch/arm/boot/dts/zynq-cc108.dts b/arch/arm/boot/dts/zynq-cc108.dts
+index 8b9ab9bba..036106e22 100644
+--- a/arch/arm/boot/dts/zynq-cc108.dts
++++ b/arch/arm/boot/dts/zynq-cc108.dts
 @@ -18,6 +18,7 @@
  	aliases {
  		ethernet0 = &gem0;
@@ -299,8 +309,10 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/Documentation/devicetr
  	status = "okay";
  };
  
---- linux-5.15.36/arch/arm/boot/dts/zynq-zc702.dts	2023-04-14 12:25:46.098607800 +0900
-+++ linux-xlnx-2022.2/arch/arm/boot/dts/zynq-zc702.dts	2023-04-14 12:23:53.006019100 +0900
+diff --git a/arch/arm/boot/dts/zynq-zc702.dts b/arch/arm/boot/dts/zynq-zc702.dts
+index cf70aff26..292458916 100644
+--- a/arch/arm/boot/dts/zynq-zc702.dts
++++ b/arch/arm/boot/dts/zynq-zc702.dts
 @@ -1,6 +1,6 @@
 -// SPDX-License-Identifier: GPL-2.0
 +// SPDX-License-Identifier: GPL-2.0+
@@ -525,8 +537,10 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/Documentation/devicetr
  	status = "okay";
  	pinctrl-names = "default";
  	pinctrl-0 = <&pinctrl_uart1_default>;
---- linux-5.15.36/arch/arm/boot/dts/zynq-zc706.dts	2023-04-14 12:25:46.098607800 +0900
-+++ linux-xlnx-2022.2/arch/arm/boot/dts/zynq-zc706.dts	2023-04-14 12:23:53.006019100 +0900
+diff --git a/arch/arm/boot/dts/zynq-zc706.dts b/arch/arm/boot/dts/zynq-zc706.dts
+index 77943c16d..cb6e9117f 100644
+--- a/arch/arm/boot/dts/zynq-zc706.dts
++++ b/arch/arm/boot/dts/zynq-zc706.dts
 @@ -1,6 +1,6 @@
 -// SPDX-License-Identifier: GPL-2.0
 +// SPDX-License-Identifier: GPL-2.0+
@@ -700,8 +714,10 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/Documentation/devicetr
 +&watchdog0 {
 +	reset-on-timeout;
 +};
---- linux-5.15.36/arch/arm/boot/dts/zynq-zc770-xm010.dts	2023-04-14 12:25:46.098607800 +0900
-+++ linux-xlnx-2022.2/arch/arm/boot/dts/zynq-zc770-xm010.dts	2023-04-14 12:23:53.006019100 +0900
+diff --git a/arch/arm/boot/dts/zynq-zc770-xm010.dts b/arch/arm/boot/dts/zynq-zc770-xm010.dts
+index 0dd352289..82888141b 100644
+--- a/arch/arm/boot/dts/zynq-zc770-xm010.dts
++++ b/arch/arm/boot/dts/zynq-zc770-xm010.dts
 @@ -15,6 +15,7 @@
  		ethernet0 = &gem0;
  		i2c0 = &i2c0;
@@ -760,8 +776,10 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/Documentation/devicetr
  	status = "okay";
  };
  
---- linux-5.15.36/arch/arm/boot/dts/zynq-zc770-xm011.dts	2023-04-14 12:25:46.098607800 +0900
-+++ linux-xlnx-2022.2/arch/arm/boot/dts/zynq-zc770-xm011.dts	2023-04-14 12:23:53.006019100 +0900
+diff --git a/arch/arm/boot/dts/zynq-zc770-xm011.dts b/arch/arm/boot/dts/zynq-zc770-xm011.dts
+index 56732e8f6..6d8964b03 100644
+--- a/arch/arm/boot/dts/zynq-zc770-xm011.dts
++++ b/arch/arm/boot/dts/zynq-zc770-xm011.dts
 @@ -47,6 +47,33 @@
  	};
  };
@@ -804,8 +822,10 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/Documentation/devicetr
  	status = "okay";
  };
  
---- linux-5.15.36/arch/arm/boot/dts/zynq-zc770-xm012.dts	2023-04-14 12:25:46.098607800 +0900
-+++ linux-xlnx-2022.2/arch/arm/boot/dts/zynq-zc770-xm012.dts	2023-04-14 12:23:53.006019100 +0900
+diff --git a/arch/arm/boot/dts/zynq-zc770-xm012.dts b/arch/arm/boot/dts/zynq-zc770-xm012.dts
+index d2359b789..5f693a924 100644
+--- a/arch/arm/boot/dts/zynq-zc770-xm012.dts
++++ b/arch/arm/boot/dts/zynq-zc770-xm012.dts
 @@ -53,6 +53,35 @@
  	};
  };
@@ -849,8 +869,10 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/Documentation/devicetr
 +	u-boot,dm-pre-reloc;
  	status = "okay";
  };
---- linux-5.15.36/arch/arm/boot/dts/zynq-zc770-xm013.dts	2023-04-14 12:25:46.114228000 +0900
-+++ linux-xlnx-2022.2/arch/arm/boot/dts/zynq-zc770-xm013.dts	2023-04-14 12:23:53.006019100 +0900
+diff --git a/arch/arm/boot/dts/zynq-zc770-xm013.dts b/arch/arm/boot/dts/zynq-zc770-xm013.dts
+index 38d96adc8..c9b5bef2c 100644
+--- a/arch/arm/boot/dts/zynq-zc770-xm013.dts
++++ b/arch/arm/boot/dts/zynq-zc770-xm013.dts
 @@ -15,6 +15,7 @@
  		ethernet0 = &gem1;
  		i2c0 = &i2c1;
@@ -908,8 +930,10 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/Documentation/devicetr
 +	u-boot,dm-pre-reloc;
  	status = "okay";
  };
---- linux-5.15.36/arch/arm/boot/dts/zynq-zed.dts	2023-04-14 12:25:46.114228000 +0900
-+++ linux-xlnx-2022.2/arch/arm/boot/dts/zynq-zed.dts	2023-04-14 12:23:53.006019100 +0900
+diff --git a/arch/arm/boot/dts/zynq-zed.dts b/arch/arm/boot/dts/zynq-zed.dts
+index 6a5a93aa6..2d531a6ea 100644
+--- a/arch/arm/boot/dts/zynq-zed.dts
++++ b/arch/arm/boot/dts/zynq-zed.dts
 @@ -1,6 +1,6 @@
 -// SPDX-License-Identifier: GPL-2.0
 +// SPDX-License-Identifier: GPL-2.0+
@@ -993,8 +1017,10 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/Documentation/devicetr
  	status = "okay";
  };
  
---- linux-5.15.36/arch/arm/boot/dts/zynq-zybo.dts	2023-04-14 12:25:46.114228000 +0900
-+++ linux-xlnx-2022.2/arch/arm/boot/dts/zynq-zybo.dts	2023-04-14 12:23:53.006019100 +0900
+diff --git a/arch/arm/boot/dts/zynq-zybo.dts b/arch/arm/boot/dts/zynq-zybo.dts
+index 755f6f109..0ac54ebbd 100644
+--- a/arch/arm/boot/dts/zynq-zybo.dts
++++ b/arch/arm/boot/dts/zynq-zybo.dts
 @@ -1,6 +1,6 @@
 -// SPDX-License-Identifier: GPL-2.0
 +// SPDX-License-Identifier: GPL-2.0+
