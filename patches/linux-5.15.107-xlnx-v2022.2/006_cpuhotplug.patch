@@ -1,6 +1,8 @@
---- linux-5.15.36/include/linux/cpuhotplug.h	2023-04-14 12:26:10.988994000 +0900
-+++ linux-xlnx-2022.2/include/linux/cpuhotplug.h	2023-04-14 12:24:18.263980700 +0900
-@@ -149,6 +149,7 @@
+diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
+index c88ccc488..63659fc54 100644
+--- a/include/linux/cpuhotplug.h
++++ b/include/linux/cpuhotplug.h
+@@ -150,6 +150,7 @@ enum cpuhp_state {
  	CPUHP_AP_IRQ_MIPS_GIC_STARTING,
  	CPUHP_AP_IRQ_RISCV_STARTING,
  	CPUHP_AP_IRQ_SIFIVE_PLIC_STARTING,
@@ -8,7 +10,7 @@
  	CPUHP_AP_ARM_MVEBU_COHERENCY,
  	CPUHP_AP_MICROCODE_LOADER,
  	CPUHP_AP_PERF_X86_AMD_UNCORE_STARTING,
-@@ -179,6 +180,7 @@
+@@ -180,6 +181,7 @@ enum cpuhp_state {
  	CPUHP_AP_RISCV_TIMER_STARTING,
  	CPUHP_AP_CLINT_TIMER_STARTING,
  	CPUHP_AP_CSKY_TIMER_STARTING,
