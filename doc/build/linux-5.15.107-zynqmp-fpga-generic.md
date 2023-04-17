@@ -72,6 +72,14 @@ shell$ git add --all
 shell$ git commit -m "[patch] for UltraZed-EG IO Carrier Card."
 ```
 
+### Patch for Kria KV260
+
+```console
+shell$ patch -p1 < ../patches/linux-5.15.107-zynqmp-fpga-kv260.diff 
+shell$ git add --all
+shell$ git commit -m "[patch] for Kria KV260."
+```
+
 ### Add zynqmp_fpga_generic_defconfig
 
 ```console

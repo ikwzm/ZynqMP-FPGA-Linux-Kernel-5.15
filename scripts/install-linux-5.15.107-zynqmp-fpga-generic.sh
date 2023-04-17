@@ -166,7 +166,8 @@ do_dtb_install()
 	    dts_target=devicetree-$KERNEL_RELEASE-ultra96v2.dts
 	    ;;
 	Kv260)
-	    dtb_source=zynqmp-smk-k26-revA-sck-kv-g-revB.dtb
+	  # dtb_source=zynqmp-smk-k26-revA-sck-kv-g-revB.dtb
+	    dtb_source=zynqmp-kv260-revB.dts
 	    dtb_target=devicetree-$KERNEL_RELEASE-kv260-revB.dtb
 	    dts_target=devicetree-$KERNEL_RELEASE-kv260-revB.dts
 	    ;;
