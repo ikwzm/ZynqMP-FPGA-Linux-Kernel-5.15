@@ -1,5 +1,8 @@
+diff --git a/arch/arm64/configs/xilinx_defconfig b/arch/arm64/configs/xilinx_defconfig
+new file mode 100644
+index 000000000..d427fa775
 --- /dev/null
-+++ linux-xlnx-2022.2/arch/arm64/configs/xilinx_defconfig	2023-04-14 12:23:54.641137800 +0900
++++ b/arch/arm64/configs/xilinx_defconfig
 @@ -0,0 +1,639 @@
 +CONFIG_SYSVIPC=y
 +CONFIG_POSIX_MQUEUE=y
@@ -640,8 +643,11 @@
 +# CONFIG_SCHED_DEBUG is not set
 +# CONFIG_FTRACE is not set
 +# CONFIG_STRICT_DEVMEM is not set
+diff --git a/arch/arm64/configs/xilinx_versal_defconfig b/arch/arm64/configs/xilinx_versal_defconfig
+new file mode 100644
+index 000000000..beb4d8ced
 --- /dev/null
-+++ linux-xlnx-2022.2/arch/arm64/configs/xilinx_versal_defconfig	2023-04-14 12:23:54.641137800 +0900
++++ b/arch/arm64/configs/xilinx_versal_defconfig
 @@ -0,0 +1,391 @@
 +CONFIG_SYSVIPC=y
 +CONFIG_POSIX_MQUEUE=y
@@ -1034,8 +1040,11 @@
 +# CONFIG_SCHED_DEBUG is not set
 +# CONFIG_FTRACE is not set
 +# CONFIG_STRICT_DEVMEM is not set
+diff --git a/arch/arm64/configs/xilinx_versal_net_defconfig b/arch/arm64/configs/xilinx_versal_net_defconfig
+new file mode 100644
+index 000000000..45b27f8b6
 --- /dev/null
-+++ linux-xlnx-2022.2/arch/arm64/configs/xilinx_versal_net_defconfig	2023-04-14 12:23:54.641137800 +0900
++++ b/arch/arm64/configs/xilinx_versal_net_defconfig
 @@ -0,0 +1,203 @@
 +CONFIG_SYSVIPC=y
 +CONFIG_NO_HZ=y
@@ -1240,8 +1249,11 @@
 +CONFIG_RCU_CPU_STALL_TIMEOUT=80
 +# CONFIG_FTRACE is not set
 +# CONFIG_STRICT_DEVMEM is not set
+diff --git a/arch/arm64/configs/xilinx_zynqmp_defconfig b/arch/arm64/configs/xilinx_zynqmp_defconfig
+new file mode 100644
+index 000000000..42346c936
 --- /dev/null
-+++ linux-xlnx-2022.2/arch/arm64/configs/xilinx_zynqmp_defconfig	2023-04-14 12:23:54.641137800 +0900
++++ b/arch/arm64/configs/xilinx_zynqmp_defconfig
 @@ -0,0 +1,580 @@
 +CONFIG_SYSVIPC=y
 +CONFIG_POSIX_MQUEUE=y
