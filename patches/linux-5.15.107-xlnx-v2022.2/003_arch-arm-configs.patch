@@ -1,5 +1,8 @@
+diff --git a/arch/arm/configs/xilinx_zynq_defconfig b/arch/arm/configs/xilinx_zynq_defconfig
+new file mode 100644
+index 000000000..f3fe07d54
 --- /dev/null
-+++ linux-xlnx-2022.2/arch/arm/configs/xilinx_zynq_defconfig	2023-04-14 12:23:53.052884900 +0900
++++ b/arch/arm/configs/xilinx_zynq_defconfig
 @@ -0,0 +1,232 @@
 +CONFIG_LOCALVERSION="-xilinx"
 +CONFIG_SYSVIPC=y
