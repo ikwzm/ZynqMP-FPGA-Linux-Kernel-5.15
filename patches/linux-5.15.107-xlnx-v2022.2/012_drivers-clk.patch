@@ -1,48 +1,8 @@
---- linux-5.15.36/Documentation/devicetree/bindings/timer/cdns,ttc.yaml	2023-04-14 12:25:43.465420700 +0900
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/timer/cdns,ttc.yaml	2023-04-14 12:23:50.317123700 +0900
-@@ -30,12 +30,26 @@
-     description: |
-       Bit width of the timer, necessary if not 16.
- 
-+  "#pwm-cells":
-+    description: |
-+      Required to configure TTC as PWM device, supported cells are 0 to 3.
-+    minimum: 0
-+    maximum: 3
-+
- required:
-   - compatible
-   - reg
--  - interrupts
-   - clocks
- 
-+allOf:
-+  - if:
-+      not:
-+        required:
-+          - "#pwm-cells"
-+    then:
-+      required:
-+        - interrupts
-+
- additionalProperties: false
- 
- examples:
-@@ -48,3 +62,12 @@
-         clocks = <&cpu_clk 3>;
-         timer-width = <32>;
-     };
-+
-+  - |
-+    ttc1: ttc1@f8002000 {
-+        compatible = "cdns,ttc";
-+        reg = <0xF8002000 0x1000>;
-+        clocks = <&cpu_clk 3>;
-+        timer-width = <32>;
-+        #pwm-cells = <3>;
-+    };
+diff --git a/Documentation/devicetree/bindings/clock/idt,idt8t49n24x.txt b/Documentation/devicetree/bindings/clock/idt,idt8t49n24x.txt
+new file mode 100644
+index 000000000..8b52017cf
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/clock/idt,idt8t49n24x.txt	2023-04-14 12:23:48.664184200 +0900
++++ b/Documentation/devicetree/bindings/clock/idt,idt8t49n24x.txt
 @@ -0,0 +1,156 @@
 +Binding for IDT 8T49N24x Universal Frequency Translator
 +
@@ -200,8 +160,11 @@
 +];
 +	};
 +};
+diff --git a/Documentation/devicetree/bindings/clock/renesas,versaclock7.yaml b/Documentation/devicetree/bindings/clock/renesas,versaclock7.yaml
+new file mode 100644
+index 000000000..cc099d9e1
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/clock/renesas,versaclock7.yaml	2023-04-14 12:23:48.711048100 +0900
++++ b/Documentation/devicetree/bindings/clock/renesas,versaclock7.yaml
 @@ -0,0 +1,64 @@
 +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 +%YAML 1.2
@@ -267,8 +230,11 @@
 +            clock-names = "xin";
 +        };
 +    };
+diff --git a/Documentation/devicetree/bindings/clock/silabs,si5324.txt b/Documentation/devicetree/bindings/clock/silabs,si5324.txt
+new file mode 100644
+index 000000000..642af113a
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/clock/silabs,si5324.txt	2023-04-14 12:23:48.726669400 +0900
++++ b/Documentation/devicetree/bindings/clock/silabs,si5324.txt
 @@ -0,0 +1,78 @@
 +Binding for Silicon Labs si5324, si5328 and si5319 programmable
 +I2C clock generator.
@@ -348,8 +314,11 @@
 +		clock-frequency = <27000000>;
 +	};
 +};
+diff --git a/Documentation/devicetree/bindings/clock/xlnx,clocking-wizard.yaml b/Documentation/devicetree/bindings/clock/xlnx,clocking-wizard.yaml
+new file mode 100644
+index 000000000..634b7b964
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/clock/xlnx,clocking-wizard.yaml	2023-04-14 12:23:48.742290800 +0900
++++ b/Documentation/devicetree/bindings/clock/xlnx,clocking-wizard.yaml
 @@ -0,0 +1,77 @@
 +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 +%YAML 1.2
@@ -428,8 +397,11 @@
 +        clocks = <&clkc 15>, <&clkc 15>;
 +    };
 +...
+diff --git a/Documentation/devicetree/bindings/clock/xlnx,vcu.txt b/Documentation/devicetree/bindings/clock/xlnx,vcu.txt
+new file mode 100644
+index 000000000..825d4523c
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/clock/xlnx,vcu.txt	2023-04-14 12:23:48.742290800 +0900
++++ b/Documentation/devicetree/bindings/clock/xlnx,vcu.txt
 @@ -0,0 +1,33 @@
 +LogicoreIP designed compatible with Xilinx ZYNQ family.
 +-------------------------------------------------------
@@ -464,9 +436,11 @@
 +		clocks = <&si570_1>, <&clkc 71>;
 +		clock-names = "pll_ref", "aclk";
 +	};
---- linux-5.15.36/Documentation/devicetree/bindings/clock/xlnx,versal-clk.yaml	2023-04-14 12:25:41.718442700 +0900
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/clock/xlnx,versal-clk.yaml	2023-04-14 12:23:48.742290800 +0900
-@@ -30,13 +30,11 @@
+diff --git a/Documentation/devicetree/bindings/clock/xlnx,versal-clk.yaml b/Documentation/devicetree/bindings/clock/xlnx,versal-clk.yaml
+index 229af98b1..59aaaffbd 100644
+--- a/Documentation/devicetree/bindings/clock/xlnx,versal-clk.yaml
++++ b/Documentation/devicetree/bindings/clock/xlnx,versal-clk.yaml
+@@ -30,13 +30,11 @@ properties:
        clocks to the given clock controller.
      items:
        - description: reference clock
@@ -480,7 +454,7 @@
        - const: pl_alt_ref
  
  required:
-@@ -56,8 +54,8 @@
+@@ -56,8 +54,8 @@ examples:
          versal_clk: clock-controller {
            #clock-cells = <1>;
            compatible = "xlnx,versal-clk";
@@ -491,8 +465,11 @@
          };
        };
      };
+diff --git a/Documentation/devicetree/bindings/clock/xlnx,versal-wiz.yaml b/Documentation/devicetree/bindings/clock/xlnx,versal-wiz.yaml
+new file mode 100644
+index 000000000..00d657280
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/clock/xlnx,versal-wiz.yaml	2023-04-14 12:23:48.742290800 +0900
++++ b/Documentation/devicetree/bindings/clock/xlnx,versal-wiz.yaml
 @@ -0,0 +1,58 @@
 +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 +%YAML 1.2
@@ -552,22 +529,56 @@
 +        "clk_out6", "clk_out7";
 +    };
 +...
---- linux-5.15.36/include/linux/clk/zynq.h	2023-04-14 12:26:10.973372700 +0900
-+++ linux-xlnx-2022.2/include/linux/clk/zynq.h	2023-04-14 12:24:18.232738100 +0900
-@@ -9,6 +9,10 @@
+diff --git a/Documentation/devicetree/bindings/timer/cdns,ttc.yaml b/Documentation/devicetree/bindings/timer/cdns,ttc.yaml
+index 8615353f6..de9ba25e3 100644
+--- a/Documentation/devicetree/bindings/timer/cdns,ttc.yaml
++++ b/Documentation/devicetree/bindings/timer/cdns,ttc.yaml
+@@ -30,12 +30,26 @@ properties:
+     description: |
+       Bit width of the timer, necessary if not 16.
  
- #include <linux/spinlock.h>
++  "#pwm-cells":
++    description: |
++      Required to configure TTC as PWM device, supported cells are 0 to 3.
++    minimum: 0
++    maximum: 3
++
+ required:
+   - compatible
+   - reg
+-  - interrupts
+   - clocks
  
-+int zynq_clk_suspend_early(void);
-+void zynq_clk_resume_late(void);
-+void zynq_clk_topswitch_enable(void);
-+void zynq_clk_topswitch_disable(void);
- void zynq_clock_init(void);
++allOf:
++  - if:
++      not:
++        required:
++          - "#pwm-cells"
++    then:
++      required:
++        - interrupts
++
+ additionalProperties: false
  
- struct clk *clk_register_zynq_pll(const char *name, const char *parent,
---- linux-5.15.36/drivers/clk/Kconfig	2023-04-14 12:25:53.111074500 +0900
-+++ linux-xlnx-2022.2/drivers/clk/Kconfig	2023-04-14 12:24:00.323264300 +0900
-@@ -162,6 +162,38 @@
+ examples:
+@@ -48,3 +62,12 @@ examples:
+         clocks = <&cpu_clk 3>;
+         timer-width = <32>;
+     };
++
++  - |
++    ttc1: ttc1@f8002000 {
++        compatible = "cdns,ttc";
++        reg = <0xF8002000 0x1000>;
++        clocks = <&cpu_clk 3>;
++        timer-width = <32>;
++        #pwm-cells = <3>;
++    };
+diff --git a/drivers/clk/Kconfig b/drivers/clk/Kconfig
+index 100e474ff..ea670cb79 100644
+--- a/drivers/clk/Kconfig
++++ b/drivers/clk/Kconfig
+@@ -162,6 +162,38 @@ config COMMON_CLK_BM1880
  	help
  	  This driver supports the clocks on Bitmain BM1880 SoC.
  
@@ -606,7 +617,7 @@
  config COMMON_CLK_CDCE706
  	tristate "Clock driver for TI CDCE706 clock synthesizer"
  	depends on I2C
-@@ -334,6 +366,15 @@
+@@ -334,6 +366,15 @@ config COMMON_CLK_VC5
  	  This driver supports the IDT VersaClock 5 and VersaClock 6
  	  programmable clock generators.
  
@@ -622,7 +633,7 @@
  config COMMON_CLK_STM32MP157
  	def_bool COMMON_CLK && MACH_STM32MP157
  	help
-@@ -390,6 +431,21 @@
+@@ -390,6 +431,21 @@ config COMMON_CLK_K210
  	help
  	  Support for the Canaan Kendryte K210 RISC-V SoC clocks.
  
@@ -644,9 +655,11 @@
  source "drivers/clk/actions/Kconfig"
  source "drivers/clk/analogbits/Kconfig"
  source "drivers/clk/baikal-t1/Kconfig"
---- linux-5.15.36/drivers/clk/Makefile	2023-04-14 12:25:53.111074500 +0900
-+++ linux-xlnx-2022.2/drivers/clk/Makefile	2023-04-14 12:24:00.323264300 +0900
-@@ -63,11 +63,16 @@
+diff --git a/drivers/clk/Makefile b/drivers/clk/Makefile
+index e42312121..f2f94f1df 100644
+--- a/drivers/clk/Makefile
++++ b/drivers/clk/Makefile
+@@ -63,11 +63,16 @@ obj-$(CONFIG_COMMON_CLK_SI570)		+= clk-si570.o
  obj-$(CONFIG_COMMON_CLK_STM32F)		+= clk-stm32f4.o
  obj-$(CONFIG_COMMON_CLK_STM32H7)	+= clk-stm32h7.o
  obj-$(CONFIG_COMMON_CLK_STM32MP157)	+= clk-stm32mp1.o
@@ -663,7 +676,7 @@
  
  # please keep this section sorted lexicographically by directory path name
  obj-y					+= actions/
-@@ -81,6 +86,7 @@
+@@ -81,6 +86,7 @@ obj-$(CONFIG_ARCH_BERLIN)		+= berlin/
  obj-$(CONFIG_ARCH_DAVINCI)		+= davinci/
  obj-$(CONFIG_H8300)			+= h8300/
  obj-$(CONFIG_ARCH_HISI)			+= hisilicon/
@@ -671,8 +684,11 @@
  obj-y					+= imgtec/
  obj-y					+= imx/
  obj-y					+= ingenic/
+diff --git a/drivers/clk/clk-si5324.c b/drivers/clk/clk-si5324.c
+new file mode 100644
+index 000000000..7cfe75d7e
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/clk/clk-si5324.c	2023-04-14 12:24:00.401404600 +0900
++++ b/drivers/clk/clk-si5324.c
 @@ -0,0 +1,1227 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
@@ -1901,8 +1917,11 @@
 +MODULE_AUTHOR("Venkateshwar Rao G <vgannava@xilinx.com>");
 +MODULE_DESCRIPTION("Silicon Labs 5319/5324/5328 clock driver");
 +MODULE_LICENSE("GPL v2");
+diff --git a/drivers/clk/clk-si5324.h b/drivers/clk/clk-si5324.h
+new file mode 100644
+index 000000000..48e62a67f
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/clk/clk-si5324.h	2023-04-14 12:24:00.401404600 +0900
++++ b/drivers/clk/clk-si5324.h
 @@ -0,0 +1,140 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
 +/*
@@ -2044,8 +2063,11 @@
 +#define SI5324_RESET_DELAY_MS		20
 +
 +#endif
+diff --git a/drivers/clk/clk-versaclock7.c b/drivers/clk/clk-versaclock7.c
+new file mode 100644
+index 000000000..6dd6cec41
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/clk/clk-versaclock7.c	2023-04-14 12:24:00.401404600 +0900
++++ b/drivers/clk/clk-versaclock7.c
 @@ -0,0 +1,1292 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
@@ -3339,8 +3361,11 @@
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("Alex Helms <alexander.helms.jy@renesas.com");
 +MODULE_DESCRIPTION("Renesas Versaclock7 common clock framework driver");
+diff --git a/drivers/clk/clk-xlnx-clock-wizard-v.c b/drivers/clk/clk-xlnx-clock-wizard-v.c
+new file mode 100644
+index 000000000..fdb583d82
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/clk/clk-xlnx-clock-wizard-v.c	2023-04-14 12:24:00.401404600 +0900
++++ b/drivers/clk/clk-xlnx-clock-wizard-v.c
 @@ -0,0 +1,766 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
@@ -4108,8 +4133,11 @@
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>");
 +MODULE_DESCRIPTION("Driver for the Versal Clocking Wizard IP core");
+diff --git a/drivers/clk/clk-xlnx-clock-wizard.c b/drivers/clk/clk-xlnx-clock-wizard.c
+new file mode 100644
+index 000000000..e13f3fa04
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/clk/clk-xlnx-clock-wizard.c	2023-04-14 12:24:00.401404600 +0900
++++ b/drivers/clk/clk-xlnx-clock-wizard.c
 @@ -0,0 +1,861 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
@@ -4972,16 +5000,20 @@
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("Soeren Brinkmann <soren.brinkmann@xilinx.com");
 +MODULE_DESCRIPTION("Driver for the Xilinx Clocking Wizard IP core");
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/clk/idt/Makefile
+diff --git a/drivers/clk/idt/Makefile b/drivers/clk/idt/Makefile
+new file mode 100644
+index 000000000..4cf2b6e48
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/clk/idt/Makefile	2023-04-14 12:24:00.423024700 +0900
++++ b/drivers/clk/idt/Makefile
 @@ -0,0 +1,3 @@
 +obj-y += clk-idt8t49n24x-core.o
 +obj-y += clk-idt8t49n24x-debugfs.o
 +obj-y += clk-idt8t49n24x.o
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/clk/idt/clk-idt8t49n24x-core.c
+diff --git a/drivers/clk/idt/clk-idt8t49n24x-core.c b/drivers/clk/idt/clk-idt8t49n24x-core.c
+new file mode 100644
+index 000000000..ad23014e7
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/clk/idt/clk-idt8t49n24x-core.c	2023-04-14 12:24:00.423024700 +0900
++++ b/drivers/clk/idt/clk-idt8t49n24x-core.c
 @@ -0,0 +1,933 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/* clk-idt8t49n24x-core.c - Program 8T49N24x settings via I2C (common code)
@@ -5916,9 +5948,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/clk/idt/clk-id
 +
 +	return 0;
 +}
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/clk/idt/clk-idt8t49n24x-core.h
+diff --git a/drivers/clk/idt/clk-idt8t49n24x-core.h b/drivers/clk/idt/clk-idt8t49n24x-core.h
+new file mode 100644
+index 000000000..247ec070c
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/clk/idt/clk-idt8t49n24x-core.h	2023-04-14 12:24:00.423024700 +0900
++++ b/drivers/clk/idt/clk-idt8t49n24x-core.h
 @@ -0,0 +1,272 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
 +/* clk-idt8t49n24x-core.h - Program 8T49N24x settings via I2C (common code)
@@ -6192,9 +6226,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/clk/idt/clk-id
 +int idt24x_set_frequency(struct clk_idt24x_chip *chip);
 +
 +#endif /* __IDT_CLK_IDT8T49N24X_CORE_H_ */
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/clk/idt/clk-idt8t49n24x-debugfs.c
+diff --git a/drivers/clk/idt/clk-idt8t49n24x-debugfs.c b/drivers/clk/idt/clk-idt8t49n24x-debugfs.c
+new file mode 100644
+index 000000000..5767ffa12
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/clk/idt/clk-idt8t49n24x-debugfs.c	2023-04-14 12:24:00.423024700 +0900
++++ b/drivers/clk/idt/clk-idt8t49n24x-debugfs.c
 @@ -0,0 +1,375 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/* clk-idt8t49n24x-debugfs.c - Debugfs support for 8T49N24x
@@ -6571,9 +6607,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/clk/idt/clk-id
 +{
 +	debugfs_remove_recursive(chip->debugfs_dirroot);
 +}
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/clk/idt/clk-idt8t49n24x-debugfs.h
+diff --git a/drivers/clk/idt/clk-idt8t49n24x-debugfs.h b/drivers/clk/idt/clk-idt8t49n24x-debugfs.h
+new file mode 100644
+index 000000000..673016c8e
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/clk/idt/clk-idt8t49n24x-debugfs.h	2023-04-14 12:24:00.438647700 +0900
++++ b/drivers/clk/idt/clk-idt8t49n24x-debugfs.h
 @@ -0,0 +1,21 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
 +/* clk-idt8t49n24x-debugfs.h - Debugfs support for 8T49N24x
@@ -6596,9 +6634,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/clk/idt/clk-id
 +void idt24x_cleanup_debugfs(struct clk_idt24x_chip *chip);
 +
 +#endif /* __IDT_CLK_IDT8T49N24X_DEBUGFS_H_*/
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/clk/idt/clk-idt8t49n24x.c
+diff --git a/drivers/clk/idt/clk-idt8t49n24x.c b/drivers/clk/idt/clk-idt8t49n24x.c
+new file mode 100644
+index 000000000..878637986
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/clk/idt/clk-idt8t49n24x.c	2023-04-14 12:24:00.438647700 +0900
++++ b/drivers/clk/idt/clk-idt8t49n24x.c
 @@ -0,0 +1,641 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/* clk-idt8t49n24x.c - Program 8T49N24x settings via I2C.
@@ -7241,8 +7281,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/clk/idt/clk-id
 +MODULE_DESCRIPTION("8T49N24x ccf driver");
 +MODULE_AUTHOR("David Cater <david.cater@idt.com>");
 +MODULE_LICENSE("GPL v2");
+diff --git a/drivers/clk/si5324.h b/drivers/clk/si5324.h
+new file mode 100644
+index 000000000..b3826e7b2
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/clk/si5324.h	2023-04-14 12:24:00.672967400 +0900
++++ b/drivers/clk/si5324.h
 @@ -0,0 +1,68 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
 +/*
@@ -7312,8 +7355,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/clk/idt/clk-id
 +};
 +
 +#endif
+diff --git a/drivers/clk/si5324drv.c b/drivers/clk/si5324drv.c
+new file mode 100644
+index 000000000..622ec6efd
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/clk/si5324drv.c	2023-04-14 12:24:00.672967400 +0900
++++ b/drivers/clk/si5324drv.c
 @@ -0,0 +1,383 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
@@ -7698,8 +7744,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/clk/idt/clk-id
 +
 +	return SI5324_SUCCESS;
 +}
+diff --git a/drivers/clk/si5324drv.h b/drivers/clk/si5324drv.h
+new file mode 100644
+index 000000000..28ea3050d
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/clk/si5324drv.h	2023-04-14 12:24:00.672967400 +0900
++++ b/drivers/clk/si5324drv.h
 @@ -0,0 +1,100 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
 +/*
@@ -7801,8 +7850,10 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/clk/idt/clk-id
 +int si5324_calc_ncls_limits(struct si5324_settingst *settings);
 +
 +#endif /* SI5324DRV_H_ */
---- linux-5.15.36/drivers/clk/xilinx/xlnx_vcu.c	2023-04-14 12:25:53.570649700 +0900
-+++ linux-xlnx-2022.2/drivers/clk/xilinx/xlnx_vcu.c	2023-04-14 12:24:00.790877900 +0900
+diff --git a/drivers/clk/xilinx/xlnx_vcu.c b/drivers/clk/xilinx/xlnx_vcu.c
+index d66b13151..0d075b49e 100644
+--- a/drivers/clk/xilinx/xlnx_vcu.c
++++ b/drivers/clk/xilinx/xlnx_vcu.c
 @@ -11,6 +11,7 @@
  #include <linux/clk-provider.h>
  #include <linux/device.h>
@@ -7840,7 +7891,7 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/clk/idt/clk-id
  static struct regmap_config vcu_settings_regmap_config = {
  	.name = "regmap",
  	.reg_bits = 32,
-@@ -223,6 +202,78 @@
+@@ -223,6 +202,78 @@ static inline void xvcu_write(void __iomem *iomem, u32 offset, u32 value)
  	iowrite32(value, iomem + offset);
  }
  
@@ -7919,7 +7970,7 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/clk/idt/clk-id
  #define to_vcu_pll(_hw) container_of(_hw, struct vcu_pll, hw)
  
  struct vcu_pll {
-@@ -547,7 +598,7 @@
+@@ -547,7 +598,7 @@ static int xvcu_register_clock_provider(struct xvcu_device *xvcu)
  		return PTR_ERR(hw);
  	xvcu->pll_post = hw;
  
@@ -7928,7 +7979,7 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/clk/idt/clk-id
  	parent_data[1].hw = xvcu->pll_post;
  
  	hws[CLK_XVCU_ENC_CORE] =
-@@ -676,6 +727,24 @@
+@@ -676,6 +727,24 @@ static int xvcu_probe(struct platform_device *pdev)
  	 * Bit 0 : Gasket isolation
  	 * Bit 1 : put VCU out of reset
  	 */
@@ -7953,7 +8004,7 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/clk/idt/clk-id
  	regmap_write(xvcu->logicore_reg_ba, VCU_GASKET_INIT, VCU_GASKET_VALUE);
  
  	ret = xvcu_register_clock_provider(xvcu);
-@@ -686,10 +755,17 @@
+@@ -686,10 +755,17 @@ static int xvcu_probe(struct platform_device *pdev)
  
  	dev_set_drvdata(&pdev->dev, xvcu);
  
@@ -7971,7 +8022,7 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/clk/idt/clk-id
  	clk_disable_unprepare(xvcu->aclk);
  	return ret;
  }
-@@ -713,6 +789,13 @@
+@@ -713,6 +789,13 @@ static int xvcu_remove(struct platform_device *pdev)
  	xvcu_unregister_clock_provider(xvcu);
  
  	/* Add the Gasket isolation and put the VCU in reset. */
@@ -7985,9 +8036,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/clk/idt/clk-id
  	regmap_write(xvcu->logicore_reg_ba, VCU_GASKET_INIT, 0);
  
  	clk_disable_unprepare(xvcu->aclk);
---- linux-5.15.36/drivers/clk/zynq/clkc.c	2023-04-14 12:25:53.570649700 +0900
-+++ linux-xlnx-2022.2/drivers/clk/zynq/clkc.c	2023-04-14 12:24:00.790877900 +0900
-@@ -37,6 +37,7 @@
+diff --git a/drivers/clk/zynq/clkc.c b/drivers/clk/zynq/clkc.c
+index 204b83d91..bcc1bddaf 100644
+--- a/drivers/clk/zynq/clkc.c
++++ b/drivers/clk/zynq/clkc.c
+@@ -37,6 +37,7 @@ static void __iomem *zynq_clkc_base;
  #define SLCR_CAN_MIOCLK_CTRL		(zynq_clkc_base + 0x60)
  #define SLCR_DBG_CLK_CTRL		(zynq_clkc_base + 0x64)
  #define SLCR_PCAP_CLK_CTRL		(zynq_clkc_base + 0x68)
@@ -7995,7 +8048,7 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/clk/idt/clk-id
  #define SLCR_FPGA0_CLK_CTRL		(zynq_clkc_base + 0x70)
  #define SLCR_621_TRUE			(zynq_clkc_base + 0xc4)
  #define SLCR_SWDT_CLK_SEL		(zynq_clkc_base + 0x204)
-@@ -99,6 +100,48 @@
+@@ -99,6 +100,48 @@ static const char *const gem1_emio_input_names[] __initconst = {
  static const char *const swdt_ext_clk_input_names[] __initconst = {
  	"swdt_ext_clk"};
  
@@ -8044,7 +8097,7 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/clk/idt/clk-id
  static void __init zynq_clk_register_fclk(enum zynq_clk fclk,
  		const char *clk_name, void __iomem *fclk_ctrl_reg,
  		const char **parents, int enable)
-@@ -349,19 +392,20 @@
+@@ -349,19 +392,20 @@ static void __init zynq_clk_setup(struct device_node *np)
  	/* Peripheral clocks */
  	for (i = fclk0; i <= fclk3; i++) {
  		int enable = !!(fclk_enable & BIT(i - fclk0));
@@ -8071,8 +8124,10 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/clk/idt/clk-id
  
  	zynq_clk_register_periph_clk(sdio0, sdio1, clk_output_name[sdio0],
  			clk_output_name[sdio1], SLCR_SDIO_CLK_CTRL,
---- linux-5.15.36/drivers/clk/zynq/pll.c	2023-04-14 12:25:53.570649700 +0900
-+++ linux-xlnx-2022.2/drivers/clk/zynq/pll.c	2023-04-14 12:24:00.790877900 +0900
+diff --git a/drivers/clk/zynq/pll.c b/drivers/clk/zynq/pll.c
+index 54f4184de..e5f8fb704 100644
+--- a/drivers/clk/zynq/pll.c
++++ b/drivers/clk/zynq/pll.c
 @@ -12,7 +12,7 @@
  #include <linux/io.h>
  
@@ -8082,7 +8137,7 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/clk/idt/clk-id
   * @hw:		Handle between common and hardware-specific interfaces
   * @pll_ctrl:	PLL control register
   * @pll_status:	PLL status register
-@@ -46,7 +46,7 @@
+@@ -46,7 +46,7 @@ struct zynq_pll {
   * @hw:		Handle between common and hardware-specific interfaces
   * @rate:	Desired clock frequency
   * @prate:	Clock frequency of parent clock
@@ -8091,7 +8146,7 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/clk/idt/clk-id
   */
  static long zynq_pll_round_rate(struct clk_hw *hw, unsigned long rate,
  		unsigned long *prate)
-@@ -66,7 +66,7 @@
+@@ -66,7 +66,7 @@ static long zynq_pll_round_rate(struct clk_hw *hw, unsigned long rate,
   * zynq_pll_recalc_rate() - Recalculate clock frequency
   * @hw:			Handle between common and hardware-specific interfaces
   * @parent_rate:	Clock frequency of parent clock
@@ -8100,7 +8155,7 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/clk/idt/clk-id
   */
  static unsigned long zynq_pll_recalc_rate(struct clk_hw *hw,
  		unsigned long parent_rate)
-@@ -87,7 +87,7 @@
+@@ -87,7 +87,7 @@ static unsigned long zynq_pll_recalc_rate(struct clk_hw *hw,
  /**
   * zynq_pll_is_enabled - Check if a clock is enabled
   * @hw:		Handle between common and hardware-specific interfaces
@@ -8109,7 +8164,7 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/clk/idt/clk-id
   *
   * Not sure this is a good idea, but since disabled means bypassed for
   * this clock implementation we say we are always enabled.
-@@ -110,7 +110,7 @@
+@@ -110,7 +110,7 @@ static int zynq_pll_is_enabled(struct clk_hw *hw)
  /**
   * zynq_pll_enable - Enable clock
   * @hw:		Handle between common and hardware-specific interfaces
@@ -8118,7 +8173,7 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/clk/idt/clk-id
   */
  static int zynq_pll_enable(struct clk_hw *hw)
  {
-@@ -179,7 +179,7 @@
+@@ -179,7 +179,7 @@ static const struct clk_ops zynq_pll_ops = {
   * @pll_status:	Pointer to PLL status register
   * @lock_index:	Bit index to this PLL's lock status bit in @pll_status
   * @lock:	Register lock
@@ -8127,25 +8182,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/clk/idt/clk-id
   */
  struct clk *clk_register_zynq_pll(const char *name, const char *parent,
  		void __iomem *pll_ctrl, void __iomem *pll_status, u8 lock_index,
---- linux-5.15.36/drivers/clk/zynqmp/clkc.c	2023-04-14 12:25:53.570649700 +0900
-+++ linux-xlnx-2022.2/drivers/clk/zynqmp/clkc.c	2023-04-14 12:24:00.806523100 +0900
-@@ -710,6 +710,13 @@
- 				  FIELD_PREP(CLK_ATTR_NODE_INDEX, i);
- 
- 		zynqmp_pm_clock_get_name(clock[i].clk_id, &name);
-+
-+		/*
-+		 * Terminate with NULL character in case name provided by firmware
-+		 * is longer and truncated due to size limit.
-+		 */
-+		name.name[sizeof(name.name) - 1] = '\0';
-+
- 		if (!strcmp(name.name, RESERVED_CLK_NAME))
- 			continue;
- 		strncpy(clock[i].clk_name, name.name, MAX_NAME_LEN);
---- linux-5.15.36/drivers/clk/zynqmp/divider.c	2023-04-14 12:25:53.570649700 +0900
-+++ linux-xlnx-2022.2/drivers/clk/zynqmp/divider.c	2023-04-14 12:24:00.806523100 +0900
-@@ -113,17 +113,20 @@
+diff --git a/drivers/clk/zynqmp/divider.c b/drivers/clk/zynqmp/divider.c
+index cb49281f9..47a199346 100644
+--- a/drivers/clk/zynqmp/divider.c
++++ b/drivers/clk/zynqmp/divider.c
+@@ -113,17 +113,20 @@ static unsigned long zynqmp_clk_divider_recalc_rate(struct clk_hw *hw,
  static void zynqmp_get_divider2_val(struct clk_hw *hw,
  				    unsigned long rate,
  				    struct zynqmp_clk_divider *divider,
@@ -8169,9 +8210,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/clk/idt/clk-id
  	if (!pdivider)
  		return;
  
---- linux-5.15.36/drivers/clocksource/timer-cadence-ttc.c	2023-04-14 12:25:53.601894600 +0900
-+++ linux-xlnx-2022.2/drivers/clocksource/timer-cadence-ttc.c	2023-04-14 12:24:00.822145000 +0900
-@@ -476,6 +476,9 @@
+diff --git a/drivers/clocksource/timer-cadence-ttc.c b/drivers/clocksource/timer-cadence-ttc.c
+index 4efd0cf3b..ba4664914 100644
+--- a/drivers/clocksource/timer-cadence-ttc.c
++++ b/drivers/clocksource/timer-cadence-ttc.c
+@@ -476,6 +476,9 @@ static int __init ttc_timer_probe(struct platform_device *pdev)
  	u32 timer_width = 16;
  	struct device_node *timer = pdev->dev.of_node;
  
@@ -8181,3 +8224,18 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/clk/idt/clk-id
  	if (initialized)
  		return 0;
  
+diff --git a/include/linux/clk/zynq.h b/include/linux/clk/zynq.h
+index a198dd925..d1135756a 100644
+--- a/include/linux/clk/zynq.h
++++ b/include/linux/clk/zynq.h
+@@ -9,6 +9,10 @@
+ 
+ #include <linux/spinlock.h>
+ 
++int zynq_clk_suspend_early(void);
++void zynq_clk_resume_late(void);
++void zynq_clk_topswitch_enable(void);
++void zynq_clk_topswitch_disable(void);
+ void zynq_clock_init(void);
+ 
+ struct clk *clk_register_zynq_pll(const char *name, const char *parent,
