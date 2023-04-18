@@ -1,5 +1,8 @@
+diff --git a/Documentation/devicetree/bindings/net/can/xilinx,can.yaml b/Documentation/devicetree/bindings/net/can/xilinx,can.yaml
+new file mode 100644
+index 000000000..65af8183c
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/net/can/xilinx,can.yaml	2023-04-14 12:23:49.581619800 +0900
++++ b/Documentation/devicetree/bindings/net/can/xilinx,can.yaml
 @@ -0,0 +1,161 @@
 +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 +%YAML 1.2
@@ -162,9 +165,11 @@
 +        tx-mailbox-count = <0x20>;
 +        rx-fifo-depth = <0x40>;
 +    };
---- linux-5.15.36/drivers/net/can/xilinx_can.c	2023-04-14 12:26:01.724512300 +0900
-+++ linux-xlnx-2022.2/drivers/net/can/xilinx_can.c	2023-04-14 12:24:08.843220800 +0900
-@@ -133,6 +133,8 @@
+diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
+index a2e751f0a..622d71058 100644
+--- a/drivers/net/can/xilinx_can.c
++++ b/drivers/net/can/xilinx_can.c
+@@ -133,6 +133,8 @@ enum xcan_reg {
  #define XCAN_DLCR_BRS_MASK		0x04000000 /* BRS Mask in DLC */
  
  /* CAN register bit shift - XCAN_<REG>_<BIT>_SHIFT */
@@ -173,7 +178,7 @@
  #define XCAN_BTR_SJW_SHIFT		7  /* Synchronous jump width */
  #define XCAN_BTR_TS2_SHIFT		4  /* Time segment 2 */
  #define XCAN_BTR_SJW_SHIFT_CANFD	16 /* Synchronous jump width */
-@@ -142,6 +144,8 @@
+@@ -142,6 +144,8 @@ enum xcan_reg {
  #define XCAN_DLCR_DLC_SHIFT		28 /* Data length code */
  #define XCAN_ESR_REC_SHIFT		8  /* Rx Error Count */
  
@@ -182,7 +187,7 @@
  /* CAN frame length constants */
  #define XCAN_FRAME_MAX_DATA_LEN		8
  #define XCANFD_DW_BYTES			4
-@@ -161,6 +165,17 @@
+@@ -161,6 +165,17 @@ enum xcan_reg {
  #define XCAN_FLAG_RX_FIFO_MULTI	0x0010
  #define XCAN_FLAG_CANFD_2	0x0020
  
@@ -200,25 +205,7 @@
  enum xcan_ip_type {
  	XAXI_CAN = 0,
  	XZYNQ_CANPS,
-@@ -259,7 +274,7 @@
- 	.tseg2_min = 1,
- 	.tseg2_max = 128,
- 	.sjw_max = 128,
--	.brp_min = 2,
-+	.brp_min = 1,
- 	.brp_max = 256,
- 	.brp_inc = 1,
- };
-@@ -272,7 +287,7 @@
- 	.tseg2_min = 1,
- 	.tseg2_max = 16,
- 	.sjw_max = 16,
--	.brp_min = 2,
-+	.brp_min = 1,
- 	.brp_max = 256,
- 	.brp_inc = 1,
- };
-@@ -425,6 +440,10 @@
+@@ -425,6 +440,10 @@ static int xcan_set_bittiming(struct net_device *ndev)
  	    priv->devtype.cantype == XAXI_CANFD_2_0) {
  		/* Setting Baud Rate prescalar value in F_BRPR Register */
  		btr0 = dbt->brp - 1;
@@ -229,7 +216,7 @@
  
  		/* Setting Time Segment 1 in BTR Register */
  		btr1 = dbt->prop_seg + dbt->phase_seg1 - 1;
-@@ -516,8 +535,7 @@
+@@ -516,8 +535,7 @@ static int xcan_chip_start(struct net_device *ndev)
   * @ndev:	Pointer to net_device structure
   * @mode:	Tells the mode of the driver
   *
@@ -239,7 +226,7 @@
   *
   * Return: 0 on success and failure value on error
   */
-@@ -982,7 +1000,7 @@
+@@ -982,7 +1000,7 @@ static void xcan_update_error_state_after_rxtx(struct net_device *ndev)
   * @isr:	interrupt status register value
   *
   * This is the CAN error interrupt and it will
@@ -248,7 +235,7 @@
   * frame to upper layers.
   */
  static void xcan_err_interrupt(struct net_device *ndev, u32 isr)
-@@ -1219,10 +1237,11 @@
+@@ -1219,10 +1237,11 @@ static int xcan_rx_poll(struct napi_struct *napi, int quota)
  	}
  
  	if (work_done < quota) {
@@ -264,7 +251,7 @@
  	}
  	return work_done;
  }
-@@ -1823,6 +1842,8 @@
+@@ -1823,6 +1842,8 @@ static int xcan_probe(struct platform_device *pdev)
  		priv->write_reg(priv, XCAN_AFR_2_ID_OFFSET, 0x00000000);
  		priv->write_reg(priv, XCAN_AFR_2_MASK_OFFSET, 0x00000000);
  	}
