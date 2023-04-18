@@ -1,5 +1,7 @@
---- linux-5.15.36/drivers/rtc/rtc-zynqmp.c	2023-04-14 12:26:05.819326300 +0900
-+++ linux-xlnx-2022.2/drivers/rtc/rtc-zynqmp.c	2023-04-14 12:24:12.923867900 +0900
+diff --git a/drivers/rtc/rtc-zynqmp.c b/drivers/rtc/rtc-zynqmp.c
+index f440bb52b..7e3c7bf21 100644
+--- a/drivers/rtc/rtc-zynqmp.c
++++ b/drivers/rtc/rtc-zynqmp.c
 @@ -40,6 +40,12 @@
  #define RTC_CALIB_MASK		0x1FFFFF
  #define RTC_ALRM_MASK          BIT(1)
@@ -13,7 +15,7 @@
  
  struct xlnx_rtc_dev {
  	struct rtc_device	*rtc;
-@@ -184,12 +190,86 @@
+@@ -184,12 +190,86 @@ static void xlnx_init_rtc(struct xlnx_rtc_dev *xrtcdev)
  	writel(xrtcdev->calibval, (xrtcdev->reg_base + RTC_CALIB_WR));
  }
  
