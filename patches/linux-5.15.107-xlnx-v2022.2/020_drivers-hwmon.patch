@@ -1,5 +1,8 @@
+diff --git a/Documentation/devicetree/bindings/hwmon/tps544.txt b/Documentation/devicetree/bindings/hwmon/tps544.txt
+new file mode 100644
+index 000000000..bb71fd287
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/hwmon/tps544.txt	2023-04-14 12:23:49.037488600 +0900
++++ b/Documentation/devicetree/bindings/hwmon/tps544.txt
 @@ -0,0 +1,14 @@
 +TPS544B25 power regulator
 +
@@ -15,9 +18,11 @@
 +	compatible = "ti,tps544";
 +	reg = <0x24>;
 +};
---- linux-5.15.36/drivers/hwmon/pmbus/Kconfig	2023-04-14 12:25:58.171872800 +0900
-+++ linux-xlnx-2022.2/drivers/hwmon/pmbus/Kconfig	2023-04-14 12:24:05.270188000 +0900
-@@ -340,6 +340,26 @@
+diff --git a/drivers/hwmon/pmbus/Kconfig b/drivers/hwmon/pmbus/Kconfig
+index ffb609cee..3e2a1b123 100644
+--- a/drivers/hwmon/pmbus/Kconfig
++++ b/drivers/hwmon/pmbus/Kconfig
+@@ -340,6 +340,26 @@ config SENSORS_TPS53679
  	  This driver can also be built as a module. If so, the module will
  	  be called tps53679.
  
@@ -44,9 +49,11 @@
  config SENSORS_UCD9000
  	tristate "TI UCD90120, UCD90124, UCD90160, UCD90320, UCD9090, UCD90910"
  	help
---- linux-5.15.36/drivers/hwmon/pmbus/Makefile	2023-04-14 12:25:58.171872800 +0900
-+++ linux-xlnx-2022.2/drivers/hwmon/pmbus/Makefile	2023-04-14 12:24:05.270188000 +0900
-@@ -37,6 +37,7 @@
+diff --git a/drivers/hwmon/pmbus/Makefile b/drivers/hwmon/pmbus/Makefile
+index 0ed4d596a..45d90e7ac 100644
+--- a/drivers/hwmon/pmbus/Makefile
++++ b/drivers/hwmon/pmbus/Makefile
+@@ -37,6 +37,7 @@ obj-$(CONFIG_SENSORS_Q54SJ108A2)	+= q54sj108a2.o
  obj-$(CONFIG_SENSORS_STPDDC60)	+= stpddc60.o
  obj-$(CONFIG_SENSORS_TPS40422)	+= tps40422.o
  obj-$(CONFIG_SENSORS_TPS53679)	+= tps53679.o
@@ -54,8 +61,11 @@
  obj-$(CONFIG_SENSORS_UCD9000)	+= ucd9000.o
  obj-$(CONFIG_SENSORS_UCD9200)	+= ucd9200.o
  obj-$(CONFIG_SENSORS_XDPE122)	+= xdpe12284.o
+diff --git a/drivers/hwmon/pmbus/tps544.c b/drivers/hwmon/pmbus/tps544.c
+new file mode 100644
+index 000000000..3cf31ff47
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/hwmon/pmbus/tps544.c	2023-04-14 12:24:05.301416000 +0900
++++ b/drivers/hwmon/pmbus/tps544.c
 @@ -0,0 +1,362 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
