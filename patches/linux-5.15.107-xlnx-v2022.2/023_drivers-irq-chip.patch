@@ -1,5 +1,8 @@
+diff --git a/Documentation/devicetree/bindings/interrupt-controller/xilinx,intc.txt b/Documentation/devicetree/bindings/interrupt-controller/xilinx,intc.txt
+new file mode 100644
+index 000000000..03b39f4b1
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/interrupt-controller/xilinx,intc.txt	2023-04-14 12:23:49.271808200 +0900
++++ b/Documentation/devicetree/bindings/interrupt-controller/xilinx,intc.txt
 @@ -0,0 +1,56 @@
 +Xilinx Interrupt Controller
 +
@@ -57,100 +60,27 @@
 +	xlnx,kind-of-intr = <0x1>;
 +	xlnx,num-intr-inputs = <0x1>;
 +};
---- linux-5.15.36/include/linux/irq.h	2023-04-14 12:26:11.208232700 +0900
-+++ linux-xlnx-2022.2/include/linux/irq.h	2023-04-14 12:24:18.489684900 +0900
-@@ -1102,6 +1102,21 @@
- 	struct irq_chip_generic	*gc[];
- };
- 
-+#ifdef CONFIG_IRQCHIP_XILINX_INTC_MODULE_SUPPORT_EXPERIMENTAL
-+/**
-+ * struct irqc_init_remove_funps - Stores function pointers for irqc init
-+ * and remove APIs. Used when the irqchip driver is to be used as a module.
-+ * @irqchip_initp:	Function pointer for init/entry point of a irqchip driver.
-+ * @irqchip_removep:Function pointer for irqchip driver remove function.
-+ */
-+struct irqc_init_remove_funps {
-+	int (*irqchip_initp)(struct device_node *irqc,
-+			     struct device_node *parent);
-+	int (*irqchip_removep)(struct device_node *irqc,
-+			       struct device_node *parent);
-+};
-+#endif
-+
- /* Generic chip callback functions */
- void irq_gc_noop(struct irq_data *d);
- void irq_gc_mask_disable_reg(struct irq_data *d);
-@@ -1254,7 +1269,11 @@
-  * Returns 0 on success, or -EBUSY if an IRQ handler has already been
-  * registered.
-  */
-+#ifndef CONFIG_IRQCHIP_XILINX_INTC_MODULE_SUPPORT_EXPERIMENTAL
- int __init set_handle_irq(void (*handle_irq)(struct pt_regs *));
-+#else
-+int set_handle_irq(void (*handle_irq)(struct pt_regs *));
-+#endif
- 
- /*
-  * Allows interrupt handlers to find the irqchip that's been registered as the
---- linux-5.15.36/include/linux/irqchip/arm-gic.h	2023-04-14 12:26:11.208232700 +0900
-+++ linux-xlnx-2022.2/include/linux/irqchip/arm-gic.h	2023-04-14 12:24:18.489684900 +0900
-@@ -134,6 +134,9 @@
- 
- void gic_cascade_irq(unsigned int gic_nr, unsigned int irq);
- int gic_cpu_if_down(unsigned int gic_nr);
-+void gic_ipi_send_mask(struct irq_data *d, const struct cpumask *mask);
-+
-+void gic_set_cpu(unsigned int cpu, unsigned int irq);
- void gic_cpu_save(struct gic_chip_data *gic);
- void gic_cpu_restore(struct gic_chip_data *gic);
- void gic_dist_save(struct gic_chip_data *gic);
---- linux-5.15.36/include/linux/irqchip.h	2023-04-14 12:26:11.208232700 +0900
-+++ linux-xlnx-2022.2/include/linux/irqchip.h	2023-04-14 12:24:18.489684900 +0900
-@@ -29,12 +29,16 @@
- #define IRQCHIP_DECLARE(name, compat, fn) OF_DECLARE_2(irqchip, name, compat, fn)
- 
- extern int platform_irqchip_probe(struct platform_device *pdev);
-+#ifdef CONFIG_IRQCHIP_XILINX_INTC_MODULE_SUPPORT_EXPERIMENTAL
-+extern int platform_irqchip_remove(struct platform_device *pdev);
-+#endif
- 
- #define IRQCHIP_PLATFORM_DRIVER_BEGIN(drv_name) \
- static const struct of_device_id drv_name##_irqchip_match_table[] = {
- 
- #define IRQCHIP_MATCH(compat, fn) { .compatible = compat, .data = fn },
+diff --git a/arch/arm64/kernel/irq.c b/arch/arm64/kernel/irq.c
+index bda49430c..77cb40cf4 100644
+--- a/arch/arm64/kernel/irq.c
++++ b/arch/arm64/kernel/irq.c
+@@ -84,7 +84,11 @@ static void default_handle_fiq(struct pt_regs *regs)
+ void (*handle_arch_irq)(struct pt_regs *) __ro_after_init = default_handle_irq;
+ void (*handle_arch_fiq)(struct pt_regs *) __ro_after_init = default_handle_fiq;
  
 +#ifndef CONFIG_IRQCHIP_XILINX_INTC_MODULE_SUPPORT_EXPERIMENTAL
- #define IRQCHIP_PLATFORM_DRIVER_END(drv_name)				\
- 	{},								\
- };									\
-@@ -49,6 +53,23 @@
- 	},								\
- };									\
- builtin_platform_driver(drv_name##_driver)
+ int __init set_handle_irq(void (*handle_irq)(struct pt_regs *))
 +#else
-+#define IRQCHIP_PLATFORM_DRIVER_END(drv_name)				\
-+	{},								\
-+};									\
-+MODULE_DEVICE_TABLE(of, drv_name##_irqchip_match_table);		\
-+static struct platform_driver drv_name##_driver = {		\
-+	.probe  = platform_irqchip_probe,				\
-+	.remove = platform_irqchip_remove,              \
-+	.driver = {							\
-+		.name = #drv_name,					\
-+		.owner = THIS_MODULE,					\
-+		.of_match_table = drv_name##_irqchip_match_table,	\
-+		.suppress_bind_attrs = true,				\
-+	},								\
-+};									\
-+builtin_platform_driver(drv_name##_driver)
++int set_handle_irq(void (*handle_irq)(struct pt_regs *))
 +#endif
- 
- /*
-  * This macro must be used by the different irqchip drivers to declare
---- linux-5.15.36/drivers/irqchip/Kconfig	2023-04-14 12:25:59.343796700 +0900
-+++ linux-xlnx-2022.2/drivers/irqchip/Kconfig	2023-04-14 12:24:06.374080600 +0900
-@@ -287,6 +287,13 @@
+ {
+ 	if (handle_arch_irq != default_handle_irq)
+ 		return -EBUSY;
+diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
+index ae1b9f59a..f88c86426 100644
+--- a/drivers/irqchip/Kconfig
++++ b/drivers/irqchip/Kconfig
+@@ -287,6 +287,13 @@ config XILINX_INTC
  	  This is used as a primary controller with MicroBlaze and can also
  	  be used as a secondary chained controller on other platforms.
  
@@ -164,9 +94,11 @@
  config IRQ_CROSSBAR
  	bool
  	help
---- linux-5.15.36/drivers/irqchip/irq-gic.c	2023-04-14 12:25:59.359418600 +0900
-+++ linux-xlnx-2022.2/drivers/irqchip/irq-gic.c	2023-04-14 12:24:06.389702000 +0900
-@@ -818,18 +818,30 @@
+diff --git a/drivers/irqchip/irq-gic.c b/drivers/irqchip/irq-gic.c
+index 99077f30f..b4f2ef507 100644
+--- a/drivers/irqchip/irq-gic.c
++++ b/drivers/irqchip/irq-gic.c
+@@ -818,18 +818,30 @@ static int gic_set_affinity(struct irq_data *d, const struct cpumask *mask_val,
  	return IRQ_SET_MASK_OK_DONE;
  }
  
@@ -199,7 +131,7 @@
  	gic_lock_irqsave(flags);
  
  	/* Convert our logical CPU mask into a physical one. */
-@@ -847,6 +859,7 @@
+@@ -847,6 +859,7 @@ static void gic_ipi_send_mask(struct irq_data *d, const struct cpumask *mask)
  
  	gic_unlock_irqrestore(flags);
  }
@@ -207,7 +139,7 @@
  
  static int gic_starting_cpu(unsigned int cpu)
  {
-@@ -894,6 +907,7 @@
+@@ -894,6 +907,7 @@ void gic_send_sgi(unsigned int cpu_id, unsigned int irq)
  	/* this always happens on GIC0 */
  	writel_relaxed((cpu_id << 16) | irq, gic_data_dist_base(&gic_data[0]) + GIC_DIST_SOFTINT);
  }
@@ -215,8 +147,10 @@
  
  /*
   * gic_get_cpu_id - get the CPU interface ID for the specified CPU
---- linux-5.15.36/drivers/irqchip/irq-xilinx-intc.c	2023-04-14 12:25:59.390660000 +0900
-+++ linux-xlnx-2022.2/drivers/irqchip/irq-xilinx-intc.c	2023-04-14 12:24:06.436565800 +0900
+diff --git a/drivers/irqchip/irq-xilinx-intc.c b/drivers/irqchip/irq-xilinx-intc.c
+index 356a59755..251d9cccd 100644
+--- a/drivers/irqchip/irq-xilinx-intc.c
++++ b/drivers/irqchip/irq-xilinx-intc.c
 @@ -18,6 +18,8 @@
  #include <linux/jump_label.h>
  #include <linux/bug.h>
@@ -267,7 +201,7 @@
  {
  	if (static_branch_unlikely(&xintc_is_be))
  		return ioread32be(irqc->base + reg);
-@@ -59,10 +69,30 @@
+@@ -59,10 +69,30 @@ static u32 xintc_read(struct xintc_irq_chip *irqc, int reg)
  		return ioread32(irqc->base + reg);
  }
  
@@ -300,7 +234,7 @@
  
  	pr_debug("irq-xilinx: enable_or_unmask: %ld\n", d->hwirq);
  
-@@ -71,73 +101,83 @@
+@@ -71,73 +101,83 @@ static void intc_enable_or_unmask(struct irq_data *d)
  	 * acks the irq before calling the interrupt handler
  	 */
  	if (irqd_is_level_type(d))
@@ -423,7 +357,7 @@
  	return 0;
  }
  
-@@ -146,33 +186,134 @@
+@@ -146,33 +186,134 @@ static const struct irq_domain_ops xintc_irq_domain_ops = {
  	.map = xintc_map,
  };
  
@@ -565,7 +499,7 @@
  	irqc->base = of_iomap(intc, 0);
  	BUG_ON(!irqc->base);
  
-@@ -191,36 +332,45 @@
+@@ -191,36 +332,45 @@ static int __init xilinx_intc_of_init(struct device_node *intc,
  	if (irqc->intr_mask >> irqc->nr_irq)
  		pr_warn("irq-xilinx: mismatch in kind-of-intr param\n");
  
@@ -629,7 +563,7 @@
  		if (irq) {
  			irq_set_chained_handler_and_data(irq,
  							 xil_intc_irq_handler,
-@@ -228,21 +378,95 @@
+@@ -228,21 +378,95 @@ static int __init xilinx_intc_of_init(struct device_node *intc,
  		} else {
  			pr_err("irq-xilinx: interrupts property not in DT\n");
  			ret = -EINVAL;
@@ -650,7 +584,7 @@
 +	 */
 +	irq_set_default_host(irqc->domain);
 +	set_handle_irq(xil_intc_handle_irq);
- 
++
 +	ret = cpuhp_setup_state(CPUHP_AP_IRQ_XILINX_STARTING,
 +				"microblaze/arch_intc:starting",
 +				xil_intc_start, xil_intc_stop);
@@ -658,7 +592,7 @@
 +#if defined(CONFIG_SMP) && defined(CONFIG_MICROBLAZE)
 +	set_smp_cross_call(send_ipi);
 +#endif
-+
+ 
 +	return ret;
 +
 +err_alloc:
@@ -677,7 +611,7 @@
 +{
 +	int irq;
 +	struct xintc_irq_chip *irqc;
- 
++
 +	if (!parent)
 +		return 0;
 +
@@ -711,7 +645,7 @@
 +
 +	iounmap(irqc->base);
 +	kfree(irqc);
-+
+ 
 +	return 0;
  }
  
@@ -731,8 +665,10 @@
  IRQCHIP_DECLARE(xilinx_intc_xps, "xlnx,xps-intc-1.00.a", xilinx_intc_of_init);
  IRQCHIP_DECLARE(xilinx_intc_opb, "xlnx,opb-intc-1.00.c", xilinx_intc_of_init);
 +#endif
---- linux-5.15.36/drivers/irqchip/irqchip.c	2023-04-14 12:25:59.390660000 +0900
-+++ linux-xlnx-2022.2/drivers/irqchip/irqchip.c	2023-04-14 12:24:06.436565800 +0900
+diff --git a/drivers/irqchip/irqchip.c b/drivers/irqchip/irqchip.c
+index 7899607fb..0cc55f4c6 100644
+--- a/drivers/irqchip/irqchip.c
++++ b/drivers/irqchip/irqchip.c
 @@ -15,6 +15,14 @@
  #include <linux/irqchip.h>
  #include <linux/platform_device.h>
@@ -748,7 +684,7 @@
  /*
   * This special of_device_id is the sentinel at the end of the
   * of_device_id[] array of all irqchips. It is automatically placed at
-@@ -32,6 +40,7 @@
+@@ -32,6 +40,7 @@ void __init irqchip_init(void)
  	acpi_probe_device_table(irqchip);
  }
  
@@ -756,7 +692,7 @@
  int platform_irqchip_probe(struct platform_device *pdev)
  {
  	struct device_node *np = pdev->dev.of_node;
-@@ -58,3 +67,59 @@
+@@ -62,3 +71,59 @@ int platform_irqchip_probe(struct platform_device *pdev)
  	return irq_init_cb(np, par_np);
  }
  EXPORT_SYMBOL_GPL(platform_irqchip_probe);
@@ -816,9 +752,108 @@
 +}
 +EXPORT_SYMBOL_GPL(platform_irqchip_remove);
 +#endif
---- linux-5.15.36/kernel/irq/handle.c	2023-04-14 12:26:13.158058700 +0900
-+++ linux-xlnx-2022.2/kernel/irq/handle.c	2023-04-14 12:24:20.448426600 +0900
-@@ -218,7 +218,11 @@
+diff --git a/include/linux/irq.h b/include/linux/irq.h
+index f9e6449fb..83d2fd4dc 100644
+--- a/include/linux/irq.h
++++ b/include/linux/irq.h
+@@ -1108,6 +1108,21 @@ struct irq_domain_chip_generic {
+ 	struct irq_chip_generic	*gc[];
+ };
+ 
++#ifdef CONFIG_IRQCHIP_XILINX_INTC_MODULE_SUPPORT_EXPERIMENTAL
++/**
++ * struct irqc_init_remove_funps - Stores function pointers for irqc init
++ * and remove APIs. Used when the irqchip driver is to be used as a module.
++ * @irqchip_initp:	Function pointer for init/entry point of a irqchip driver.
++ * @irqchip_removep:Function pointer for irqchip driver remove function.
++ */
++struct irqc_init_remove_funps {
++	int (*irqchip_initp)(struct device_node *irqc,
++			     struct device_node *parent);
++	int (*irqchip_removep)(struct device_node *irqc,
++			       struct device_node *parent);
++};
++#endif
++
+ /* Generic chip callback functions */
+ void irq_gc_noop(struct irq_data *d);
+ void irq_gc_mask_disable_reg(struct irq_data *d);
+@@ -1260,7 +1275,11 @@ int ipi_send_mask(unsigned int virq, const struct cpumask *dest);
+  * Returns 0 on success, or -EBUSY if an IRQ handler has already been
+  * registered.
+  */
++#ifndef CONFIG_IRQCHIP_XILINX_INTC_MODULE_SUPPORT_EXPERIMENTAL
+ int __init set_handle_irq(void (*handle_irq)(struct pt_regs *));
++#else
++int set_handle_irq(void (*handle_irq)(struct pt_regs *));
++#endif
+ 
+ /*
+  * Allows interrupt handlers to find the irqchip that's been registered as the
+diff --git a/include/linux/irqchip.h b/include/linux/irqchip.h
+index 67351aac6..14ff16730 100644
+--- a/include/linux/irqchip.h
++++ b/include/linux/irqchip.h
+@@ -29,12 +29,16 @@
+ #define IRQCHIP_DECLARE(name, compat, fn) OF_DECLARE_2(irqchip, name, compat, fn)
+ 
+ extern int platform_irqchip_probe(struct platform_device *pdev);
++#ifdef CONFIG_IRQCHIP_XILINX_INTC_MODULE_SUPPORT_EXPERIMENTAL
++extern int platform_irqchip_remove(struct platform_device *pdev);
++#endif
+ 
+ #define IRQCHIP_PLATFORM_DRIVER_BEGIN(drv_name) \
+ static const struct of_device_id drv_name##_irqchip_match_table[] = {
+ 
+ #define IRQCHIP_MATCH(compat, fn) { .compatible = compat, .data = fn },
+ 
++#ifndef CONFIG_IRQCHIP_XILINX_INTC_MODULE_SUPPORT_EXPERIMENTAL
+ #define IRQCHIP_PLATFORM_DRIVER_END(drv_name)				\
+ 	{},								\
+ };									\
+@@ -49,6 +53,23 @@ static struct platform_driver drv_name##_driver = {		\
+ 	},								\
+ };									\
+ builtin_platform_driver(drv_name##_driver)
++#else
++#define IRQCHIP_PLATFORM_DRIVER_END(drv_name)				\
++	{},								\
++};									\
++MODULE_DEVICE_TABLE(of, drv_name##_irqchip_match_table);		\
++static struct platform_driver drv_name##_driver = {		\
++	.probe  = platform_irqchip_probe,				\
++	.remove = platform_irqchip_remove,              \
++	.driver = {							\
++		.name = #drv_name,					\
++		.owner = THIS_MODULE,					\
++		.of_match_table = drv_name##_irqchip_match_table,	\
++		.suppress_bind_attrs = true,				\
++	},								\
++};									\
++builtin_platform_driver(drv_name##_driver)
++#endif
+ 
+ /*
+  * This macro must be used by the different irqchip drivers to declare
+diff --git a/include/linux/irqchip/arm-gic.h b/include/linux/irqchip/arm-gic.h
+index 5686711b0..310d46e2a 100644
+--- a/include/linux/irqchip/arm-gic.h
++++ b/include/linux/irqchip/arm-gic.h
+@@ -134,6 +134,9 @@ struct gic_chip_data;
+ 
+ void gic_cascade_irq(unsigned int gic_nr, unsigned int irq);
+ int gic_cpu_if_down(unsigned int gic_nr);
++void gic_ipi_send_mask(struct irq_data *d, const struct cpumask *mask);
++
++void gic_set_cpu(unsigned int cpu, unsigned int irq);
+ void gic_cpu_save(struct gic_chip_data *gic);
+ void gic_cpu_restore(struct gic_chip_data *gic);
+ void gic_dist_save(struct gic_chip_data *gic);
+diff --git a/kernel/irq/handle.c b/kernel/irq/handle.c
+index fca637d4d..eac7a6625 100644
+--- a/kernel/irq/handle.c
++++ b/kernel/irq/handle.c
+@@ -218,7 +218,11 @@ irqreturn_t handle_irq_event(struct irq_desc *desc)
  }
  
  #ifdef CONFIG_GENERIC_IRQ_MULTI_HANDLER
@@ -829,18 +864,4 @@
 +#endif
  {
  	if (handle_arch_irq)
- 		return -EBUSY;
---- linux-5.15.36/arch/arm64/kernel/irq.c	2023-04-14 12:25:47.741880200 +0900
-+++ linux-xlnx-2022.2/arch/arm64/kernel/irq.c	2023-04-14 12:23:54.766108700 +0900
-@@ -84,7 +84,11 @@
- void (*handle_arch_irq)(struct pt_regs *) __ro_after_init = default_handle_irq;
- void (*handle_arch_fiq)(struct pt_regs *) __ro_after_init = default_handle_fiq;
- 
-+#ifndef CONFIG_IRQCHIP_XILINX_INTC_MODULE_SUPPORT_EXPERIMENTAL
- int __init set_handle_irq(void (*handle_irq)(struct pt_regs *))
-+#else
-+int set_handle_irq(void (*handle_irq)(struct pt_regs *))
-+#endif
- {
- 	if (handle_arch_irq != default_handle_irq)
  		return -EBUSY;
