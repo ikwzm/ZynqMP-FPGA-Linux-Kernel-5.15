@@ -1,5 +1,8 @@
+diff --git a/Documentation/ABI/testing/sysfs-driver-cortexa53-edac b/Documentation/ABI/testing/sysfs-driver-cortexa53-edac
+new file mode 100644
+index 000000000..87ed5ca3a
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/ABI/testing/sysfs-driver-cortexa53-edac	2023-04-14 12:23:48.133059200 +0900
++++ b/Documentation/ABI/testing/sysfs-driver-cortexa53-edac
 @@ -0,0 +1,10 @@
 +What:		/sys/devices/system/edac/cpu_cache/inject_(L1/L2)_Cache_Error
 +Date:		June 2016
@@ -11,8 +14,11 @@
 +		cpu_cache/inject_L1_Error for L1 cache error injection and
 +		echo 1 > /sys/devices/system/edac/cpu_cache/inject_L2_Error
 +		for L2 cache error injection.
+diff --git a/Documentation/devicetree/bindings/edac/cortex-arm64-edac.txt b/Documentation/devicetree/bindings/edac/cortex-arm64-edac.txt
+new file mode 100644
+index 000000000..552f0c777
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/edac/cortex-arm64-edac.txt	2023-04-14 12:23:48.929746300 +0900
++++ b/Documentation/devicetree/bindings/edac/cortex-arm64-edac.txt
 @@ -0,0 +1,15 @@
 +* ARM Cortex A57 and A53 L1/L2 cache error reporting
 +
@@ -29,8 +35,11 @@
 +		compatible = "arm,cortex-a57-edac";
 +	};
 +
+diff --git a/Documentation/devicetree/bindings/edac/pl310_edac_l2.txt b/Documentation/devicetree/bindings/edac/pl310_edac_l2.txt
+new file mode 100644
+index 000000000..94fbb8da2
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/edac/pl310_edac_l2.txt	2023-04-14 12:23:48.929746300 +0900
++++ b/Documentation/devicetree/bindings/edac/pl310_edac_l2.txt
 @@ -0,0 +1,19 @@
 +Pl310 L2 Cache EDAC driver, it does reports the data and tag ram parity errors.
 +
@@ -51,8 +60,11 @@
 +
 +PL310 L2 Cache EDAC driver detects the Parity enable state by reading the
 +appropriate control register.
+diff --git a/Documentation/devicetree/bindings/edac/xlnx,versal-ddrmc-edac.yaml b/Documentation/devicetree/bindings/edac/xlnx,versal-ddrmc-edac.yaml
+new file mode 100644
+index 000000000..b92fcef46
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/edac/xlnx,versal-ddrmc-edac.yaml	2023-04-14 12:23:48.929746300 +0900
++++ b/Documentation/devicetree/bindings/edac/xlnx,versal-ddrmc-edac.yaml
 @@ -0,0 +1,61 @@
 +# SPDX-License-Identifier: GPL-2.0
 +%YAML 1.2
@@ -115,8 +127,11 @@
 +        xlnx,mc-id = <0>;
 +      };
 +    };
+diff --git a/Documentation/devicetree/bindings/edac/xlnx,versal-xilsem-edac.yaml b/Documentation/devicetree/bindings/edac/xlnx,versal-xilsem-edac.yaml
+new file mode 100644
+index 000000000..d3cef0d65
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/edac/xlnx,versal-xilsem-edac.yaml	2023-04-14 12:23:48.929746300 +0900
++++ b/Documentation/devicetree/bindings/edac/xlnx,versal-xilsem-edac.yaml
 @@ -0,0 +1,42 @@
 +# SPDX-License-Identifier: GPL-2.0
 +%YAML 1.2
@@ -160,8 +175,11 @@
 +        compatible = "xlnx,versal-xilsem-edac";
 +        reg = <0xF2014050 0xC4>;
 +      };
+diff --git a/Documentation/devicetree/bindings/edac/xlnx,zynqmp-ocmc.yaml b/Documentation/devicetree/bindings/edac/xlnx,zynqmp-ocmc.yaml
+new file mode 100644
+index 000000000..5c2f5d29e
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/edac/xlnx,zynqmp-ocmc.yaml	2023-04-14 12:23:48.929746300 +0900
++++ b/Documentation/devicetree/bindings/edac/xlnx,zynqmp-ocmc.yaml
 @@ -0,0 +1,41 @@
 +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
 +%YAML 1.2
@@ -204,8 +222,11 @@
 +        interrupt-parent = <&gic>;
 +        interrupts = <0 10 4>;
 +      };
+diff --git a/Documentation/devicetree/bindings/edac/zynqmp_ocm_edac.txt b/Documentation/devicetree/bindings/edac/zynqmp_ocm_edac.txt
+new file mode 100644
+index 000000000..252bb96be
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/edac/zynqmp_ocm_edac.txt	2023-04-14 12:23:48.929746300 +0900
++++ b/Documentation/devicetree/bindings/edac/zynqmp_ocm_edac.txt
 @@ -0,0 +1,18 @@
 +Xilinx ZynqMP OCM EDAC driver, it does reports the OCM ECC single bit errors
 +that are corrected and double bit ecc errors that are detected by the OCM
@@ -225,9 +246,11 @@
 +	interrupt-parent = <&gic>;
 +	interrupts = <0 10 4>;
 +};
---- linux-5.15.36/drivers/edac/Kconfig	2023-04-14 12:25:54.296729200 +0900
-+++ linux-xlnx-2022.2/drivers/edac/Kconfig	2023-04-14 12:24:01.420146700 +0900
-@@ -343,6 +343,13 @@
+diff --git a/drivers/edac/Kconfig b/drivers/edac/Kconfig
+index 2fc4c3f91..8364d9b53 100644
+--- a/drivers/edac/Kconfig
++++ b/drivers/edac/Kconfig
+@@ -343,6 +343,13 @@ config EDAC_CPC925
  	  a companion chip to the PowerPC 970 family of
  	  processors.
  
@@ -241,7 +264,7 @@
  config EDAC_HIGHBANK_MC
  	tristate "Highbank Memory Controller"
  	depends on ARCH_HIGHBANK
-@@ -489,6 +496,13 @@
+@@ -489,6 +496,13 @@ config EDAC_SYNOPSYS
  	  Support for error detection and correction on the Synopsys DDR
  	  memory controller.
  
@@ -255,7 +278,7 @@
  config EDAC_XGENE
  	tristate "APM X-Gene SoC"
  	depends on (ARM64 || COMPILE_TEST)
-@@ -496,6 +510,14 @@
+@@ -496,6 +510,14 @@ config EDAC_XGENE
  	  Support for error detection and correction on the
  	  APM X-Gene family of SOCs.
  
@@ -270,7 +293,7 @@
  config EDAC_TI
  	tristate "Texas Instruments DDR3 ECC Controller"
  	depends on ARCH_KEYSTONE || SOC_DRA7XX
-@@ -539,4 +561,31 @@
+@@ -539,4 +561,31 @@ config EDAC_DMC520
  	  Support for error detection and correction on the
  	  SoCs with ARM DMC-520 DRAM controller.
  
@@ -302,9 +325,11 @@
 +	  uncorrectable errors.
 +
  endif # EDAC
---- linux-5.15.36/drivers/edac/Makefile	2023-04-14 12:25:54.296729200 +0900
-+++ linux-xlnx-2022.2/drivers/edac/Makefile	2023-04-14 12:24:01.420146700 +0900
-@@ -75,12 +75,17 @@
+diff --git a/drivers/edac/Makefile b/drivers/edac/Makefile
+index 2d1641a27..b19c446c4 100644
+--- a/drivers/edac/Makefile
++++ b/drivers/edac/Makefile
+@@ -75,12 +75,17 @@ obj-$(CONFIG_EDAC_OCTEON_PCI)		+= octeon_edac-pci.o
  obj-$(CONFIG_EDAC_THUNDERX)		+= thunderx_edac.o
  
  obj-$(CONFIG_EDAC_ALTERA)		+= altera_edac.o
@@ -322,8 +347,11 @@
 +obj-$(CONFIG_EDAC_XILINX_DDR)		+= xilinx_ddrmc_edac.o
 +obj-$(CONFIG_EDAC_XILINX_XILSEM)	+= xilinx_xilsem_edac.o
  obj-$(CONFIG_EDAC_DMC520)		+= dmc520_edac.o
+diff --git a/drivers/edac/cortex_arm64_edac.c b/drivers/edac/cortex_arm64_edac.c
+new file mode 100644
+index 000000000..cff447bfc
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/edac/cortex_arm64_edac.c	2023-04-14 12:24:01.420146700 +0900
++++ b/drivers/edac/cortex_arm64_edac.c
 @@ -0,0 +1,471 @@
 +/*
 + * Cortex A57 and A53 EDAC
@@ -796,8 +824,11 @@
 +MODULE_DESCRIPTION("Cortex A57 and A53 EDAC driver");
 +module_param(poll_msec, int, 0444);
 +MODULE_PARM_DESC(poll_msec, "EDAC monitor poll interval in msec");
+diff --git a/drivers/edac/pl310_edac_l2.c b/drivers/edac/pl310_edac_l2.c
+new file mode 100644
+index 000000000..57f2f5b02
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/edac/pl310_edac_l2.c	2023-04-14 12:24:01.435767700 +0900
++++ b/drivers/edac/pl310_edac_l2.c
 @@ -0,0 +1,233 @@
 +/*
 + * Pl310 L2 Cache EDAC Driver
@@ -1032,9 +1063,11 @@
 +MODULE_AUTHOR("Xilinx Inc.");
 +MODULE_DESCRIPTION("pl310 L2 EDAC driver");
 +MODULE_LICENSE("GPL");
---- linux-5.15.36/drivers/edac/synopsys_edac.c	2023-04-14 12:25:54.343621800 +0900
-+++ linux-xlnx-2022.2/drivers/edac/synopsys_edac.c	2023-04-14 12:24:01.451389000 +0900
-@@ -497,7 +497,7 @@
+diff --git a/drivers/edac/synopsys_edac.c b/drivers/edac/synopsys_edac.c
+index 8557781bb..e8687a4e8 100644
+--- a/drivers/edac/synopsys_edac.c
++++ b/drivers/edac/synopsys_edac.c
+@@ -497,7 +497,7 @@ static void handle_error(struct mem_ctl_info *mci, struct synps_ecc_status *p)
  		}
  
  		edac_mc_handle_error(HW_EVENT_ERR_CORRECTED, mci,
@@ -1043,7 +1076,7 @@
  				     priv->message, "");
  	}
  
-@@ -515,7 +515,7 @@
+@@ -515,7 +515,7 @@ static void handle_error(struct mem_ctl_info *mci, struct synps_ecc_status *p)
  		}
  
  		edac_mc_handle_error(HW_EVENT_ERR_UNCORRECTED, mci,
@@ -1052,8 +1085,11 @@
  				     priv->message, "");
  	}
  
+diff --git a/drivers/edac/xilinx_ddrmc_edac.c b/drivers/edac/xilinx_ddrmc_edac.c
+new file mode 100644
+index 000000000..e04419cde
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/edac/xilinx_ddrmc_edac.c	2023-04-14 12:24:01.451389000 +0900
++++ b/drivers/edac/xilinx_ddrmc_edac.c
 @@ -0,0 +1,1279 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
@@ -2334,8 +2370,11 @@
 +MODULE_AUTHOR("Xilinx Inc");
 +MODULE_DESCRIPTION("Xilinx DDRMC ECC driver");
 +MODULE_LICENSE("GPL");
+diff --git a/drivers/edac/xilinx_xilsem_edac.c b/drivers/edac/xilinx_xilsem_edac.c
+new file mode 100644
+index 000000000..62ae32371
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/edac/xilinx_xilsem_edac.c	2023-04-14 12:24:01.451389000 +0900
++++ b/drivers/edac/xilinx_xilsem_edac.c
 @@ -0,0 +1,323 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
@@ -2660,8 +2699,11 @@
 +MODULE_AUTHOR("Advanced Micro Devices, Inc.");
 +MODULE_DESCRIPTION("Xilinx XilSEM driver");
 +MODULE_LICENSE("GPL");
+diff --git a/drivers/edac/zynqmp_ocm_edac.c b/drivers/edac/zynqmp_ocm_edac.c
+new file mode 100644
+index 000000000..8de6f1c1f
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/edac/zynqmp_ocm_edac.c	2023-04-14 12:24:01.451389000 +0900
++++ b/drivers/edac/zynqmp_ocm_edac.c
 @@ -0,0 +1,638 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
