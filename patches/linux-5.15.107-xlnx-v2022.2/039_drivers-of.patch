@@ -1,5 +1,8 @@
+diff --git a/Documentation/devicetree/configfs-overlays.txt b/Documentation/devicetree/configfs-overlays.txt
+new file mode 100644
+index 000000000..5fa43e064
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/configfs-overlays.txt	2023-04-14 12:23:50.426473500 +0900
++++ b/Documentation/devicetree/configfs-overlays.txt
 @@ -0,0 +1,31 @@
 +Howto use the configfs overlay interface.
 +
@@ -32,22 +35,11 @@
 +better suited to different use patterns. The firmware interface is what's
 +intended to be used by hardware managers in the kernel, while the copy interface
 +make sense for developers (since it avoids problems with namespaces).
---- linux-5.15.36/include/linux/of_irq.h	2023-04-14 12:26:11.515544100 +0900
-+++ linux-xlnx-2022.2/include/linux/of_irq.h	2023-04-14 12:24:18.802616200 +0900
-@@ -10,7 +10,9 @@
- #include <linux/of.h>
- 
- typedef int (*of_irq_init_cb_t)(struct device_node *, struct device_node *);
--
-+#ifdef CONFIG_IRQCHIP_XILINX_INTC_MODULE_SUPPORT_EXPERIMENTAL
-+typedef int (*of_irq_remove_cb_t)(struct device_node *, struct device_node *);
-+#endif
- /*
-  * Workarounds only applied to 32bit powermac machines
-  */
---- linux-5.15.36/drivers/of/Kconfig	2023-04-14 12:26:04.598546900 +0900
-+++ linux-xlnx-2022.2/drivers/of/Kconfig	2023-04-14 12:24:11.787698800 +0900
-@@ -94,4 +94,15 @@
+diff --git a/drivers/of/Kconfig b/drivers/of/Kconfig
+index 80b5fd44a..da62bc676 100644
+--- a/drivers/of/Kconfig
++++ b/drivers/of/Kconfig
+@@ -94,4 +94,15 @@ config OF_DMA_DEFAULT_COHERENT
  	# arches should select this if DMA is coherent by default for OF devices
  	bool
  
@@ -63,8 +55,10 @@
 +	  If unsure, say N.
 +
  endif # OF
---- linux-5.15.36/drivers/of/Makefile	2023-04-14 12:26:04.598546900 +0900
-+++ linux-xlnx-2022.2/drivers/of/Makefile	2023-04-14 12:24:11.787698800 +0900
+diff --git a/drivers/of/Makefile b/drivers/of/Makefile
+index e0360a443..90c92ced2 100644
+--- a/drivers/of/Makefile
++++ b/drivers/of/Makefile
 @@ -1,6 +1,7 @@
  # SPDX-License-Identifier: GPL-2.0
  obj-y = base.o device.o platform.o property.o
@@ -73,8 +67,11 @@
  obj-$(CONFIG_OF_DYNAMIC) += dynamic.o
  obj-$(CONFIG_OF_FLATTREE) += fdt.o
  obj-$(CONFIG_OF_EARLY_FLATTREE) += fdt_address.o
+diff --git a/drivers/of/configfs.c b/drivers/of/configfs.c
+new file mode 100644
+index 000000000..6d8f58e5c
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/of/configfs.c	2023-04-14 12:24:11.787698800 +0900
++++ b/drivers/of/configfs.c
 @@ -0,0 +1,294 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
@@ -370,9 +367,11 @@
 +	return ret;
 +}
 +late_initcall(of_cfs_init);
---- linux-5.15.36/drivers/of/overlay.c	2023-04-14 12:26:04.614180500 +0900
-+++ linux-xlnx-2022.2/drivers/of/overlay.c	2023-04-14 12:24:11.803323000 +0900
-@@ -1245,6 +1245,9 @@
+diff --git a/drivers/of/overlay.c b/drivers/of/overlay.c
+index 424682372..16061025e 100644
+--- a/drivers/of/overlay.c
++++ b/drivers/of/overlay.c
+@@ -1243,6 +1243,9 @@ int of_overlay_remove(int *ovcs_id)
  			ret = ret_tmp;
  	}
  
@@ -382,3 +381,18 @@
  	free_overlay_changeset(ovcs);
  
  out_unlock:
+diff --git a/include/linux/of_irq.h b/include/linux/of_irq.h
+index aaf219bd0..887380934 100644
+--- a/include/linux/of_irq.h
++++ b/include/linux/of_irq.h
+@@ -10,7 +10,9 @@
+ #include <linux/of.h>
+ 
+ typedef int (*of_irq_init_cb_t)(struct device_node *, struct device_node *);
+-
++#ifdef CONFIG_IRQCHIP_XILINX_INTC_MODULE_SUPPORT_EXPERIMENTAL
++typedef int (*of_irq_remove_cb_t)(struct device_node *, struct device_node *);
++#endif
+ /*
+  * Workarounds only applied to 32bit powermac machines
+  */
