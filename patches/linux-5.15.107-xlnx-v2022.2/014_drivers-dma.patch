@@ -1,5 +1,8 @@
+diff --git a/Documentation/devicetree/bindings/dma/xilinx/axi-dma.txt b/Documentation/devicetree/bindings/dma/xilinx/axi-dma.txt
+new file mode 100644
+index 000000000..f4f5b018d
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/dma/xilinx/axi-dma.txt	2023-04-14 12:23:48.929746300 +0900
++++ b/Documentation/devicetree/bindings/dma/xilinx/axi-dma.txt
 @@ -0,0 +1,38 @@
 +* Xilinx AXI DMA Test client
 +
@@ -39,8 +42,11 @@
 +		xlnx,datawidth = <0x40>;
 +	} ;
 +} ;
+diff --git a/Documentation/devicetree/bindings/dma/xilinx/vdmatest.txt b/Documentation/devicetree/bindings/dma/xilinx/vdmatest.txt
+new file mode 100644
+index 000000000..5821fdc3e
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/dma/xilinx/vdmatest.txt	2023-04-14 12:23:48.929746300 +0900
++++ b/Documentation/devicetree/bindings/dma/xilinx/vdmatest.txt
 @@ -0,0 +1,39 @@
 +* Xilinx Video DMA Test client
 +
@@ -81,9 +87,11 @@
 +		...
 +	} ;
 +} ;
---- linux-5.15.36/Documentation/devicetree/bindings/dma/xilinx/xilinx_dma.txt	2023-04-14 12:25:41.900778400 +0900
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/dma/xilinx/xilinx_dma.txt	2023-04-14 12:23:48.929746300 +0900
-@@ -110,7 +110,11 @@
+diff --git a/Documentation/devicetree/bindings/dma/xilinx/xilinx_dma.txt b/Documentation/devicetree/bindings/dma/xilinx/xilinx_dma.txt
+index 325aca52c..d1700a5c3 100644
+--- a/Documentation/devicetree/bindings/dma/xilinx/xilinx_dma.txt
++++ b/Documentation/devicetree/bindings/dma/xilinx/xilinx_dma.txt
+@@ -110,7 +110,11 @@ axi_vdma_0: axivdma@40030000 {
  Required properties:
  - dmas: a list of <[Video DMA device phandle] [Channel ID]> pairs,
  	where Channel ID is '0' for write/tx and '1' for read/rx
@@ -96,8 +104,11 @@
  - dma-names: a list of DMA channel names, one per "dmas" entry
  
  Example:
+diff --git a/Documentation/devicetree/bindings/dma/xilinx/xilinx_frmbuf.txt b/Documentation/devicetree/bindings/dma/xilinx/xilinx_frmbuf.txt
+new file mode 100644
+index 000000000..27e2d0faf
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/dma/xilinx/xilinx_frmbuf.txt	2023-04-14 12:23:48.929746300 +0900
++++ b/Documentation/devicetree/bindings/dma/xilinx/xilinx_frmbuf.txt
 @@ -0,0 +1,128 @@
 +The Xilinx framebuffer DMA engine supports two soft IP blocks: one IP
 +block is used for reading video frame data from memory (FB Read) to the device
@@ -227,8 +238,11 @@
 +	clocks = <&vid_stream_clk>;
 +	clock-names = "ap_clk"
 +};
+diff --git a/Documentation/devicetree/bindings/dma/xilinx/xlnx,zynqmp_dma.yaml b/Documentation/devicetree/bindings/dma/xilinx/xlnx,zynqmp_dma.yaml
+new file mode 100644
+index 000000000..c04763ea8
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/dma/xilinx/xlnx,zynqmp_dma.yaml	2023-04-14 12:23:48.929746300 +0900
++++ b/Documentation/devicetree/bindings/dma/xilinx/xlnx,zynqmp_dma.yaml
 @@ -0,0 +1,86 @@
 +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 +%YAML 1.2
@@ -316,270 +330,11 @@
 +    };
 +
 +...
---- /dev/null
-+++ linux-xlnx-2022.2/include/linux/dma/xilinx_frmbuf.h	2023-04-14 12:24:18.310844600 +0900
-@@ -0,0 +1,258 @@
-+/*
-+ * Xilinx Framebuffer DMA support header file
-+ *
-+ * Copyright (C) 2017 Xilinx, Inc. All rights reserved.
-+ *
-+ * This is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ */
-+
-+#ifndef __XILINX_FRMBUF_DMA_H
-+#define __XILINX_FRMBUF_DMA_H
-+
-+#include <linux/dmaengine.h>
-+
-+/* Modes to enable early callback */
-+/* To avoid first frame delay */
-+#define EARLY_CALLBACK			BIT(1)
-+/* Give callback at start of descriptor processing */
-+#define EARLY_CALLBACK_START_DESC	BIT(2)
-+/**
-+ * enum vid_frmwork_type - Linux video framework type
-+ * @XDMA_DRM: fourcc is of type DRM
-+ * @XDMA_V4L2: fourcc is of type V4L2
-+ */
-+enum vid_frmwork_type {
-+	XDMA_DRM = 0,
-+	XDMA_V4L2,
-+};
-+
-+/**
-+ * enum operation_mode - FB IP control register field settings to select mode
-+ * @DEFAULT : Use default mode, No explicit bit field settings required.
-+ * @AUTO_RESTART : Use auto-restart mode by setting BIT(7) of control register.
-+ */
-+enum operation_mode {
-+	DEFAULT = 0x0,
-+	AUTO_RESTART = BIT(7),
-+};
-+
-+/**
-+ * enum fid_modes - FB IP fid mode register settings to select mode
-+ * @FID_MODE_0: carries the fid value shared by application
-+ * @FID_MODE_1: sets the fid after first frame
-+ * @FID_MODE_2: sets the fid after second frame
-+ */
-+enum fid_modes {
-+	FID_MODE_0 = 0,
-+	FID_MODE_1 = 1,
-+	FID_MODE_2 = 2,
-+};
-+
-+#if IS_ENABLED(CONFIG_XILINX_FRMBUF)
-+/**
-+ * xilinx_xdma_set_mode - Set operation mode for framebuffer IP
-+ * @chan: dma channel instance
-+ * @mode: Famebuffer IP operation mode.
-+ * This routine is used when utilizing "video format aware" Xilinx DMA IP
-+ * (such as Video Framebuffer Read or Video Framebuffer Write).  This call
-+ * must be made prior to dma_async_issue_pending(). This routine should be
-+ * called by client driver to set the operation mode for framebuffer IP based
-+ * upon the use-case, for e.g. for non-streaming usecases (like MEM2MEM) it's
-+ * more appropriate to use default mode unlike streaming usecases where
-+ * auto-restart mode is more suitable.
-+ *
-+ * auto-restart or free running mode.
-+ */
-+void xilinx_xdma_set_mode(struct dma_chan *chan, enum operation_mode mode);
-+
-+/**
-+ * xilinx_xdma_drm_config - configure video format in video aware DMA
-+ * @chan: dma channel instance
-+ * @drm_fourcc: DRM fourcc code describing the memory layout of video data
-+ *
-+ * This routine is used when utilizing "video format aware" Xilinx DMA IP
-+ * (such as Video Framebuffer Read or Video Framebuffer Write).  This call
-+ * must be made prior to dma_async_issue_pending() to establish the video
-+ * data memory format within the hardware DMA.
-+ */
-+void xilinx_xdma_drm_config(struct dma_chan *chan, u32 drm_fourcc);
-+
-+/**
-+ * xilinx_xdma_v4l2_config - configure video format in video aware DMA
-+ * @chan: dma channel instance
-+ * @v4l2_fourcc: V4L2 fourcc code describing the memory layout of video data
-+ *
-+ * This routine is used when utilizing "video format aware" Xilinx DMA IP
-+ * (such as Video Framebuffer Read or Video Framebuffer Write).  This call
-+ * must be made prior to dma_async_issue_pending() to establish the video
-+ * data memory format within the hardware DMA.
-+ */
-+void xilinx_xdma_v4l2_config(struct dma_chan *chan, u32 v4l2_fourcc);
-+
-+/**
-+ * xilinx_xdma_get_drm_vid_fmts - obtain list of supported DRM mem formats
-+ * @chan: dma channel instance
-+ * @fmt_cnt: Output param - total count of supported DRM fourcc codes
-+ * @fmts: Output param - pointer to array of DRM fourcc codes (not a copy)
-+ *
-+ * Return: a reference to an array of DRM fourcc codes supported by this
-+ * instance of the Video Framebuffer Driver
-+ */
-+int xilinx_xdma_get_drm_vid_fmts(struct dma_chan *chan, u32 *fmt_cnt,
-+				 u32 **fmts);
-+
-+/**
-+ * xilinx_xdma_get_v4l2_vid_fmts - obtain list of supported V4L2 mem formats
-+ * @chan: dma channel instance
-+ * @fmt_cnt: Output param - total count of supported V4L2 fourcc codes
-+ * @fmts: Output param - pointer to array of V4L2 fourcc codes (not a copy)
-+ *
-+ * Return: a reference to an array of V4L2 fourcc codes supported by this
-+ * instance of the Video Framebuffer Driver
-+ */
-+int xilinx_xdma_get_v4l2_vid_fmts(struct dma_chan *chan, u32 *fmt_cnt,
-+				  u32 **fmts);
-+
-+/**
-+ * xilinx_xdma_get_fid - Get the Field ID of the buffer received.
-+ * This function should be called from the callback function registered
-+ * per descriptor in prep_interleaved.
-+ *
-+ * @chan: dma channel instance
-+ * @async_tx: descriptor whose parent structure contains fid.
-+ * @fid: Output param - Field ID of the buffer. 0 - even, 1 - odd.
-+ *
-+ * Return: 0 on success, -EINVAL in case of invalid chan
-+ */
-+int xilinx_xdma_get_fid(struct dma_chan *chan,
-+			struct dma_async_tx_descriptor *async_tx, u32 *fid);
-+
-+/**
-+ * xilinx_xdma_set_fid - Set the Field ID of the buffer to be transmitted
-+ * @chan: dma channel instance
-+ * @async_tx: dma async tx descriptor for the buffer
-+ * @fid: Field ID of the buffer. 0 - even, 1 - odd.
-+ *
-+ * Return: 0 on success, -EINVAL in case of invalid chan
-+ */
-+int xilinx_xdma_set_fid(struct dma_chan *chan,
-+			struct dma_async_tx_descriptor *async_tx, u32 fid);
-+
-+/**
-+ * xilinx_xdma_get_fid_err_flag - Get the Field ID error flag.
-+ *
-+ * @chan: dma channel instance
-+ * @fid_err_flag: Field id error detect flag. 0 - no error, 1 - error.
-+ *
-+ * Return: 0 on success, -EINVAL in case of invalid chan
-+ */
-+int xilinx_xdma_get_fid_err_flag(struct dma_chan *chan,
-+				 u32 *fid_err_flag);
-+
-+/**
-+ * xilinx_xdma_get_fid_out - Get the Field ID out signal value.
-+ *
-+ * @chan: dma channel instance
-+ * @fid_out_val: Field id out signal value.
-+ *
-+ * Return: 0 on success, -EINVAL in case of invalid chan
-+ */
-+int xilinx_xdma_get_fid_out(struct dma_chan *chan,
-+			    u32 *fid_out_val);
-+
-+/**:
-+ * xilinx_xdma_get_earlycb - Get info if early callback has been enabled.
-+ *
-+ * @chan: dma channel instance
-+ * @async_tx: descriptor whose parent structure contains fid.
-+ * @earlycb: Output param - Early callback mode
-+ *
-+ * Return: 0 on success, -EINVAL in case of invalid chan
-+ */
-+int xilinx_xdma_get_earlycb(struct dma_chan *chan,
-+			    struct dma_async_tx_descriptor *async_tx,
-+			    u32 *earlycb);
-+
-+/**
-+ * xilinx_xdma_set_earlycb - Enable/Disable early callback
-+ * @chan: dma channel instance
-+ * @async_tx: dma async tx descriptor for the buffer
-+ * @earlycb: Enable early callback mode for descriptor
-+ *
-+ * Return: 0 on success, -EINVAL in case of invalid chan
-+ */
-+int xilinx_xdma_set_earlycb(struct dma_chan *chan,
-+			    struct dma_async_tx_descriptor *async_tx,
-+			    u32 earlycb);
-+/**
-+ * xilinx_xdma_get_width_align - Get width alignment value
-+ *
-+ * @chan: dma channel instance
-+ * @width_align: width alignment value
-+ *
-+ * Return: 0 on success, -ENODEV in case no framebuffer device found
-+ */
-+int xilinx_xdma_get_width_align(struct dma_chan *chan, u32 *width_align);
-+
-+#else
-+static inline void xilinx_xdma_set_mode(struct dma_chan *chan,
-+					enum operation_mode mode)
-+{ }
-+
-+static inline void xilinx_xdma_drm_config(struct dma_chan *chan, u32 drm_fourcc)
-+{ }
-+
-+static inline void xilinx_xdma_v4l2_config(struct dma_chan *chan,
-+					   u32 v4l2_fourcc)
-+{ }
-+
-+static inline int xilinx_xdma_get_drm_vid_fmts(struct dma_chan *chan,
-+					       u32 *fmt_cnt, u32 **fmts)
-+{
-+	return -ENODEV;
-+}
-+
-+static inline int xilinx_xdma_get_v4l2_vid_fmts(struct dma_chan *chan,
-+						u32 *fmt_cnt,u32 **fmts)
-+{
-+	return -ENODEV;
-+}
-+
-+static inline int xilinx_xdma_get_fid(struct dma_chan *chan,
-+				      struct dma_async_tx_descriptor *async_tx,
-+				      u32 *fid)
-+{
-+	return -ENODEV;
-+}
-+
-+static inline int xilinx_xdma_set_fid(struct dma_chan *chan,
-+				      struct dma_async_tx_descriptor *async_tx,
-+				      u32 fid)
-+{
-+	return -ENODEV;
-+}
-+
-+static inline int xilinx_xdma_get_earlycb(struct dma_chan *chan,
-+					  struct dma_async_tx_descriptor *atx,
-+					  u32 *earlycb)
-+{
-+	return -ENODEV;
-+}
-+
-+static inline int xilinx_xdma_set_earlycb(struct dma_chan *chan,
-+					  struct dma_async_tx_descriptor *atx,
-+					  u32 earlycb)
-+{
-+	return -ENODEV;
-+}
-+
-+static inline int xilinx_xdma_get_width_align(struct dma_chan *chan, u32 *width_align)
-+{
-+	return -ENODEV;
-+}
-+#endif
-+
-+#endif /*__XILINX_FRMBUF_DMA_H*/
---- linux-5.15.36/drivers/dma/Kconfig	2023-04-14 12:25:54.123359400 +0900
-+++ linux-xlnx-2022.2/drivers/dma/Kconfig	2023-04-14 12:24:01.310797700 +0900
-@@ -733,6 +733,35 @@
+diff --git a/drivers/dma/Kconfig b/drivers/dma/Kconfig
+index 95344ae49..d8ba05088 100644
+--- a/drivers/dma/Kconfig
++++ b/drivers/dma/Kconfig
+@@ -733,6 +733,35 @@ config XILINX_ZYNQMP_DPDMA
  	  driver provides the dmaengine required by the DisplayPort subsystem
  	  display driver.
  
@@ -615,7 +370,7 @@
  # driver files
  source "drivers/dma/bestcomm/Kconfig"
  
-@@ -784,4 +813,18 @@
+@@ -784,4 +813,18 @@ config DMATEST
  config DMA_ENGINE_RAID
  	bool
  
@@ -634,9 +389,11 @@
 +	  DMA Device driver.
 +
  endif
---- linux-5.15.36/drivers/dma/pl330.c	2023-04-14 12:25:54.203001700 +0900
-+++ linux-xlnx-2022.2/drivers/dma/pl330.c	2023-04-14 12:24:01.373282600 +0900
-@@ -2752,7 +2752,7 @@
+diff --git a/drivers/dma/pl330.c b/drivers/dma/pl330.c
+index 4ef68ddff..7d1f083e1 100644
+--- a/drivers/dma/pl330.c
++++ b/drivers/dma/pl330.c
+@@ -2752,7 +2752,7 @@ static struct dma_async_tx_descriptor *pl330_prep_dma_cyclic(
  		return NULL;
  
  	pch->cyclic = true;
@@ -645,7 +402,7 @@
  
  	return &desc->txd;
  }
-@@ -2804,7 +2804,7 @@
+@@ -2804,7 +2804,7 @@ pl330_prep_dma_memcpy(struct dma_chan *chan, dma_addr_t dst,
  
  	desc->bytes_requested = len;
  
@@ -654,7 +411,7 @@
  
  	return &desc->txd;
  }
-@@ -2889,7 +2889,7 @@
+@@ -2889,7 +2889,7 @@ pl330_prep_slave_sg(struct dma_chan *chan, struct scatterlist *sgl,
  	}
  
  	/* Return the last desc in the chain */
@@ -663,8 +420,10 @@
  	return &desc->txd;
  }
  
---- linux-5.15.36/drivers/dma/xilinx/Makefile	2023-04-14 12:25:54.296729200 +0900
-+++ linux-xlnx-2022.2/drivers/dma/xilinx/Makefile	2023-04-14 12:24:01.404559500 +0900
+diff --git a/drivers/dma/xilinx/Makefile b/drivers/dma/xilinx/Makefile
+index 767bb45f6..e5c35aa1f 100644
+--- a/drivers/dma/xilinx/Makefile
++++ b/drivers/dma/xilinx/Makefile
 @@ -1,4 +1,7 @@
  # SPDX-License-Identifier: GPL-2.0-only
 +obj-$(CONFIG_XILINX_DMATEST) += axidmatest.o
@@ -673,8 +432,11 @@
  obj-$(CONFIG_XILINX_ZYNQMP_DMA) += zynqmp_dma.o
  obj-$(CONFIG_XILINX_ZYNQMP_DPDMA) += xilinx_dpdma.o
 +obj-$(CONFIG_XILINX_FRMBUF) += xilinx_frmbuf.o
+diff --git a/drivers/dma/xilinx/axidmatest.c b/drivers/dma/xilinx/axidmatest.c
+new file mode 100644
+index 000000000..4b30e6433
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/dma/xilinx/axidmatest.c	2023-04-14 12:24:01.404559500 +0900
++++ b/drivers/dma/xilinx/axidmatest.c
 @@ -0,0 +1,698 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
@@ -1374,8 +1136,11 @@
 +MODULE_AUTHOR("Xilinx, Inc.");
 +MODULE_DESCRIPTION("Xilinx AXI DMA Test Client");
 +MODULE_LICENSE("GPL v2");
+diff --git a/drivers/dma/xilinx/vdmatest.c b/drivers/dma/xilinx/vdmatest.c
+new file mode 100644
+index 000000000..0ee97fb8f
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/dma/xilinx/vdmatest.c	2023-04-14 12:24:01.404559500 +0900
++++ b/drivers/dma/xilinx/vdmatest.c
 @@ -0,0 +1,666 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
@@ -2043,9 +1808,11 @@
 +MODULE_AUTHOR("Xilinx, Inc.");
 +MODULE_DESCRIPTION("Xilinx AXI VDMA Test Client");
 +MODULE_LICENSE("GPL v2");
---- linux-5.15.36/drivers/dma/xilinx/xilinx_dma.c	2023-04-14 12:25:54.296729200 +0900
-+++ linux-xlnx-2022.2/drivers/dma/xilinx/xilinx_dma.c	2023-04-14 12:24:01.404559500 +0900
-@@ -792,7 +792,7 @@
+diff --git a/drivers/dma/xilinx/xilinx_dma.c b/drivers/dma/xilinx/xilinx_dma.c
+index edc2bb8f0..5595eb087 100644
+--- a/drivers/dma/xilinx/xilinx_dma.c
++++ b/drivers/dma/xilinx/xilinx_dma.c
+@@ -792,7 +792,7 @@ static void xilinx_vdma_free_tx_segment(struct xilinx_dma_chan *chan,
  }
  
  /**
@@ -2054,7 +1821,7 @@
   * @chan: Driver specific DMA channel
   *
   * Return: The allocated descriptor on success and NULL on failure.
-@@ -2483,7 +2483,7 @@
+@@ -2483,7 +2483,7 @@ static void xilinx_dma_synchronize(struct dma_chan *dchan)
  }
  
  /**
@@ -2063,7 +1830,7 @@
   * Run-time configuration for Axi VDMA, supports:
   * . halt the channel
   * . configure interrupt coalescing and inter-packet delay threshold
-@@ -2862,7 +2862,9 @@
+@@ -2862,7 +2862,9 @@ static int xilinx_dma_chan_probe(struct xilinx_dma_device *xdev,
  	}
  
  	/* Request the interrupt */
@@ -2074,7 +1841,7 @@
  	err = request_irq(chan->irq, xdev->dma_config->irq_handler,
  			  IRQF_SHARED, "xilinx-dma-controller", chan);
  	if (err) {
-@@ -2924,7 +2926,7 @@
+@@ -2924,7 +2926,7 @@ static int xilinx_dma_chan_probe(struct xilinx_dma_device *xdev,
   * @xdev: Driver specific device structure
   * @node: Device node
   *
@@ -2083,7 +1850,7 @@
   */
  static int xilinx_dma_child_probe(struct xilinx_dma_device *xdev,
  				    struct device_node *node)
-@@ -2936,8 +2938,11 @@
+@@ -2936,8 +2938,11 @@ static int xilinx_dma_child_probe(struct xilinx_dma_device *xdev,
  	if (xdev->dma_config->dmatype == XDMA_TYPE_AXIMCDMA && ret < 0)
  		dev_warn(xdev->dev, "missing dma-channels property\n");
  
@@ -2097,12 +1864,15 @@
  
  	return 0;
  }
---- linux-5.15.36/drivers/dma/xilinx/xilinx_dpdma.c	2023-04-14 12:25:54.296729200 +0900
-+++ linux-xlnx-2022.2/drivers/dma/xilinx/xilinx_dpdma.c	2023-04-14 12:24:01.404559500 +0900
-@@ -669,6 +669,84 @@
+diff --git a/drivers/dma/xilinx/xilinx_dpdma.c b/drivers/dma/xilinx/xilinx_dpdma.c
+index ce5c66e68..2ac56ae0d 100644
+--- a/drivers/dma/xilinx/xilinx_dpdma.c
++++ b/drivers/dma/xilinx/xilinx_dpdma.c
+@@ -668,6 +668,84 @@ static void xilinx_dpdma_chan_free_tx_desc(struct virt_dma_desc *vdesc)
+ 	kfree(desc);
  }
  
- /**
++/**
 + * xilinx_dpdma_chan_prep_cyclic - Prepare a cyclic dma descriptor
 + * @chan: DPDMA channel
 + * @buf_addr: buffer address
@@ -2180,11 +1950,10 @@
 +	return NULL;
 +}
 +
-+/**
+ /**
   * xilinx_dpdma_chan_prep_interleaved_dma - Prepare an interleaved dma
   *					    descriptor
-  * @chan: DPDMA channel
-@@ -1101,7 +1179,9 @@
+@@ -1101,7 +1179,9 @@ static void xilinx_dpdma_chan_vsync_irq(struct  xilinx_dpdma_chan *chan)
  	chan->desc.active = pending;
  	chan->desc.pending = NULL;
  
@@ -2194,7 +1963,7 @@
  
  out:
  	spin_unlock_irqrestore(&chan->lock, flags);
-@@ -1187,6 +1267,23 @@
+@@ -1187,6 +1267,23 @@ static void xilinx_dpdma_chan_handle_err(struct xilinx_dpdma_chan *chan)
  /* -----------------------------------------------------------------------------
   * DMA Engine Operations
   */
@@ -2218,7 +1987,7 @@
  
  static struct dma_async_tx_descriptor *
  xilinx_dpdma_prep_interleaved_dma(struct dma_chan *dchan,
-@@ -1490,7 +1587,9 @@
+@@ -1490,7 +1587,9 @@ static void xilinx_dpdma_chan_err_task(struct tasklet_struct *t)
  		    XILINX_DPDMA_EINTR_CHAN_ERR_MASK << chan->id);
  
  	spin_lock_irqsave(&chan->lock, flags);
@@ -2228,7 +1997,7 @@
  	spin_unlock_irqrestore(&chan->lock, flags);
  }
  
-@@ -1664,6 +1763,7 @@
+@@ -1664,6 +1763,7 @@ static int xilinx_dpdma_probe(struct platform_device *pdev)
  
  	dma_cap_set(DMA_SLAVE, ddev->cap_mask);
  	dma_cap_set(DMA_PRIVATE, ddev->cap_mask);
@@ -2236,7 +2005,7 @@
  	dma_cap_set(DMA_INTERLEAVE, ddev->cap_mask);
  	dma_cap_set(DMA_REPEAT, ddev->cap_mask);
  	dma_cap_set(DMA_LOAD_EOT, ddev->cap_mask);
-@@ -1671,6 +1771,7 @@
+@@ -1671,6 +1771,7 @@ static int xilinx_dpdma_probe(struct platform_device *pdev)
  
  	ddev->device_alloc_chan_resources = xilinx_dpdma_alloc_chan_resources;
  	ddev->device_free_chan_resources = xilinx_dpdma_free_chan_resources;
@@ -2244,8 +2013,11 @@
  	ddev->device_prep_interleaved_dma = xilinx_dpdma_prep_interleaved_dma;
  	/* TODO: Can we achieve better granularity ? */
  	ddev->device_tx_status = dma_cookie_status;
+diff --git a/drivers/dma/xilinx/xilinx_frmbuf.c b/drivers/dma/xilinx/xilinx_frmbuf.c
+new file mode 100644
+index 000000000..6a2aac45b
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/dma/xilinx/xilinx_frmbuf.c	2023-04-14 12:24:01.420146700 +0900
++++ b/drivers/dma/xilinx/xilinx_frmbuf.c
 @@ -0,0 +1,1902 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
@@ -4149,9 +3921,11 @@
 +MODULE_AUTHOR("Xilinx, Inc.");
 +MODULE_DESCRIPTION("Xilinx Framebuffer driver");
 +MODULE_LICENSE("GPL v2");
---- linux-5.15.36/drivers/dma/xilinx/zynqmp_dma.c	2023-04-14 12:25:54.296729200 +0900
-+++ linux-xlnx-2022.2/drivers/dma/xilinx/zynqmp_dma.c	2023-04-14 12:24:01.420146700 +0900
-@@ -453,6 +453,7 @@
+diff --git a/drivers/dma/xilinx/zynqmp_dma.c b/drivers/dma/xilinx/zynqmp_dma.c
+index 5257bdbf7..222e8d8b6 100644
+--- a/drivers/dma/xilinx/zynqmp_dma.c
++++ b/drivers/dma/xilinx/zynqmp_dma.c
+@@ -453,6 +453,7 @@ static void zynqmp_dma_free_desc_list(struct zynqmp_dma_chan *chan,
  
  	list_for_each_entry_safe(desc, next, list, node)
  		zynqmp_dma_free_descriptor(chan, desc);
@@ -4159,17 +3933,18 @@
  }
  
  /**
-@@ -489,7 +490,8 @@
+@@ -489,8 +490,8 @@ static int zynqmp_dma_alloc_chan_resources(struct dma_chan *dchan)
  	}
  
  	chan->desc_pool_v = dma_alloc_coherent(chan->dev,
--					       (2 * chan->desc_size * ZYNQMP_DMA_NUM_DESCS),
-+					       ((size_t)(2 * chan->desc_size) *
+-					       (2 * ZYNQMP_DMA_DESC_SIZE(chan) *
+-					       ZYNQMP_DMA_NUM_DESCS),
++					       ((size_t)(2 * ZYNQMP_DMA_DESC_SIZE(chan)) *
 +						ZYNQMP_DMA_NUM_DESCS),
  					       &chan->desc_pool_p, GFP_KERNEL);
  	if (!chan->desc_pool_v)
  		return -ENOMEM;
-@@ -500,7 +502,8 @@
+@@ -501,7 +502,8 @@ static int zynqmp_dma_alloc_chan_resources(struct dma_chan *dchan)
  					(i * ZYNQMP_DMA_DESC_SIZE(chan) * 2));
  		desc->dst_v = (struct zynqmp_dma_desc_ll *) (desc->src_v + 1);
  		desc->src_p = chan->desc_pool_p +
@@ -4179,7 +3954,7 @@
  		desc->dst_p = desc->src_p + ZYNQMP_DMA_DESC_SIZE(chan);
  	}
  
-@@ -676,7 +679,8 @@
+@@ -677,7 +679,8 @@ static void zynqmp_dma_free_chan_resources(struct dma_chan *dchan)
  	zynqmp_dma_free_descriptors(chan);
  	spin_unlock_irqrestore(&chan->lock, irqflags);
  	dma_free_coherent(chan->dev,
@@ -4189,7 +3964,7 @@
  		chan->desc_pool_v, chan->desc_pool_p);
  	kfree(chan->sw_desc_pool);
  	pm_runtime_mark_last_busy(chan->dev);
-@@ -845,7 +849,7 @@
+@@ -846,7 +849,7 @@ static struct dma_async_tx_descriptor *zynqmp_dma_prep_memcpy(
  
  	zynqmp_dma_desc_config_eod(chan, desc);
  	async_tx_ack(&first->async_tx);
@@ -4198,7 +3973,7 @@
  	return &first->async_tx;
  }
  
-@@ -1076,7 +1080,11 @@
+@@ -1077,7 +1080,11 @@ static int zynqmp_dma_probe(struct platform_device *pdev)
  	pm_runtime_set_autosuspend_delay(zdev->dev, ZDMA_PM_TIMEOUT);
  	pm_runtime_use_autosuspend(zdev->dev);
  	pm_runtime_enable(zdev->dev);
@@ -4211,7 +3986,7 @@
  	if (!pm_runtime_enabled(zdev->dev)) {
  		ret = zynqmp_dma_runtime_resume(zdev->dev);
  		if (ret)
-@@ -1092,7 +1100,11 @@
+@@ -1093,7 +1100,11 @@ static int zynqmp_dma_probe(struct platform_device *pdev)
  	p->dst_addr_widths = BIT(zdev->chan->bus_width / 8);
  	p->src_addr_widths = BIT(zdev->chan->bus_width / 8);
  
@@ -4224,3 +3999,267 @@
  
  	ret = of_dma_controller_register(pdev->dev.of_node,
  					 of_zynqmp_dma_xlate, zdev);
+diff --git a/include/linux/dma/xilinx_frmbuf.h b/include/linux/dma/xilinx_frmbuf.h
+new file mode 100644
+index 000000000..aa048a3eb
+--- /dev/null
++++ b/include/linux/dma/xilinx_frmbuf.h
+@@ -0,0 +1,258 @@
++/*
++ * Xilinx Framebuffer DMA support header file
++ *
++ * Copyright (C) 2017 Xilinx, Inc. All rights reserved.
++ *
++ * This is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ */
++
++#ifndef __XILINX_FRMBUF_DMA_H
++#define __XILINX_FRMBUF_DMA_H
++
++#include <linux/dmaengine.h>
++
++/* Modes to enable early callback */
++/* To avoid first frame delay */
++#define EARLY_CALLBACK			BIT(1)
++/* Give callback at start of descriptor processing */
++#define EARLY_CALLBACK_START_DESC	BIT(2)
++/**
++ * enum vid_frmwork_type - Linux video framework type
++ * @XDMA_DRM: fourcc is of type DRM
++ * @XDMA_V4L2: fourcc is of type V4L2
++ */
++enum vid_frmwork_type {
++	XDMA_DRM = 0,
++	XDMA_V4L2,
++};
++
++/**
++ * enum operation_mode - FB IP control register field settings to select mode
++ * @DEFAULT : Use default mode, No explicit bit field settings required.
++ * @AUTO_RESTART : Use auto-restart mode by setting BIT(7) of control register.
++ */
++enum operation_mode {
++	DEFAULT = 0x0,
++	AUTO_RESTART = BIT(7),
++};
++
++/**
++ * enum fid_modes - FB IP fid mode register settings to select mode
++ * @FID_MODE_0: carries the fid value shared by application
++ * @FID_MODE_1: sets the fid after first frame
++ * @FID_MODE_2: sets the fid after second frame
++ */
++enum fid_modes {
++	FID_MODE_0 = 0,
++	FID_MODE_1 = 1,
++	FID_MODE_2 = 2,
++};
++
++#if IS_ENABLED(CONFIG_XILINX_FRMBUF)
++/**
++ * xilinx_xdma_set_mode - Set operation mode for framebuffer IP
++ * @chan: dma channel instance
++ * @mode: Famebuffer IP operation mode.
++ * This routine is used when utilizing "video format aware" Xilinx DMA IP
++ * (such as Video Framebuffer Read or Video Framebuffer Write).  This call
++ * must be made prior to dma_async_issue_pending(). This routine should be
++ * called by client driver to set the operation mode for framebuffer IP based
++ * upon the use-case, for e.g. for non-streaming usecases (like MEM2MEM) it's
++ * more appropriate to use default mode unlike streaming usecases where
++ * auto-restart mode is more suitable.
++ *
++ * auto-restart or free running mode.
++ */
++void xilinx_xdma_set_mode(struct dma_chan *chan, enum operation_mode mode);
++
++/**
++ * xilinx_xdma_drm_config - configure video format in video aware DMA
++ * @chan: dma channel instance
++ * @drm_fourcc: DRM fourcc code describing the memory layout of video data
++ *
++ * This routine is used when utilizing "video format aware" Xilinx DMA IP
++ * (such as Video Framebuffer Read or Video Framebuffer Write).  This call
++ * must be made prior to dma_async_issue_pending() to establish the video
++ * data memory format within the hardware DMA.
++ */
++void xilinx_xdma_drm_config(struct dma_chan *chan, u32 drm_fourcc);
++
++/**
++ * xilinx_xdma_v4l2_config - configure video format in video aware DMA
++ * @chan: dma channel instance
++ * @v4l2_fourcc: V4L2 fourcc code describing the memory layout of video data
++ *
++ * This routine is used when utilizing "video format aware" Xilinx DMA IP
++ * (such as Video Framebuffer Read or Video Framebuffer Write).  This call
++ * must be made prior to dma_async_issue_pending() to establish the video
++ * data memory format within the hardware DMA.
++ */
++void xilinx_xdma_v4l2_config(struct dma_chan *chan, u32 v4l2_fourcc);
++
++/**
++ * xilinx_xdma_get_drm_vid_fmts - obtain list of supported DRM mem formats
++ * @chan: dma channel instance
++ * @fmt_cnt: Output param - total count of supported DRM fourcc codes
++ * @fmts: Output param - pointer to array of DRM fourcc codes (not a copy)
++ *
++ * Return: a reference to an array of DRM fourcc codes supported by this
++ * instance of the Video Framebuffer Driver
++ */
++int xilinx_xdma_get_drm_vid_fmts(struct dma_chan *chan, u32 *fmt_cnt,
++				 u32 **fmts);
++
++/**
++ * xilinx_xdma_get_v4l2_vid_fmts - obtain list of supported V4L2 mem formats
++ * @chan: dma channel instance
++ * @fmt_cnt: Output param - total count of supported V4L2 fourcc codes
++ * @fmts: Output param - pointer to array of V4L2 fourcc codes (not a copy)
++ *
++ * Return: a reference to an array of V4L2 fourcc codes supported by this
++ * instance of the Video Framebuffer Driver
++ */
++int xilinx_xdma_get_v4l2_vid_fmts(struct dma_chan *chan, u32 *fmt_cnt,
++				  u32 **fmts);
++
++/**
++ * xilinx_xdma_get_fid - Get the Field ID of the buffer received.
++ * This function should be called from the callback function registered
++ * per descriptor in prep_interleaved.
++ *
++ * @chan: dma channel instance
++ * @async_tx: descriptor whose parent structure contains fid.
++ * @fid: Output param - Field ID of the buffer. 0 - even, 1 - odd.
++ *
++ * Return: 0 on success, -EINVAL in case of invalid chan
++ */
++int xilinx_xdma_get_fid(struct dma_chan *chan,
++			struct dma_async_tx_descriptor *async_tx, u32 *fid);
++
++/**
++ * xilinx_xdma_set_fid - Set the Field ID of the buffer to be transmitted
++ * @chan: dma channel instance
++ * @async_tx: dma async tx descriptor for the buffer
++ * @fid: Field ID of the buffer. 0 - even, 1 - odd.
++ *
++ * Return: 0 on success, -EINVAL in case of invalid chan
++ */
++int xilinx_xdma_set_fid(struct dma_chan *chan,
++			struct dma_async_tx_descriptor *async_tx, u32 fid);
++
++/**
++ * xilinx_xdma_get_fid_err_flag - Get the Field ID error flag.
++ *
++ * @chan: dma channel instance
++ * @fid_err_flag: Field id error detect flag. 0 - no error, 1 - error.
++ *
++ * Return: 0 on success, -EINVAL in case of invalid chan
++ */
++int xilinx_xdma_get_fid_err_flag(struct dma_chan *chan,
++				 u32 *fid_err_flag);
++
++/**
++ * xilinx_xdma_get_fid_out - Get the Field ID out signal value.
++ *
++ * @chan: dma channel instance
++ * @fid_out_val: Field id out signal value.
++ *
++ * Return: 0 on success, -EINVAL in case of invalid chan
++ */
++int xilinx_xdma_get_fid_out(struct dma_chan *chan,
++			    u32 *fid_out_val);
++
++/**:
++ * xilinx_xdma_get_earlycb - Get info if early callback has been enabled.
++ *
++ * @chan: dma channel instance
++ * @async_tx: descriptor whose parent structure contains fid.
++ * @earlycb: Output param - Early callback mode
++ *
++ * Return: 0 on success, -EINVAL in case of invalid chan
++ */
++int xilinx_xdma_get_earlycb(struct dma_chan *chan,
++			    struct dma_async_tx_descriptor *async_tx,
++			    u32 *earlycb);
++
++/**
++ * xilinx_xdma_set_earlycb - Enable/Disable early callback
++ * @chan: dma channel instance
++ * @async_tx: dma async tx descriptor for the buffer
++ * @earlycb: Enable early callback mode for descriptor
++ *
++ * Return: 0 on success, -EINVAL in case of invalid chan
++ */
++int xilinx_xdma_set_earlycb(struct dma_chan *chan,
++			    struct dma_async_tx_descriptor *async_tx,
++			    u32 earlycb);
++/**
++ * xilinx_xdma_get_width_align - Get width alignment value
++ *
++ * @chan: dma channel instance
++ * @width_align: width alignment value
++ *
++ * Return: 0 on success, -ENODEV in case no framebuffer device found
++ */
++int xilinx_xdma_get_width_align(struct dma_chan *chan, u32 *width_align);
++
++#else
++static inline void xilinx_xdma_set_mode(struct dma_chan *chan,
++					enum operation_mode mode)
++{ }
++
++static inline void xilinx_xdma_drm_config(struct dma_chan *chan, u32 drm_fourcc)
++{ }
++
++static inline void xilinx_xdma_v4l2_config(struct dma_chan *chan,
++					   u32 v4l2_fourcc)
++{ }
++
++static inline int xilinx_xdma_get_drm_vid_fmts(struct dma_chan *chan,
++					       u32 *fmt_cnt, u32 **fmts)
++{
++	return -ENODEV;
++}
++
++static inline int xilinx_xdma_get_v4l2_vid_fmts(struct dma_chan *chan,
++						u32 *fmt_cnt,u32 **fmts)
++{
++	return -ENODEV;
++}
++
++static inline int xilinx_xdma_get_fid(struct dma_chan *chan,
++				      struct dma_async_tx_descriptor *async_tx,
++				      u32 *fid)
++{
++	return -ENODEV;
++}
++
++static inline int xilinx_xdma_set_fid(struct dma_chan *chan,
++				      struct dma_async_tx_descriptor *async_tx,
++				      u32 fid)
++{
++	return -ENODEV;
++}
++
++static inline int xilinx_xdma_get_earlycb(struct dma_chan *chan,
++					  struct dma_async_tx_descriptor *atx,
++					  u32 *earlycb)
++{
++	return -ENODEV;
++}
++
++static inline int xilinx_xdma_set_earlycb(struct dma_chan *chan,
++					  struct dma_async_tx_descriptor *atx,
++					  u32 earlycb)
++{
++	return -ENODEV;
++}
++
++static inline int xilinx_xdma_get_width_align(struct dma_chan *chan, u32 *width_align)
++{
++	return -ENODEV;
++}
++#endif
++
++#endif /*__XILINX_FRMBUF_DMA_H*/
