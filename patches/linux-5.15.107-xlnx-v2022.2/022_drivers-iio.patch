@@ -1,5 +1,8 @@
+diff --git a/Documentation/devicetree/bindings/iio/adc/ti,ina260.yaml b/Documentation/devicetree/bindings/iio/adc/ti,ina260.yaml
+new file mode 100644
+index 000000000..c9f1a659c
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/iio/adc/ti,ina260.yaml	2023-04-14 12:23:49.099973300 +0900
++++ b/Documentation/devicetree/bindings/iio/adc/ti,ina260.yaml
 @@ -0,0 +1,57 @@
 +# SPDX-License-Identifier: GPL-2.0-or-later
 +%YAML 1.2
@@ -58,8 +61,11 @@
 +      };
 +    };
 +...
+diff --git a/Documentation/devicetree/bindings/iio/adc/xilinx-ams.txt b/Documentation/devicetree/bindings/iio/adc/xilinx-ams.txt
+new file mode 100644
+index 000000000..89528e956
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/iio/adc/xilinx-ams.txt	2023-04-14 12:23:49.099973300 +0900
++++ b/Documentation/devicetree/bindings/iio/adc/xilinx-ams.txt
 @@ -0,0 +1,159 @@
 +Xilinx AMS device driver
 +
@@ -220,8 +226,11 @@
 +		|49	|Auxiliary ch 14 Voltage measurement (VAux14).			|Voltage
 +		|50	|Auxiliary ch 15 Voltage measurement (VAux15).			|Voltage
 +---------------------------------------------------------------------------------------------------------
+diff --git a/Documentation/devicetree/bindings/iio/adc/xlnx,versal-sysmon.yaml b/Documentation/devicetree/bindings/iio/adc/xlnx,versal-sysmon.yaml
+new file mode 100644
+index 000000000..389ddfaf6
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/iio/adc/xlnx,versal-sysmon.yaml	2023-04-14 12:23:49.099973300 +0900
++++ b/Documentation/devicetree/bindings/iio/adc/xlnx,versal-sysmon.yaml
 @@ -0,0 +1,151 @@
 +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 +# Copyright 2019 - 2020 Xilinx Inc.
@@ -374,67 +383,11 @@
 +            };
 +        };
 +    };
---- /dev/null
-+++ linux-xlnx-2022.2/include/linux/iio/adc/versal-sysmon-events.h	2023-04-14 12:24:18.442821000 +0900
-@@ -0,0 +1,55 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Xilinx SYSMON hardware info
-+ *
-+ * Copyright (C) 2019 - 2021 Xilinx, Inc.
-+ *
-+ */
-+#ifndef _VERSAL_SYSMON_H_
-+#define _VERSAL_SYSMON_H_
-+
-+#include <linux/types.h>
-+#include <linux/iio/types.h>
-+
-+/* Sysmon region ids */
-+enum sysmon_region {
-+	SYSMON_AIE = 0,
-+	SYSMON_PMC = 1,
-+	SYSMON_XPIO = 2,
-+	SYSMON_VNOC = 3,
-+	SYSMON_CC = 4,
-+};
-+
-+/**
-+ * struct regional_node - regional node properties
-+ * @sat_id: node_id
-+ * @x: x co-ordinate of the node
-+ * @y: y co-ordinate of the node
-+ * @temp: raw sensor value
-+ * @regional_node_list: list of nodes in the region
-+ */
-+struct regional_node {
-+	int sat_id;
-+	int x;
-+	int y;
-+	u16 temp;
-+	struct list_head regional_node_list;
-+};
-+
-+/**
-+ * struct region_info - information about a regions sensors
-+ * @id: region id
-+ * @cb: callback to be called when there is a region specific event
-+ * @data: pointer to the callback data
-+ * @node_list: head to the regional_nodes list
-+ * @list: list of regions
-+ */
-+struct region_info {
-+	enum sysmon_region id;
-+	void (*cb)(void *data, struct regional_node *node);
-+	void *data;
-+	struct list_head node_list;
-+	struct list_head list;
-+};
-+
-+#endif
---- linux-5.15.36/drivers/iio/adc/Kconfig	2023-04-14 12:25:58.400081200 +0900
-+++ linux-xlnx-2022.2/drivers/iio/adc/Kconfig	2023-04-14 12:24:05.499378100 +0900
-@@ -499,6 +499,18 @@
+diff --git a/drivers/iio/adc/Kconfig b/drivers/iio/adc/Kconfig
+index af168e1c9..d875d469a 100644
+--- a/drivers/iio/adc/Kconfig
++++ b/drivers/iio/adc/Kconfig
+@@ -499,6 +499,18 @@ config INA2XX_ADC
  	  Say yes here to build support for TI INA2xx family of Power Monitors.
  	  This driver is mutually exclusive with the HWMON version.
  
@@ -453,7 +406,7 @@
  config INGENIC_ADC
  	tristate "Ingenic JZ47xx SoCs ADC driver"
  	depends on MIPS || COMPILE_TEST
-@@ -1278,4 +1290,25 @@
+@@ -1278,4 +1290,25 @@ config XILINX_XADC
  	  The driver can also be build as a module. If so, the module will be called
  	  xilinx-xadc.
  
@@ -479,9 +432,11 @@
 +	  The driver can also be build as a module. If so, the module will be called
 +	  versal-sysmon.
  endmenu
---- linux-5.15.36/drivers/iio/adc/Makefile	2023-04-14 12:25:58.400081200 +0900
-+++ linux-xlnx-2022.2/drivers/iio/adc/Makefile	2023-04-14 12:24:05.499378100 +0900
-@@ -47,6 +47,7 @@
+diff --git a/drivers/iio/adc/Makefile b/drivers/iio/adc/Makefile
+index d68550f49..d0c323b0b 100644
+--- a/drivers/iio/adc/Makefile
++++ b/drivers/iio/adc/Makefile
+@@ -47,6 +47,7 @@ obj-$(CONFIG_HI8435) += hi8435.o
  obj-$(CONFIG_HX711) += hx711.o
  obj-$(CONFIG_IMX7D_ADC) += imx7d_adc.o
  obj-$(CONFIG_INA2XX_ADC) += ina2xx-adc.o
@@ -489,15 +444,18 @@
  obj-$(CONFIG_INGENIC_ADC) += ingenic-adc.o
  obj-$(CONFIG_INTEL_MRFLD_ADC) += intel_mrfld_adc.o
  obj-$(CONFIG_LP8788_ADC) += lp8788_adc.o
-@@ -114,4 +115,6 @@
+@@ -114,4 +115,6 @@ obj-$(CONFIG_VF610_ADC) += vf610_adc.o
  obj-$(CONFIG_VIPERBOARD_ADC) += viperboard_adc.o
  xilinx-xadc-y := xilinx-xadc-core.o xilinx-xadc-events.o
  obj-$(CONFIG_XILINX_XADC) += xilinx-xadc.o
 +obj-$(CONFIG_XILINX_AMS) += xilinx-ams.o
  obj-$(CONFIG_SD_ADC_MODULATOR) += sd_adc_modulator.o
 +obj-$(CONFIG_VERSAL_SYSMON) += versal-sysmon.o
+diff --git a/drivers/iio/adc/ina260-adc.c b/drivers/iio/adc/ina260-adc.c
+new file mode 100644
+index 000000000..4fda0df18
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/iio/adc/ina260-adc.c	2023-04-14 12:24:05.514999500 +0900
++++ b/drivers/iio/adc/ina260-adc.c
 @@ -0,0 +1,554 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
@@ -1053,8 +1011,11 @@
 +MODULE_AUTHOR("Raviteja Narayanam <raviteja.narayanam@xilinx.com>");
 +MODULE_DESCRIPTION("Texas Instruments INA 260 ADC driver");
 +MODULE_LICENSE("GPL v2");
+diff --git a/drivers/iio/adc/versal-sysmon.c b/drivers/iio/adc/versal-sysmon.c
+new file mode 100644
+index 000000000..5abe70174
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/iio/adc/versal-sysmon.c	2023-04-14 12:24:05.546242100 +0900
++++ b/drivers/iio/adc/versal-sysmon.c
 @@ -0,0 +1,1160 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
@@ -2216,8 +2177,11 @@
 +MODULE_LICENSE("GPL v2");
 +MODULE_DESCRIPTION("Xilinx Versal SysMon Driver");
 +MODULE_AUTHOR("Anand Ashok Dumbre <anand.ashok.dumbre@xilinx.com>");
+diff --git a/drivers/iio/adc/versal-sysmon.h b/drivers/iio/adc/versal-sysmon.h
+new file mode 100644
+index 000000000..a23139a07
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/iio/adc/versal-sysmon.h	2023-04-14 12:24:05.546242100 +0900
++++ b/drivers/iio/adc/versal-sysmon.h
 @@ -0,0 +1,184 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
 +/*
@@ -2403,8 +2367,11 @@
 +int sysmon_unregister_temp_ops(enum sysmon_region region_id);
 +struct list_head *sysmon_nodes_by_region(enum sysmon_region region_id);
 +int sysmon_get_node_value(int sat_id);
+diff --git a/drivers/iio/adc/xilinx-ams.c b/drivers/iio/adc/xilinx-ams.c
+new file mode 100644
+index 000000000..4c7f78b90
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/iio/adc/xilinx-ams.c	2023-04-14 12:24:05.546242100 +0900
++++ b/drivers/iio/adc/xilinx-ams.c
 @@ -0,0 +1,1116 @@
 +/*
 + * Xilinx AMS driver
@@ -3522,8 +3489,11 @@
 +
 +MODULE_LICENSE("GPL v2");
 +MODULE_AUTHOR("Rajnikant Bhojani <rajnikant.bhojani@xilinx.com>");
+diff --git a/drivers/iio/adc/xilinx-ams.h b/drivers/iio/adc/xilinx-ams.h
+new file mode 100644
+index 000000000..e57f87322
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/iio/adc/xilinx-ams.h	2023-04-14 12:24:05.546242100 +0900
++++ b/drivers/iio/adc/xilinx-ams.h
 @@ -0,0 +1,281 @@
 +#ifndef __XILINX_AMS_H__
 +#define __XILINX_AMS_H__
@@ -3806,3 +3776,64 @@
 +};
 +
 +#endif /* __XILINX_AMS_H__ */
+diff --git a/include/linux/iio/adc/versal-sysmon-events.h b/include/linux/iio/adc/versal-sysmon-events.h
+new file mode 100644
+index 000000000..ea65278cb
+--- /dev/null
++++ b/include/linux/iio/adc/versal-sysmon-events.h
+@@ -0,0 +1,55 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Xilinx SYSMON hardware info
++ *
++ * Copyright (C) 2019 - 2021 Xilinx, Inc.
++ *
++ */
++#ifndef _VERSAL_SYSMON_H_
++#define _VERSAL_SYSMON_H_
++
++#include <linux/types.h>
++#include <linux/iio/types.h>
++
++/* Sysmon region ids */
++enum sysmon_region {
++	SYSMON_AIE = 0,
++	SYSMON_PMC = 1,
++	SYSMON_XPIO = 2,
++	SYSMON_VNOC = 3,
++	SYSMON_CC = 4,
++};
++
++/**
++ * struct regional_node - regional node properties
++ * @sat_id: node_id
++ * @x: x co-ordinate of the node
++ * @y: y co-ordinate of the node
++ * @temp: raw sensor value
++ * @regional_node_list: list of nodes in the region
++ */
++struct regional_node {
++	int sat_id;
++	int x;
++	int y;
++	u16 temp;
++	struct list_head regional_node_list;
++};
++
++/**
++ * struct region_info - information about a regions sensors
++ * @id: region id
++ * @cb: callback to be called when there is a region specific event
++ * @data: pointer to the callback data
++ * @node_list: head to the regional_nodes list
++ * @list: list of regions
++ */
++struct region_info {
++	enum sysmon_region id;
++	void (*cb)(void *data, struct regional_node *node);
++	void *data;
++	struct list_head node_list;
++	struct list_head list;
++};
++
++#endif
