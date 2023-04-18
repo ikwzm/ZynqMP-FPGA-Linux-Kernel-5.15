@@ -1,6 +1,8 @@
---- linux-5.15.36/drivers/pwm/Kconfig	2023-04-14 12:26:05.541227400 +0900
-+++ linux-xlnx-2022.2/drivers/pwm/Kconfig	2023-04-14 12:24:12.611440000 +0900
-@@ -492,6 +492,17 @@
+diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
+index aa29841bb..12f4a1066 100644
+--- a/drivers/pwm/Kconfig
++++ b/drivers/pwm/Kconfig
+@@ -492,6 +492,17 @@ config PWM_SIFIVE
  	  To compile this driver as a module, choose M here: the module
  	  will be called pwm-sifive.
  
@@ -18,9 +20,11 @@
  config PWM_SL28CPLD
  	tristate "Kontron sl28cpld PWM support"
  	depends on MFD_SL28CPLD || COMPILE_TEST
---- linux-5.15.36/drivers/pwm/Makefile	2023-04-14 12:26:05.541227400 +0900
-+++ linux-xlnx-2022.2/drivers/pwm/Makefile	2023-04-14 12:24:12.611440000 +0900
-@@ -45,6 +45,7 @@
+diff --git a/drivers/pwm/Makefile b/drivers/pwm/Makefile
+index 708840b7f..3881bd874 100644
+--- a/drivers/pwm/Makefile
++++ b/drivers/pwm/Makefile
+@@ -45,6 +45,7 @@ obj-$(CONFIG_PWM_RENESAS_TPU)	+= pwm-renesas-tpu.o
  obj-$(CONFIG_PWM_ROCKCHIP)	+= pwm-rockchip.o
  obj-$(CONFIG_PWM_SAMSUNG)	+= pwm-samsung.o
  obj-$(CONFIG_PWM_SIFIVE)	+= pwm-sifive.o
@@ -28,8 +32,11 @@
  obj-$(CONFIG_PWM_SL28CPLD)	+= pwm-sl28cpld.o
  obj-$(CONFIG_PWM_SPEAR)		+= pwm-spear.o
  obj-$(CONFIG_PWM_SPRD)		+= pwm-sprd.o
+diff --git a/drivers/pwm/pwm-cadence.c b/drivers/pwm/pwm-cadence.c
+new file mode 100644
+index 000000000..73f377860
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/pwm/pwm-cadence.c	2023-04-14 12:24:12.611440000 +0900
++++ b/drivers/pwm/pwm-cadence.c
 @@ -0,0 +1,362 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
