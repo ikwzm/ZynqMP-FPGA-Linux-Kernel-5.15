@@ -1,6 +1,8 @@
---- linux-5.15.36/Documentation/devicetree/bindings/net/mscc-phy-vsc8531.txt	2023-04-14 12:25:42.658216600 +0900
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/net/mscc-phy-vsc8531.txt	2023-04-14 12:23:49.628484400 +0900
-@@ -33,7 +33,14 @@
+diff --git a/Documentation/devicetree/bindings/net/mscc-phy-vsc8531.txt b/Documentation/devicetree/bindings/net/mscc-phy-vsc8531.txt
+index 0a3647fe3..d66475612 100644
+--- a/Documentation/devicetree/bindings/net/mscc-phy-vsc8531.txt
++++ b/Documentation/devicetree/bindings/net/mscc-phy-vsc8531.txt
+@@ -33,7 +33,14 @@ Optional properties:
  			  VSC8531_DUPLEX_COLLISION (8).
  - load-save-gpios	: GPIO used for the load/save operation of the PTP
  			  hardware clock (PHC).
@@ -16,8 +18,11 @@
  
  Table: 1 - Edge rate change
  ----------------------------------------------------------------|
+diff --git a/Documentation/devicetree/bindings/net/xilinx-phy.txt b/Documentation/devicetree/bindings/net/xilinx-phy.txt
+new file mode 100644
+index 000000000..aeb991749
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/net/xilinx-phy.txt	2023-04-14 12:23:49.661736000 +0900
++++ b/Documentation/devicetree/bindings/net/xilinx-phy.txt
 @@ -0,0 +1,15 @@
 +Xilinx PCS/PMA PHY bindings
 +
@@ -34,56 +39,11 @@
 +		reg = <9>;
 +		xlnx,phy-type = <0x5>;
 +	};
---- linux-5.15.36/include/dt-bindings/net/mscc-phy-vsc8531.h	2023-04-14 12:26:10.725831900 +0900
-+++ linux-xlnx-2022.2/include/dt-bindings/net/mscc-phy-vsc8531.h	2023-04-14 12:24:17.975281100 +0900
-@@ -28,4 +28,13 @@
- #define VSC8531_FORCE_LED_OFF           14
- #define VSC8531_FORCE_LED_ON            15
- 
-+#define VSC8531_RGMII_CLK_DELAY_0_2_NS	0
-+#define VSC8531_RGMII_CLK_DELAY_0_8_NS	1
-+#define VSC8531_RGMII_CLK_DELAY_1_1_NS	2
-+#define VSC8531_RGMII_CLK_DELAY_1_7_NS	3
-+#define VSC8531_RGMII_CLK_DELAY_2_0_NS	4
-+#define VSC8531_RGMII_CLK_DELAY_2_3_NS	5
-+#define VSC8531_RGMII_CLK_DELAY_2_6_NS	6
-+#define VSC8531_RGMII_CLK_DELAY_3_4_NS	7
-+
- #endif
---- /dev/null
-+++ linux-xlnx-2022.2/include/linux/xilinx_phy.h	2023-04-14 12:24:19.290775800 +0900
-@@ -0,0 +1,28 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Xilinx PHY specific header
-+ *
-+ * (C) Copyright 2015-2021 Xilinx, Inc. All rights reserved.
-+ *
-+ */
-+
-+#ifndef _XILINX_PHY_H
-+#define _XILINX_PHY_H
-+
-+/* Mask used for ID comparisons */
-+#define XILINX_PHY_ID_MASK		0xfffffff0
-+
-+/* Known PHY IDs */
-+#define XILINX_PHY_ID			0x01740c00
-+
-+/* struct phy_device dev_flags definitions */
-+#define XAE_PHY_TYPE_MII		0
-+#define XAE_PHY_TYPE_GMII		1
-+#define XAE_PHY_TYPE_RGMII_1_3		2
-+#define XAE_PHY_TYPE_RGMII_2_0		3
-+#define XAE_PHY_TYPE_SGMII		4
-+#define XAE_PHY_TYPE_1000BASE_X		5
-+#define XAE_PHY_TYPE_2500		6
-+#define XXE_PHY_TYPE_USXGMII		7
-+
-+#endif /* _XILINX_PHY_H */
---- linux-5.15.36/drivers/net/phy/Kconfig	2023-04-14 12:26:03.279970300 +0900
-+++ linux-xlnx-2022.2/drivers/net/phy/Kconfig	2023-04-14 12:24:10.472145500 +0900
-@@ -239,7 +239,8 @@
+diff --git a/drivers/net/phy/Kconfig b/drivers/net/phy/Kconfig
+index 902495afc..b3203a31c 100644
+--- a/drivers/net/phy/Kconfig
++++ b/drivers/net/phy/Kconfig
+@@ -239,7 +239,8 @@ config MICROSEMI_PHY
  	depends on PTP_1588_CLOCK_OPTIONAL || !NETWORK_PHY_TIMESTAMPING
  	select CRYPTO_LIB_AES if MACSEC
  	help
@@ -93,7 +53,7 @@
  
  config MOTORCOMM_PHY
  	tristate "Motorcomm PHYs"
-@@ -339,6 +340,14 @@
+@@ -339,6 +340,14 @@ config VITESSE_PHY
  	help
  	  Currently supports the vsc8244
  
@@ -108,16 +68,20 @@
  config XILINX_GMII2RGMII
  	tristate "Xilinx GMII2RGMII converter driver"
  	help
---- linux-5.15.36/drivers/net/phy/Makefile	2023-04-14 12:26:03.279970300 +0900
-+++ linux-xlnx-2022.2/drivers/net/phy/Makefile	2023-04-14 12:24:10.472145500 +0900
-@@ -84,4 +84,5 @@
+diff --git a/drivers/net/phy/Makefile b/drivers/net/phy/Makefile
+index b2728d00f..8caef9ed5 100644
+--- a/drivers/net/phy/Makefile
++++ b/drivers/net/phy/Makefile
+@@ -84,4 +84,5 @@ obj-$(CONFIG_SMSC_PHY)		+= smsc.o
  obj-$(CONFIG_STE10XP)		+= ste10Xp.o
  obj-$(CONFIG_TERANETICS_PHY)	+= teranetics.o
  obj-$(CONFIG_VITESSE_PHY)	+= vitesse.o
 +obj-$(CONFIG_XILINX_PHY)	+= xilinx_phy.o
  obj-$(CONFIG_XILINX_GMII2RGMII) += xilinx_gmii2rgmii.o
---- linux-5.15.36/drivers/net/phy/dp83867.c	2023-04-14 12:26:03.295591200 +0900
-+++ linux-xlnx-2022.2/drivers/net/phy/dp83867.c	2023-04-14 12:24:10.487766700 +0900
+diff --git a/drivers/net/phy/dp83867.c b/drivers/net/phy/dp83867.c
+index 783e30451..e431ff13e 100644
+--- a/drivers/net/phy/dp83867.c
++++ b/drivers/net/phy/dp83867.c
 @@ -25,6 +25,7 @@
  #define MII_DP83867_MICR	0x12
  #define MII_DP83867_ISR		0x13
@@ -138,7 +102,7 @@
  
  /* RGMIIDCTL bits */
  #define DP83867_RGMII_TX_CLK_DELAY_MAX		0xf
-@@ -142,6 +148,14 @@
+@@ -143,6 +149,14 @@
  #define DP83867_CFG3_INT_OE			BIT(7)
  #define DP83867_CFG3_ROBUST_AUTO_MDIX		BIT(9)
  
@@ -153,7 +117,7 @@
  /* CFG4 bits */
  #define DP83867_CFG4_PORT_MIRROR_EN              BIT(0)
  
-@@ -641,7 +655,7 @@
+@@ -642,7 +656,7 @@ static int dp83867_config_init(struct phy_device *phydev)
  {
  	struct dp83867_private *dp83867 = phydev->priv;
  	int ret, val, bs;
@@ -162,11 +126,10 @@
  
  	/* Force speed optimization for the PHY even if it strapped */
  	ret = phy_modify(phydev, DP83867_CFG2, DP83867_DOWNSHIFT_EN,
-@@ -790,6 +804,35 @@
- 		else
+@@ -792,6 +806,27 @@ static int dp83867_config_init(struct phy_device *phydev)
  			val &= ~DP83867_SGMII_TYPE;
  		phy_write_mmd(phydev, DP83867_DEVADDR, DP83867_SGMIICTL, val);
-+
+ 
 +		phy_write(phydev, MII_BMCR,
 +			  (BMCR_ANENABLE | BMCR_FULLDPLX | BMCR_SPEED1000));
 +
@@ -188,19 +151,14 @@
 +			  (dp83867->tx_fifo_depth  << DP83867_PHYCTRL_TXFIFO_SHIFT));
 +		phy_write(phydev, MII_DP83867_BISCR, 0x0);
 +
-+		/* This is a SW workaround for link instability if RX_CTRL is
-+		 * not strapped to mode 3 or 4 in HW. This is required along
-+		 * with clearing bit 7 and increasing autoneg timer above.
-+		 */
-+		if (dp83867->rxctrl_strap_quirk)
-+			phy_set_bits_mmd(phydev, DP83867_DEVADDR, DP83867_CFG4,
-+					 BIT(8));
- 	}
- 
- 	val = phy_read(phydev, DP83867_CFG3);
---- linux-5.15.36/drivers/net/phy/mscc/mscc.h	2023-04-14 12:26:03.311212400 +0900
-+++ linux-xlnx-2022.2/drivers/net/phy/mscc/mscc.h	2023-04-14 12:24:10.503388000 +0900
-@@ -178,6 +178,7 @@
+ 		/* This is a SW workaround for link instability if RX_CTRL is
+ 		 * not strapped to mode 3 or 4 in HW. This is required for SGMII
+ 		 * in addition to clearing bit 7, handled above.
+diff --git a/drivers/net/phy/mscc/mscc.h b/drivers/net/phy/mscc/mscc.h
+index a50235fdf..f704c2198 100644
+--- a/drivers/net/phy/mscc/mscc.h
++++ b/drivers/net/phy/mscc/mscc.h
+@@ -178,6 +178,7 @@ enum rgmii_clock_delay {
  /* RGMII controls at address 20E2, for VSC8502 and similar */
  #define VSC8502_RGMII_CNTL		  20
  #define VSC8502_RGMII_RX_DELAY_MASK	  0x0070
@@ -208,7 +166,7 @@
  #define VSC8502_RGMII_TX_DELAY_MASK	  0x0007
  
  #define MSCC_PHY_WOL_LOWER_MAC_ADDR	  21
-@@ -281,6 +282,7 @@
+@@ -281,6 +282,7 @@ enum rgmii_clock_delay {
  #define PHY_ID_VSC8514			  0x00070670
  #define PHY_ID_VSC8530			  0x00070560
  #define PHY_ID_VSC8531			  0x00070570
@@ -216,7 +174,7 @@
  #define PHY_ID_VSC8540			  0x00070760
  #define PHY_ID_VSC8541			  0x00070770
  #define PHY_ID_VSC8552			  0x000704e0
-@@ -373,6 +375,8 @@
+@@ -373,6 +375,8 @@ struct vsc8531_private {
  	 * package.
  	 */
  	unsigned int base_addr;
@@ -225,9 +183,11 @@
  
  #if IS_ENABLED(CONFIG_MACSEC)
  	/* MACsec fields:
---- linux-5.15.36/drivers/net/phy/mscc/mscc_main.c	2023-04-14 12:26:03.311212400 +0900
-+++ linux-xlnx-2022.2/drivers/net/phy/mscc/mscc_main.c	2023-04-14 12:24:10.503388000 +0900
-@@ -535,9 +535,13 @@
+diff --git a/drivers/net/phy/mscc/mscc_main.c b/drivers/net/phy/mscc/mscc_main.c
+index f2e3a6719..b4eaa6c04 100644
+--- a/drivers/net/phy/mscc/mscc_main.c
++++ b/drivers/net/phy/mscc/mscc_main.c
+@@ -535,9 +535,13 @@ static int vsc85xx_rgmii_set_skews(struct phy_device *phydev, u32 rgmii_cntl,
  	u16 rgmii_tx_delay_pos = ffs(rgmii_tx_delay_mask) - 1;
  	u16 reg_val = 0;
  	int rc;
@@ -241,7 +201,7 @@
  	if (phydev->interface == PHY_INTERFACE_MODE_RGMII_RXID ||
  	    phydev->interface == PHY_INTERFACE_MODE_RGMII_ID)
  		reg_val |= RGMII_CLK_DELAY_2_0_NS << rgmii_rx_delay_pos;
-@@ -1820,6 +1824,17 @@
+@@ -1820,6 +1824,17 @@ static int vsc85xx_config_init(struct phy_device *phydev)
  {
  	int rc, i, phy_id;
  	struct vsc8531_private *vsc8531 = phydev->priv;
@@ -259,10 +219,11 @@
  
  	rc = vsc85xx_default_config(phydev);
  	if (rc)
-@@ -2445,6 +2460,30 @@
+@@ -2444,6 +2459,30 @@ static struct phy_driver vsc85xx_driver[] = {
+ 	.get_strings    = &vsc85xx_get_strings,
  	.get_stats      = &vsc85xx_get_stats,
  },
- {
++{
 +	.phy_id		= PHY_ID_VSC8531_02,
 +	.name		= "Microsemi VSC8531-02",
 +	.phy_id_mask	= 0xfffffff0,
@@ -286,11 +247,10 @@
 +	.get_strings	= &vsc85xx_get_strings,
 +	.get_stats	= &vsc85xx_get_stats,
 +},
-+{
+ {
  	.phy_id		= PHY_ID_VSC8540,
  	.name		= "Microsemi FE VSC8540 SyncE",
- 	.phy_id_mask	= 0xfffffff0,
-@@ -2668,6 +2707,7 @@
+@@ -2668,6 +2707,7 @@ static struct mdio_device_id __maybe_unused vsc85xx_tbl[] = {
  	{ PHY_ID_VSC8514, 0xfffffff0, },
  	{ PHY_ID_VSC8530, 0xfffffff0, },
  	{ PHY_ID_VSC8531, 0xfffffff0, },
@@ -298,8 +258,11 @@
  	{ PHY_ID_VSC8540, 0xfffffff0, },
  	{ PHY_ID_VSC8541, 0xfffffff0, },
  	{ PHY_ID_VSC8552, 0xfffffff0, },
+diff --git a/drivers/net/phy/xilinx_phy.c b/drivers/net/phy/xilinx_phy.c
+new file mode 100644
+index 000000000..aec23976c
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/net/phy/xilinx_phy.c	2023-04-14 12:24:10.519009400 +0900
++++ b/drivers/net/phy/xilinx_phy.c
 @@ -0,0 +1,162 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/* Xilinx PCS/PMA Core phy driver
@@ -463,3 +426,55 @@
 +MODULE_DEVICE_TABLE(mdio, xilinx_tbl);
 +MODULE_DESCRIPTION("Xilinx PCS/PMA PHY driver");
 +MODULE_LICENSE("GPL");
+diff --git a/include/dt-bindings/net/mscc-phy-vsc8531.h b/include/dt-bindings/net/mscc-phy-vsc8531.h
+index 9eb2ec2b2..242eb4c7e 100644
+--- a/include/dt-bindings/net/mscc-phy-vsc8531.h
++++ b/include/dt-bindings/net/mscc-phy-vsc8531.h
+@@ -28,4 +28,13 @@
+ #define VSC8531_FORCE_LED_OFF           14
+ #define VSC8531_FORCE_LED_ON            15
+ 
++#define VSC8531_RGMII_CLK_DELAY_0_2_NS	0
++#define VSC8531_RGMII_CLK_DELAY_0_8_NS	1
++#define VSC8531_RGMII_CLK_DELAY_1_1_NS	2
++#define VSC8531_RGMII_CLK_DELAY_1_7_NS	3
++#define VSC8531_RGMII_CLK_DELAY_2_0_NS	4
++#define VSC8531_RGMII_CLK_DELAY_2_3_NS	5
++#define VSC8531_RGMII_CLK_DELAY_2_6_NS	6
++#define VSC8531_RGMII_CLK_DELAY_3_4_NS	7
++
+ #endif
+diff --git a/include/linux/xilinx_phy.h b/include/linux/xilinx_phy.h
+new file mode 100644
+index 000000000..d6804cb58
+--- /dev/null
++++ b/include/linux/xilinx_phy.h
+@@ -0,0 +1,28 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Xilinx PHY specific header
++ *
++ * (C) Copyright 2015-2021 Xilinx, Inc. All rights reserved.
++ *
++ */
++
++#ifndef _XILINX_PHY_H
++#define _XILINX_PHY_H
++
++/* Mask used for ID comparisons */
++#define XILINX_PHY_ID_MASK		0xfffffff0
++
++/* Known PHY IDs */
++#define XILINX_PHY_ID			0x01740c00
++
++/* struct phy_device dev_flags definitions */
++#define XAE_PHY_TYPE_MII		0
++#define XAE_PHY_TYPE_GMII		1
++#define XAE_PHY_TYPE_RGMII_1_3		2
++#define XAE_PHY_TYPE_RGMII_2_0		3
++#define XAE_PHY_TYPE_SGMII		4
++#define XAE_PHY_TYPE_1000BASE_X		5
++#define XAE_PHY_TYPE_2500		6
++#define XXE_PHY_TYPE_USXGMII		7
++
++#endif /* _XILINX_PHY_H */
