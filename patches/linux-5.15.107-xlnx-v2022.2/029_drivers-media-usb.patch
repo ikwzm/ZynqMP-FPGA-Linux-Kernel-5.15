@@ -1,6 +1,8 @@
---- linux-5.15.36/drivers/media/usb/uvc/uvc_queue.c	2023-04-14 12:26:00.920777100 +0900
-+++ linux-xlnx-2022.2/drivers/media/usb/uvc/uvc_queue.c	2023-04-14 12:24:07.910558000 +0900
-@@ -180,14 +180,27 @@
+diff --git a/drivers/media/usb/uvc/uvc_queue.c b/drivers/media/usb/uvc/uvc_queue.c
+index 21a907d32..502aa68b0 100644
+--- a/drivers/media/usb/uvc/uvc_queue.c
++++ b/drivers/media/usb/uvc/uvc_queue.c
+@@ -180,14 +180,27 @@ static int uvc_start_streaming(struct vb2_queue *vq, unsigned int count)
  static void uvc_stop_streaming(struct vb2_queue *vq)
  {
  	struct uvc_video_queue *queue = vb2_get_drv_priv(vq);
@@ -28,8 +30,10 @@
  	spin_unlock_irq(&queue->irqlock);
  }
  
---- linux-5.15.36/drivers/media/usb/uvc/uvcvideo.h	2023-04-14 12:26:00.920777100 +0900
-+++ linux-xlnx-2022.2/drivers/media/usb/uvc/uvcvideo.h	2023-04-14 12:24:07.910558000 +0900
+diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
+index 1aa2cc985..cc5d172d7 100644
+--- a/drivers/media/usb/uvc/uvcvideo.h
++++ b/drivers/media/usb/uvc/uvcvideo.h
 @@ -183,9 +183,9 @@
  #define DRIVER_VERSION		"1.1.1"
  
@@ -42,7 +46,7 @@
  /* Maximum status buffer size in bytes of interrupt URB. */
  #define UVC_MAX_STATUS_SIZE	16
  
-@@ -452,6 +452,7 @@
+@@ -451,6 +451,7 @@ struct uvc_buffer {
  
  #define UVC_QUEUE_DISCONNECTED		(1 << 0)
  #define UVC_QUEUE_DROP_CORRUPTED	(1 << 1)
