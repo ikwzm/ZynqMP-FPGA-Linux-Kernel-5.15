@@ -1,5 +1,8 @@
+diff --git a/Documentation/devicetree/bindings/ptp/ptp-xilinx.yaml b/Documentation/devicetree/bindings/ptp/ptp-xilinx.yaml
+new file mode 100644
+index 000000000..ef31148ea
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/ptp/ptp-xilinx.yaml	2023-04-14 12:23:49.896055700 +0900
++++ b/Documentation/devicetree/bindings/ptp/ptp-xilinx.yaml
 @@ -0,0 +1,38 @@
 +# SPDX-License-Identifier: GPL-2.0-or-later OR BSD-2-Clause
 +%YAML 1.2
@@ -39,9 +42,11 @@
 +        compatible = "xlnx,timer-syncer-1588-2.0";
 +        reg = <0x80000000 0x10000>;
 +    };
---- linux-5.15.36/drivers/ptp/Kconfig	2023-04-14 12:26:05.525573100 +0900
-+++ linux-xlnx-2022.2/drivers/ptp/Kconfig	2023-04-14 12:24:12.594814000 +0900
-@@ -167,6 +167,16 @@
+diff --git a/drivers/ptp/Kconfig b/drivers/ptp/Kconfig
+index 458218f88..48605227b 100644
+--- a/drivers/ptp/Kconfig
++++ b/drivers/ptp/Kconfig
+@@ -167,6 +167,16 @@ config PTP_1588_CLOCK_VMW
  	  To compile this driver as a module, choose M here: the module
  	  will be called ptp_vmw.
  
@@ -58,9 +63,11 @@
  config PTP_1588_CLOCK_OCP
  	tristate "OpenCompute TimeCard as PTP clock"
  	depends on PTP_1588_CLOCK
---- linux-5.15.36/drivers/ptp/Makefile	2023-04-14 12:26:05.525573100 +0900
-+++ linux-xlnx-2022.2/drivers/ptp/Makefile	2023-04-14 12:24:12.594814000 +0900
-@@ -11,6 +11,7 @@
+diff --git a/drivers/ptp/Makefile b/drivers/ptp/Makefile
+index 28a6fe342..df9162159 100644
+--- a/drivers/ptp/Makefile
++++ b/drivers/ptp/Makefile
+@@ -11,6 +11,7 @@ obj-$(CONFIG_PTP_1588_CLOCK_DTE)	+= ptp_dte.o
  obj-$(CONFIG_PTP_1588_CLOCK_INES)	+= ptp_ines.o
  obj-$(CONFIG_PTP_1588_CLOCK_PCH)	+= ptp_pch.o
  obj-$(CONFIG_PTP_1588_CLOCK_KVM)	+= ptp_kvm.o
@@ -68,8 +75,11 @@
  obj-$(CONFIG_PTP_1588_CLOCK_QORIQ)	+= ptp-qoriq.o
  ptp-qoriq-y				+= ptp_qoriq.o
  ptp-qoriq-$(CONFIG_DEBUG_FS)		+= ptp_qoriq_debugfs.o
+diff --git a/drivers/ptp/ptp_xilinx.c b/drivers/ptp/ptp_xilinx.c
+new file mode 100644
+index 000000000..0733459a3
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/ptp/ptp_xilinx.c	2023-04-14 12:24:12.611440000 +0900
++++ b/drivers/ptp/ptp_xilinx.c
 @@ -0,0 +1,436 @@
 +// SPDX-License-Identifier: GPL-2.0-only
 +/*
