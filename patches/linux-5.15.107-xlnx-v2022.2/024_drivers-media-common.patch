@@ -1,5 +1,43 @@
+diff --git a/drivers/media/common/v4l2-tpg/v4l2-tpg-core.c b/drivers/media/common/v4l2-tpg/v4l2-tpg-core.c
+index 7607b516a..bde4859be 100644
+--- a/drivers/media/common/v4l2-tpg/v4l2-tpg-core.c
++++ b/drivers/media/common/v4l2-tpg/v4l2-tpg-core.c
+@@ -285,6 +285,14 @@ bool tpg_s_fourcc(struct tpg_data *tpg, u32 fourcc)
+ 	case V4L2_PIX_FMT_YVU422M:
+ 		tpg->buffers = 3;
+ 		fallthrough;
++	case V4L2_PIX_FMT_YUV444P:
++		tpg->vdownsampling[1] = 1;
++		tpg->vdownsampling[2] = 1;
++		tpg->hdownsampling[1] = 1;
++		tpg->hdownsampling[2] = 1;
++		tpg->planes = 3;
++		tpg->color_enc = TGP_COLOR_ENC_YCBCR;
++		break;
+ 	case V4L2_PIX_FMT_YUV422P:
+ 		tpg->vdownsampling[1] = 1;
+ 		tpg->vdownsampling[2] = 1;
+@@ -445,6 +453,7 @@ bool tpg_s_fourcc(struct tpg_data *tpg, u32 fourcc)
+ 		tpg->twopixelsize[0] = 4;
+ 		tpg->twopixelsize[1] = 4;
+ 		break;
++	case V4L2_PIX_FMT_YUV444P:
+ 	case V4L2_PIX_FMT_YUV444M:
+ 	case V4L2_PIX_FMT_YVU444M:
+ 	case V4L2_PIX_FMT_YUV422M:
+@@ -1196,6 +1205,7 @@ static void gen_twopix(struct tpg_data *tpg,
+ 		buf[1][1] = g_u_s;
+ 		break;
+ 
++	case V4L2_PIX_FMT_YUV444P:
+ 	case V4L2_PIX_FMT_YUV444M:
+ 		buf[0][offset] = r_y_h;
+ 		buf[1][offset] = g_u_s;
+diff --git a/include/media/hdr-ctrls.h b/include/media/hdr-ctrls.h
+new file mode 100644
+index 000000000..61ca19573
 --- /dev/null
-+++ linux-xlnx-2022.2/include/media/hdr-ctrls.h	2023-04-14 12:24:19.322018800 +0900
++++ b/include/media/hdr-ctrls.h
 @@ -0,0 +1,91 @@
 +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
 +/*
@@ -92,9 +130,11 @@
 +};
 +
 +#endif
---- linux-5.15.36/include/media/media-entity.h	2023-04-14 12:26:12.078684200 +0900
-+++ linux-xlnx-2022.2/include/media/media-entity.h	2023-04-14 12:24:19.353261200 +0900
-@@ -205,6 +205,9 @@
+diff --git a/include/media/media-entity.h b/include/media/media-entity.h
+index 09737b478..c3abff449 100644
+--- a/include/media/media-entity.h
++++ b/include/media/media-entity.h
+@@ -205,6 +205,9 @@ struct media_pad {
   * @link_validate:	Return whether a link is valid from the entity point of
   *			view. The media_pipeline_start() function
   *			validates all links by calling this operation. Optional.
@@ -104,7 +144,7 @@
   *
   * .. note::
   *
-@@ -218,6 +221,8 @@
+@@ -218,6 +221,8 @@ struct media_entity_operations {
  			  const struct media_pad *local,
  			  const struct media_pad *remote, u32 flags);
  	int (*link_validate)(struct media_link *link);
@@ -113,7 +153,7 @@
  };
  
  /**
-@@ -901,6 +906,9 @@
+@@ -901,6 +906,9 @@ __must_check int media_graph_walk_init(
   */
  void media_graph_walk_cleanup(struct media_graph *graph);
  
@@ -123,36 +163,3 @@
  /**
   * media_graph_walk_start - Start walking the media graph at a
   *	given entity
---- linux-5.15.36/drivers/media/common/v4l2-tpg/v4l2-tpg-core.c	2023-04-14 12:25:59.671828600 +0900
-+++ linux-xlnx-2022.2/drivers/media/common/v4l2-tpg/v4l2-tpg-core.c	2023-04-14 12:24:06.696515700 +0900
-@@ -285,6 +285,14 @@
- 	case V4L2_PIX_FMT_YVU422M:
- 		tpg->buffers = 3;
- 		fallthrough;
-+	case V4L2_PIX_FMT_YUV444P:
-+		tpg->vdownsampling[1] = 1;
-+		tpg->vdownsampling[2] = 1;
-+		tpg->hdownsampling[1] = 1;
-+		tpg->hdownsampling[2] = 1;
-+		tpg->planes = 3;
-+		tpg->color_enc = TGP_COLOR_ENC_YCBCR;
-+		break;
- 	case V4L2_PIX_FMT_YUV422P:
- 		tpg->vdownsampling[1] = 1;
- 		tpg->vdownsampling[2] = 1;
-@@ -445,6 +453,7 @@
- 		tpg->twopixelsize[0] = 4;
- 		tpg->twopixelsize[1] = 4;
- 		break;
-+	case V4L2_PIX_FMT_YUV444P:
- 	case V4L2_PIX_FMT_YUV444M:
- 	case V4L2_PIX_FMT_YVU444M:
- 	case V4L2_PIX_FMT_YUV422M:
-@@ -1196,6 +1205,7 @@
- 		buf[1][1] = g_u_s;
- 		break;
- 
-+	case V4L2_PIX_FMT_YUV444P:
- 	case V4L2_PIX_FMT_YUV444M:
- 		buf[0][offset] = r_y_h;
- 		buf[1][offset] = g_u_s;
