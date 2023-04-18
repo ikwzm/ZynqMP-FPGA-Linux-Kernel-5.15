@@ -1,5 +1,8 @@
+diff --git a/Documentation/devicetree/bindings/nvmem/xlnx,versal-sec-cfg.yaml b/Documentation/devicetree/bindings/nvmem/xlnx,versal-sec-cfg.yaml
+new file mode 100644
+index 000000000..25771a499
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/nvmem/xlnx,versal-sec-cfg.yaml	2023-04-14 12:23:49.661736000 +0900
++++ b/Documentation/devicetree/bindings/nvmem/xlnx,versal-sec-cfg.yaml
 @@ -0,0 +1,148 @@
 +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 +%YAML 1.2
@@ -149,9 +152,11 @@
 +      };
 +    };
 +
---- linux-5.15.36/Documentation/devicetree/bindings/nvmem/xlnx,zynqmp-nvmem.txt	2023-04-14 12:25:42.701499200 +0900
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/nvmem/xlnx,zynqmp-nvmem.txt	2023-04-14 12:23:49.677357300 +0900
-@@ -25,9 +25,78 @@
+diff --git a/Documentation/devicetree/bindings/nvmem/xlnx,zynqmp-nvmem.txt b/Documentation/devicetree/bindings/nvmem/xlnx,zynqmp-nvmem.txt
+index 4881561b3..be126ccf4 100644
+--- a/Documentation/devicetree/bindings/nvmem/xlnx,zynqmp-nvmem.txt
++++ b/Documentation/devicetree/bindings/nvmem/xlnx,zynqmp-nvmem.txt
+@@ -25,9 +25,78 @@ firmware {
  			#size-cells = <1>;
  
  			/* Data cells */
@@ -231,7 +236,7 @@
  		};
  	};
  };
-@@ -44,3 +113,22 @@
+@@ -44,3 +113,22 @@ For example:
  
  		...
  	};
@@ -254,9 +259,11 @@
 +	- |AES KEY 	| 0x60	 | 0x20		|
 +	- |PPK0 hash	| 0xA0	 | 0x30		|
 +	- |PPK1 hash	| 0xD0	 | 0x30		|
---- linux-5.15.36/drivers/nvmem/Kconfig	2023-04-14 12:26:04.582950200 +0900
-+++ linux-xlnx-2022.2/drivers/nvmem/Kconfig	2023-04-14 12:24:11.772053000 +0900
-@@ -271,6 +271,17 @@
+diff --git a/drivers/nvmem/Kconfig b/drivers/nvmem/Kconfig
+index da414617a..4e3c9fb2e 100644
+--- a/drivers/nvmem/Kconfig
++++ b/drivers/nvmem/Kconfig
+@@ -271,6 +271,17 @@ config NVMEM_ZYNQMP
  
  	  If sure, say yes. If unsure, say no.
  
@@ -274,9 +281,11 @@
  config SPRD_EFUSE
  	tristate "Spreadtrum SoC eFuse Support"
  	depends on ARCH_SPRD || COMPILE_TEST
---- linux-5.15.36/drivers/nvmem/Makefile	2023-04-14 12:26:04.582950200 +0900
-+++ linux-xlnx-2022.2/drivers/nvmem/Makefile	2023-04-14 12:24:11.772053000 +0900
-@@ -55,6 +55,8 @@
+diff --git a/drivers/nvmem/Makefile b/drivers/nvmem/Makefile
+index dcbbde35b..add602af3 100644
+--- a/drivers/nvmem/Makefile
++++ b/drivers/nvmem/Makefile
+@@ -55,6 +55,8 @@ obj-$(CONFIG_SC27XX_EFUSE)	+= nvmem-sc27xx-efuse.o
  nvmem-sc27xx-efuse-y		:= sc27xx-efuse.o
  obj-$(CONFIG_NVMEM_ZYNQMP)	+= nvmem_zynqmp_nvmem.o
  nvmem_zynqmp_nvmem-y		:= zynqmp_nvmem.o
@@ -285,8 +294,11 @@
  obj-$(CONFIG_SPRD_EFUSE)	+= nvmem_sprd_efuse.o
  nvmem_sprd_efuse-y		:= sprd-efuse.o
  obj-$(CONFIG_NVMEM_RMEM) 	+= nvmem-rmem.o
+diff --git a/drivers/nvmem/xlnx_secure_config.c b/drivers/nvmem/xlnx_secure_config.c
+new file mode 100644
+index 000000000..a42bc0661
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/nvmem/xlnx_secure_config.c	2023-04-14 12:24:11.787698800 +0900
++++ b/drivers/nvmem/xlnx_secure_config.c
 @@ -0,0 +1,278 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
@@ -566,8 +578,10 @@
 +MODULE_AUTHOR("Harsha <harsha.harsha@xilinx.com>");
 +MODULE_DESCRIPTION("Versal Secure Configuration driver");
 +MODULE_LICENSE("GPL v2");
---- linux-5.15.36/drivers/nvmem/zynqmp_nvmem.c	2023-04-14 12:26:04.598546900 +0900
-+++ linux-xlnx-2022.2/drivers/nvmem/zynqmp_nvmem.c	2023-04-14 12:24:11.787698800 +0900
+diff --git a/drivers/nvmem/zynqmp_nvmem.c b/drivers/nvmem/zynqmp_nvmem.c
+index e28d7b133..92a9a987c 100644
+--- a/drivers/nvmem/zynqmp_nvmem.c
++++ b/drivers/nvmem/zynqmp_nvmem.c
 @@ -1,8 +1,9 @@
  // SPDX-License-Identifier: GPL-2.0+
  /*
@@ -725,9 +739,7 @@
 -		return ret;
 +	if (offset >= EFUSE_PUF_START_OFFSET && offset <= EFUSE_PUF_END_OFFSET)
 +		pufflag = 1;
- 
--	dev_dbg(priv->dev, "Read chipid val %x %x\n", idcode, version);
--	*(int *)val = version & SILICON_REVISION_MASK;
++
 +	switch (offset) {
 +	/* Soc version offset is zero */
 +	case SOC_VERSION_OFFSET:
@@ -752,16 +764,18 @@
 +		ret = 0;
 +		break;
 +	}
- 
--	return 0;
++
 +	return ret;
 +}
-+
+ 
+-	dev_dbg(priv->dev, "Read chipid val %x %x\n", idcode, version);
+-	*(int *)val = version & SILICON_REVISION_MASK;
 +static int zynqmp_nvmem_write(void *context,
 +			      unsigned int offset, void *val, size_t bytes)
 +{
 +	int pufflag = 0;
-+
+ 
+-	return 0;
 +	if (offset < EFUSE_START_OFFSET || offset > EFUSE_PUF_END_OFFSET)
 +		return -EOPNOTSUPP;
 +
@@ -782,7 +796,7 @@
  };
  
  static const struct of_device_id zynqmp_nvmem_match[] = {
-@@ -49,21 +201,20 @@
+@@ -49,21 +201,20 @@ MODULE_DEVICE_TABLE(of, zynqmp_nvmem_match);
  
  static int zynqmp_nvmem_probe(struct platform_device *pdev)
  {
