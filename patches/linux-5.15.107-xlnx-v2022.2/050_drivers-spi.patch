@@ -1,6 +1,8 @@
---- linux-5.15.36/Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml	2023-04-14 12:25:43.401470400 +0900
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml	2023-04-14 12:23:50.253630600 +0900
-@@ -11,6 +11,14 @@
+diff --git a/Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml b/Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml
+index 0e7087cc8..ca155abbd 100644
+--- a/Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml
++++ b/Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml
+@@ -11,6 +11,14 @@ maintainers:
  
  allOf:
    - $ref: spi-controller.yaml#
@@ -15,7 +17,7 @@
  
  properties:
    compatible:
-@@ -20,6 +28,7 @@
+@@ -20,6 +28,7 @@ properties:
                - ti,k2g-qspi
                - ti,am654-ospi
                - intel,lgm-qspi
@@ -23,7 +25,7 @@
            - const: cdns,qspi-nor
        - const: cdns,qspi-nor
  
-@@ -65,6 +74,9 @@
+@@ -65,6 +74,9 @@ properties:
        data rather than the QSPI clock. Make sure that QSPI return clock
        is populated on the board before using this property.
  
@@ -33,9 +35,11 @@
    resets:
      maxItems: 2
  
---- linux-5.15.36/Documentation/devicetree/bindings/spi/spi-zynqmp-qspi.yaml	2023-04-14 12:25:43.432712600 +0900
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/spi/spi-zynqmp-qspi.yaml	2023-04-14 12:23:50.285878900 +0900
-@@ -14,7 +14,11 @@
+diff --git a/Documentation/devicetree/bindings/spi/spi-zynqmp-qspi.yaml b/Documentation/devicetree/bindings/spi/spi-zynqmp-qspi.yaml
+index fafde1c06..f911a102d 100644
+--- a/Documentation/devicetree/bindings/spi/spi-zynqmp-qspi.yaml
++++ b/Documentation/devicetree/bindings/spi/spi-zynqmp-qspi.yaml
+@@ -14,7 +14,11 @@ allOf:
  
  properties:
    compatible:
@@ -48,103 +52,11 @@
  
    reg:
      maxItems: 2
---- linux-5.15.36/include/linux/spi/spi-mem.h	2023-04-14 12:26:11.875636000 +0900
-+++ linux-xlnx-2022.2/include/linux/spi/spi-mem.h	2023-04-14 12:24:19.134562900 +0900
-@@ -55,6 +55,8 @@
- 
- #define SPI_MEM_OP_NO_DATA	{ }
- 
-+#define SPI_MEM_DEV_MAX_ID_LEN		6
-+
- /**
-  * enum spi_mem_data_dir - describes the direction of a SPI memory data
-  *			   transfer from the controller perspective
-@@ -195,6 +197,9 @@
- 	struct spi_device *spi;
- 	void *drvpriv;
- 	const char *name;
-+	u8 device_id[SPI_MEM_DEV_MAX_ID_LEN];
-+	struct delayed_work	complete_work;
-+	struct completion	request_completion;
- };
- 
- /**
-@@ -356,6 +361,7 @@
- 
- int spi_mem_adjust_op_size(struct spi_mem *mem, struct spi_mem_op *op);
- 
-+bool update_stripe(const struct spi_mem_op *op);
- bool spi_mem_supports_op(struct spi_mem *mem,
- 			 const struct spi_mem_op *op);
- 
---- linux-5.15.36/include/linux/spi/spi.h	2023-04-14 12:26:11.875636000 +0900
-+++ linux-xlnx-2022.2/include/linux/spi/spi.h	2023-04-14 12:24:19.134562900 +0900
-@@ -147,6 +147,7 @@
-  *	not using a GPIO line)
-  * @word_delay: delay to be inserted between consecutive
-  *	words of a transfer
-+ * @multi_die: Flash device with multiple dies.
-  * @cs_setup: delay to be introduced by the controller after CS is asserted
-  * @cs_hold: delay to be introduced by the controller before CS is deasserted
-  * @cs_inactive: delay to be introduced by the controller after CS is
-@@ -192,6 +193,7 @@
- 	int			cs_gpio;	/* LEGACY: chip select gpio */
- 	struct gpio_desc	*cs_gpiod;	/* chip select gpio desc */
- 	struct spi_delay	word_delay; /* inter-word delay */
-+	bool			multi_die;	/* flash with multiple dies*/
- 	/* CS delays */
- 	struct spi_delay	cs_setup;
- 	struct spi_delay	cs_hold;
-@@ -514,7 +516,20 @@
- #define SPI_CONTROLLER_MUST_TX		BIT(4)	/* requires tx */
- 
- #define SPI_MASTER_GPIO_SS		BIT(5)	/* GPIO CS must select slave */
--
-+	/*
-+	 * Controller may support data stripe feature when more than one
-+	 * chips are present.
-+	 * Setting data stripe will send data in following manner:
-+	 * -> even bytes i.e. 0, 2, 4,... are transmitted on lower data bus
-+	 * -> odd bytes i.e. 1, 3, 5,.. are transmitted on upper data bus
-+	 */
-+#define SPI_MASTER_DATA_STRIPE BIT(7)		/* support data stripe */
-+	/*
-+	 * Controller may support asserting more than one chip select at once.
-+	 * This flag will enable that feature.
-+	 */
-+#define SPI_MASTER_BOTH_CS	BIT(8)		/* assert both chip selects */
-+#define SPI_MASTER_U_PAGE	BIT(9)		/* select upper flash */
- 	/* flag indicating if the allocation of this struct is devres-managed */
- 	bool			devm_allocated;
- 
-@@ -829,6 +844,7 @@
-  * @len: size of rx and tx buffers (in bytes)
-  * @speed_hz: Select a speed other than the device default for this
-  *      transfer. If 0 the default (from @spi_device) is used.
-+ * @dummy: number of dummy cycles.
-  * @bits_per_word: select a bits_per_word other than the device default
-  *      for this transfer. If 0 the default (from @spi_device) is used.
-  * @dummy_data: indicates transfer is dummy bytes transfer.
-@@ -846,6 +862,7 @@
-  * @transfer_list: transfers are sequenced through @spi_message.transfers
-  * @tx_sg: Scatterlist for transmit, currently not for client use
-  * @rx_sg: Scatterlist for receive, currently not for client use
-+ * @stripe: true-> enable stripe, false-> disable stripe.
-  * @ptp_sts_word_pre: The word (subject to bits_per_word semantics) offset
-  *	within @tx_buf for which the SPI device is requesting that the time
-  *	snapshot for this transfer begins. Upon completing the SPI transfer,
-@@ -953,6 +970,8 @@
- 	struct spi_delay	cs_change_delay;
- 	struct spi_delay	word_delay;
- 	u32		speed_hz;
-+	u32		dummy;
-+	bool		stripe;
- 
- 	u32		effective_speed_hz;
- 
---- linux-5.15.36/drivers/spi/Kconfig	2023-04-14 12:26:06.743926000 +0900
-+++ linux-xlnx-2022.2/drivers/spi/Kconfig	2023-04-14 12:24:13.797517300 +0900
-@@ -977,16 +977,26 @@
+diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
+index 4fc23236d..b09fd8ccd 100644
+--- a/drivers/spi/Kconfig
++++ b/drivers/spi/Kconfig
+@@ -976,16 +976,26 @@ config SPI_XTENSA_XTFPGA
  config SPI_ZYNQ_QSPI
  	tristate "Xilinx Zynq QSPI controller"
  	depends on ARCH_ZYNQ || COMPILE_TEST
@@ -172,8 +84,10 @@
  
  config SPI_AMD
  	tristate "AMD SPI controller"
---- linux-5.15.36/drivers/spi/spi-cadence-quadspi.c	2023-04-14 12:26:06.759547400 +0900
-+++ linux-xlnx-2022.2/drivers/spi/spi-cadence-quadspi.c	2023-04-14 12:24:13.813138600 +0900
+diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
+index cda70de38..c5ae718ef 100644
+--- a/drivers/spi/spi-cadence-quadspi.c
++++ b/drivers/spi/spi-cadence-quadspi.c
 @@ -13,6 +13,7 @@
  #include <linux/dmaengine.h>
  #include <linux/err.h>
@@ -203,10 +117,10 @@
  #define CQSPI_NEEDS_WR_DELAY		BIT(0)
  #define CQSPI_DISABLE_DAC_MODE		BIT(1)
 +#define CQSPI_SUPPORT_EXTERNAL_DMA	BIT(2)
+ #define CQSPI_NO_SUPPORT_WR_COMPLETION	BIT(3)
  
  /* Capabilities */
- #define CQSPI_SUPPORTS_OCTAL		BIT(0)
-@@ -83,16 +87,30 @@
+@@ -84,17 +88,31 @@ struct cqspi_st {
  	u32			wr_delay;
  	bool			use_direct_mode;
  	struct cqspi_flash_pdata f_pdata[CQSPI_MAX_CHIPSELECT];
@@ -218,6 +132,7 @@
 +	struct completion	tuning_complete;
 +	struct spi_mem_op	tuning_op;
 +	int			gpio;
+ 	bool			wr_completion;
  };
  
  struct cqspi_driver_platdata {
@@ -237,7 +152,7 @@
  
  #define CQSPI_DUMMY_CLKS_PER_BYTE		8
  #define CQSPI_DUMMY_BYTES_MAX			4
-@@ -103,6 +121,7 @@
+@@ -105,6 +123,7 @@ struct cqspi_driver_platdata {
  /* Register map */
  #define CQSPI_REG_CONFIG			0x00
  #define CQSPI_REG_CONFIG_ENABLE_MASK		BIT(0)
@@ -245,7 +160,7 @@
  #define CQSPI_REG_CONFIG_ENB_DIR_ACC_CTRL	BIT(7)
  #define CQSPI_REG_CONFIG_DECODE_MASK		BIT(9)
  #define CQSPI_REG_CONFIG_CHIPSELECT_LSB		10
-@@ -145,6 +164,7 @@
+@@ -147,6 +166,7 @@ struct cqspi_driver_platdata {
  #define CQSPI_REG_READCAPTURE_BYPASS_LSB	0
  #define CQSPI_REG_READCAPTURE_DELAY_LSB		1
  #define CQSPI_REG_READCAPTURE_DELAY_MASK	0xF
@@ -253,7 +168,7 @@
  
  #define CQSPI_REG_SIZE				0x14
  #define CQSPI_REG_SIZE_ADDRESS_LSB		0
-@@ -174,9 +194,12 @@
+@@ -176,9 +196,12 @@ struct cqspi_driver_platdata {
  
  #define CQSPI_REG_WR_COMPLETION_CTRL		0x38
  #define CQSPI_REG_WR_DISABLE_AUTO_POLL		BIT(14)
@@ -266,7 +181,7 @@
  
  #define CQSPI_REG_INDIRECTRD			0x60
  #define CQSPI_REG_INDIRECTRD_START_MASK		BIT(0)
-@@ -212,6 +235,8 @@
+@@ -214,6 +237,8 @@ struct cqspi_driver_platdata {
  #define CQSPI_REG_INDIRECTWRSTARTADDR		0x78
  #define CQSPI_REG_INDIRECTWRBYTES		0x7C
  
@@ -275,7 +190,7 @@
  #define CQSPI_REG_CMDADDRESS			0x94
  #define CQSPI_REG_CMDREADDATALOWER		0xA0
  #define CQSPI_REG_CMDREADDATAUPPER		0xA4
-@@ -221,11 +246,42 @@
+@@ -223,11 +248,42 @@ struct cqspi_driver_platdata {
  #define CQSPI_REG_POLLING_STATUS		0xB0
  #define CQSPI_REG_POLLING_STATUS_DUMMY_LSB	16
  
@@ -318,7 +233,7 @@
  /* Interrupt status bits */
  #define CQSPI_REG_IRQ_MODE_ERR			BIT(0)
  #define CQSPI_REG_IRQ_UNDERFLOW			BIT(1)
-@@ -245,6 +301,28 @@
+@@ -247,6 +303,28 @@ struct cqspi_driver_platdata {
  					 CQSPI_REG_IRQ_UNDERFLOW)
  
  #define CQSPI_IRQ_STATUS_MASK		0x1FFFF
@@ -347,7 +262,7 @@
  
  static int cqspi_wait_for_bit(void __iomem *reg, const u32 mask, bool clr)
  {
-@@ -270,10 +348,26 @@
+@@ -272,10 +350,26 @@ static u32 cqspi_get_rd_sram_level(struct cqspi_st *cqspi)
  	return reg & CQSPI_REG_SDRAMLEVEL_RD_MASK;
  }
  
@@ -374,7 +289,7 @@
  
  	/* Read interrupt status */
  	irq_status = readl(cqspi->iobase + CQSPI_REG_IRQSTATUS);
-@@ -281,6 +375,13 @@
+@@ -283,6 +377,13 @@ static irqreturn_t cqspi_irq_handler(int this_irq, void *dev)
  	/* Clear interrupt */
  	writel(irq_status, cqspi->iobase + CQSPI_REG_IRQSTATUS);
  
@@ -388,7 +303,7 @@
  	irq_status &= CQSPI_IRQ_MASK_RD | CQSPI_IRQ_MASK_WR;
  
  	if (irq_status)
-@@ -518,6 +619,14 @@
+@@ -520,6 +621,14 @@ static int cqspi_command_read(struct cqspi_flash_pdata *f_pdata,
  
  	reg = opcode << CQSPI_REG_CMDCTRL_OPCODE_LSB;
  
@@ -403,7 +318,7 @@
  	rdreg = cqspi_calc_rdreg(f_pdata);
  	writel(rdreg, reg_base + CQSPI_REG_RD_INSTR);
  
-@@ -525,6 +634,9 @@
+@@ -527,6 +636,9 @@ static int cqspi_command_read(struct cqspi_flash_pdata *f_pdata,
  	if (dummy_clk > CQSPI_DUMMY_CLKS_MAX)
  		return -EOPNOTSUPP;
  
@@ -413,7 +328,7 @@
  	if (dummy_clk)
  		reg |= (dummy_clk & CQSPI_REG_CMDCTRL_DUMMY_MASK)
  		     << CQSPI_REG_CMDCTRL_DUMMY_LSB;
-@@ -555,6 +667,297 @@
+@@ -557,6 +669,297 @@ static int cqspi_command_read(struct cqspi_flash_pdata *f_pdata,
  	return 0;
  }
  
@@ -711,7 +626,7 @@
  static int cqspi_command_write(struct cqspi_flash_pdata *f_pdata,
  			       const struct spi_mem_op *op)
  {
-@@ -653,6 +1056,9 @@
+@@ -655,6 +1058,9 @@ static int cqspi_read_setup(struct cqspi_flash_pdata *f_pdata,
  	if (dummy_clk > CQSPI_DUMMY_CLKS_MAX)
  		return -EOPNOTSUPP;
  
@@ -721,7 +636,7 @@
  	if (dummy_clk)
  		reg |= (dummy_clk & CQSPI_REG_RD_INSTR_DUMMY_MASK)
  		       << CQSPI_REG_RD_INSTR_DUMMY_LSB;
-@@ -679,15 +1085,34 @@
+@@ -681,15 +1087,34 @@ static int cqspi_indirect_read_execute(struct cqspi_flash_pdata *f_pdata,
  	unsigned int mod_bytes = n_rx % 4;
  	unsigned int bytes_to_read = 0;
  	u8 *rxbuf_end = rxbuf + n_rx;
@@ -757,7 +672,7 @@
  
  	reinit_completion(&cqspi->transfer_complete);
  	writel(CQSPI_REG_INDIRECTRD_START_MASK,
-@@ -695,10 +1120,13 @@
+@@ -697,10 +1122,13 @@ static int cqspi_indirect_read_execute(struct cqspi_flash_pdata *f_pdata,
  
  	while (remaining > 0) {
  		if (!wait_for_completion_timeout(&cqspi->transfer_complete,
@@ -773,7 +688,7 @@
  
  		if (ret && bytes_to_read == 0) {
  			dev_err(dev, "Indirect read timeout, no bytes\n");
-@@ -707,26 +1135,48 @@
+@@ -709,26 +1137,48 @@ static int cqspi_indirect_read_execute(struct cqspi_flash_pdata *f_pdata,
  
  		while (bytes_to_read != 0) {
  			unsigned int word_remain = round_down(remaining, 4);
@@ -831,7 +746,7 @@
  		}
  
  		if (remaining > 0)
-@@ -759,6 +1209,232 @@
+@@ -761,6 +1211,232 @@ static int cqspi_indirect_read_execute(struct cqspi_flash_pdata *f_pdata,
  	return ret;
  }
  
@@ -1064,7 +979,7 @@
  static int cqspi_write_setup(struct cqspi_flash_pdata *f_pdata,
  			     const struct spi_mem_op *op)
  {
-@@ -818,9 +1494,14 @@
+@@ -822,9 +1498,14 @@ static int cqspi_indirect_write_execute(struct cqspi_flash_pdata *f_pdata,
  	unsigned int remaining = n_tx;
  	unsigned int write_bytes;
  	int ret;
@@ -1080,7 +995,7 @@
  
  	/* Clear all interrupts. */
  	writel(CQSPI_IRQ_STATUS_MASK, reg_base + CQSPI_REG_IRQSTATUS);
-@@ -854,7 +1535,7 @@
+@@ -858,7 +1539,7 @@ static int cqspi_indirect_write_execute(struct cqspi_flash_pdata *f_pdata,
  		if (mod_bytes) {
  			unsigned int temp = 0xFFFFFFFF;
  
@@ -1089,7 +1004,7 @@
  			iowrite32(temp, cqspi->ahb_base);
  			txbuf += mod_bytes;
  		}
-@@ -1158,11 +1839,15 @@
+@@ -1162,11 +1843,15 @@ static ssize_t cqspi_read(struct cqspi_flash_pdata *f_pdata,
  			  const struct spi_mem_op *op)
  {
  	struct cqspi_st *cqspi = f_pdata->cqspi;
@@ -1105,7 +1020,7 @@
  	ret = cqspi_set_protocol(f_pdata, op);
  	if (ret)
  		return ret;
-@@ -1174,6 +1859,10 @@
+@@ -1178,6 +1863,10 @@ static ssize_t cqspi_read(struct cqspi_flash_pdata *f_pdata,
  	if (cqspi->use_direct_mode && ((from + len) <= cqspi->ahb_size))
  		return cqspi_direct_read_execute(f_pdata, buf, from, len);
  
@@ -1116,7 +1031,7 @@
  	return cqspi_indirect_read_execute(f_pdata, buf, from, len);
  }
  
-@@ -1200,8 +1889,34 @@
+@@ -1204,8 +1893,34 @@ static int cqspi_mem_process(struct spi_mem *mem, const struct spi_mem_op *op)
  
  static int cqspi_exec_mem_op(struct spi_mem *mem, const struct spi_mem_op *op)
  {
@@ -1151,7 +1066,7 @@
  	ret = cqspi_mem_process(mem, op);
  	if (ret)
  		dev_err(&mem->spi->dev, "operation failed with %d\n", ret);
-@@ -1292,6 +2007,7 @@
+@@ -1296,6 +2011,7 @@ static int cqspi_of_get_pdata(struct cqspi_st *cqspi)
  {
  	struct device *dev = &cqspi->pdev->dev;
  	struct device_node *np = dev->of_node;
@@ -1159,7 +1074,7 @@
  
  	cqspi->is_decoded_cs = of_property_read_bool(np, "cdns,is-decoded-cs");
  
-@@ -1316,6 +2032,10 @@
+@@ -1320,6 +2036,10 @@ static int cqspi_of_get_pdata(struct cqspi_st *cqspi)
  
  	cqspi->rclk_en = of_property_read_bool(np, "cdns,rclk-en");
  
@@ -1170,7 +1085,7 @@
  	return 0;
  }
  
-@@ -1328,6 +2048,10 @@
+@@ -1332,6 +2052,10 @@ static void cqspi_controller_init(struct cqspi_st *cqspi)
  	/* Configure the remap address register, no remap */
  	writel(0, cqspi->iobase + CQSPI_REG_REMAP);
  
@@ -1181,7 +1096,7 @@
  	/* Disable all interrupts. */
  	writel(0, cqspi->iobase + CQSPI_REG_IRQMASK);
  
-@@ -1352,6 +2076,13 @@
+@@ -1356,6 +2080,13 @@ static void cqspi_controller_init(struct cqspi_st *cqspi)
  		writel(reg, cqspi->iobase + CQSPI_REG_CONFIG);
  	}
  
@@ -1195,7 +1110,7 @@
  	cqspi_controller_enable(cqspi, 1);
  }
  
-@@ -1365,6 +2096,7 @@
+@@ -1369,6 +2100,7 @@ static int cqspi_request_mmap_dma(struct cqspi_st *cqspi)
  	cqspi->rx_chan = dma_request_chan_by_mask(&mask);
  	if (IS_ERR(cqspi->rx_chan)) {
  		int ret = PTR_ERR(cqspi->rx_chan);
@@ -1203,7 +1118,7 @@
  		cqspi->rx_chan = NULL;
  		return dev_err_probe(&cqspi->pdev->dev, ret, "No Rx DMA available\n");
  	}
-@@ -1436,6 +2168,8 @@
+@@ -1440,6 +2172,8 @@ static int cqspi_probe(struct platform_device *pdev)
  	struct resource *res;
  	int ret;
  	int irq;
@@ -1212,7 +1127,7 @@
  
  	master = spi_alloc_master(&pdev->dev, sizeof(*cqspi));
  	if (!master) {
-@@ -1488,6 +2222,7 @@
+@@ -1492,6 +2226,7 @@ static int cqspi_probe(struct platform_device *pdev)
  	cqspi->ahb_size = resource_size(res_ahb);
  
  	init_completion(&cqspi->transfer_complete);
@@ -1220,7 +1135,7 @@
  
  	/* Obtain IRQ line. */
  	irq = platform_get_irq(pdev, 0);
-@@ -1541,6 +2276,24 @@
+@@ -1549,6 +2284,25 @@ static int cqspi_probe(struct platform_device *pdev)
  			master->mode_bits |= SPI_RX_OCTAL | SPI_TX_OCTAL;
  		if (!(ddata->quirks & CQSPI_DISABLE_DAC_MODE))
  			cqspi->use_direct_mode = true;
@@ -1242,10 +1157,11 @@
 +					writel(0x1, cqspi->iobase + CQSPI_REG_VERSAL_ECO);
 +			}
 +		}
++
+ 		if (ddata->quirks & CQSPI_NO_SUPPORT_WR_COMPLETION)
+ 			cqspi->wr_completion = false;
  	}
- 
- 	ret = devm_request_irq(dev, irq, cqspi_irq_handler, 0,
-@@ -1554,6 +2307,8 @@
+@@ -1564,6 +2318,8 @@ static int cqspi_probe(struct platform_device *pdev)
  	cqspi_controller_init(cqspi);
  	cqspi->current_cs = -1;
  	cqspi->sclk = 0;
@@ -1254,7 +1170,7 @@
  
  	master->num_chipselect = cqspi->num_chipselect;
  
-@@ -1563,6 +2318,12 @@
+@@ -1573,6 +2329,12 @@ static int cqspi_probe(struct platform_device *pdev)
  		goto probe_setup_failed;
  	}
  
@@ -1267,7 +1183,7 @@
  	if (cqspi->use_direct_mode) {
  		ret = cqspi_request_mmap_dma(cqspi);
  		if (ret == -EPROBE_DEFER)
-@@ -1610,6 +2371,12 @@
+@@ -1620,6 +2382,12 @@ static int cqspi_suspend(struct device *dev)
  {
  	struct cqspi_st *cqspi = dev_get_drvdata(dev);
  
@@ -1280,7 +1196,7 @@
  	cqspi_controller_enable(cqspi, 0);
  	return 0;
  }
-@@ -1617,8 +2384,37 @@
+@@ -1627,8 +2395,37 @@ static int cqspi_suspend(struct device *dev)
  static int cqspi_resume(struct device *dev)
  {
  	struct cqspi_st *cqspi = dev_get_drvdata(dev);
@@ -1319,8 +1235,8 @@
  	return 0;
  }
  
-@@ -1649,6 +2445,14 @@
- 	.quirks = CQSPI_DISABLE_DAC_MODE,
+@@ -1663,6 +2460,14 @@ static const struct cqspi_driver_platdata socfpga_qspi = {
+ 	.quirks = CQSPI_DISABLE_DAC_MODE | CQSPI_NO_SUPPORT_WR_COMPLETION,
  };
  
 +static const struct cqspi_driver_platdata versal_ospi = {
@@ -1334,9 +1250,9 @@
  static const struct of_device_id cqspi_dt_ids[] = {
  	{
  		.compatible = "cdns,qspi-nor",
-@@ -1666,6 +2470,10 @@
- 		.compatible = "intel,lgm-qspi",
- 		.data = &intel_lgm_qspi,
+@@ -1684,6 +2489,10 @@ static const struct of_device_id cqspi_dt_ids[] = {
+ 		.compatible = "intel,socfpga-qspi",
+ 		.data = (void *)&socfpga_qspi,
  	},
 +	{
 +		.compatible = "xlnx,versal-ospi-1.0",
@@ -1345,8 +1261,10 @@
  	{ /* end of table */ }
  };
  
---- linux-5.15.36/drivers/spi/spi-cadence.c	2023-04-14 12:26:06.759547400 +0900
-+++ linux-xlnx-2022.2/drivers/spi/spi-cadence.c	2023-04-14 12:24:13.813138600 +0900
+diff --git a/drivers/spi/spi-cadence.c b/drivers/spi/spi-cadence.c
+index ceb16e70d..1462f6714 100644
+--- a/drivers/spi/spi-cadence.c
++++ b/drivers/spi/spi-cadence.c
 @@ -69,6 +69,7 @@
  #define CDNS_SPI_BAUD_DIV_SHIFT		3 /* Baud rate divisor shift in CR */
  #define CDNS_SPI_SS_SHIFT		10 /* Slave Select field shift in CR */
@@ -1355,7 +1273,7 @@
  
  /*
   * SPI Interrupt Registers bit Masks
-@@ -342,7 +343,8 @@
+@@ -342,7 +343,8 @@ static irqreturn_t cdns_spi_irq(int irq, void *dev_id)
  {
  	struct spi_master *master = dev_id;
  	struct cdns_spi *xspi = spi_master_get_devdata(master);
@@ -1365,7 +1283,7 @@
  
  	status = IRQ_NONE;
  	intr_status = cdns_spi_read(xspi, CDNS_SPI_ISR);
-@@ -449,15 +451,20 @@
+@@ -449,15 +451,20 @@ static int cdns_prepare_transfer_hardware(struct spi_master *master)
   * @master:	Pointer to the spi_master structure which provides
   *		information about the controller.
   *
@@ -1388,7 +1306,7 @@
  
  	return 0;
  }
-@@ -650,14 +657,14 @@
+@@ -650,14 +657,14 @@ static int __maybe_unused cdns_spi_resume(struct device *dev)
  }
  
  /**
@@ -1405,7 +1323,7 @@
  {
  	struct spi_master *master = dev_get_drvdata(dev);
  	struct cdns_spi *xspi = spi_master_get_devdata(master);
-@@ -679,14 +686,14 @@
+@@ -679,14 +686,14 @@ static int __maybe_unused cnds_runtime_resume(struct device *dev)
  }
  
  /**
@@ -1422,7 +1340,7 @@
  {
  	struct spi_master *master = dev_get_drvdata(dev);
  	struct cdns_spi *xspi = spi_master_get_devdata(master);
-@@ -698,8 +705,8 @@
+@@ -698,8 +705,8 @@ static int __maybe_unused cnds_runtime_suspend(struct device *dev)
  }
  
  static const struct dev_pm_ops cdns_spi_dev_pm_ops = {
@@ -1433,8 +1351,10 @@
  	SET_SYSTEM_SLEEP_PM_OPS(cdns_spi_suspend, cdns_spi_resume)
  };
  
---- linux-5.15.36/drivers/spi/spi-mem.c	2023-04-14 12:26:06.790790000 +0900
-+++ linux-xlnx-2022.2/drivers/spi/spi-mem.c	2023-04-14 12:24:13.844381100 +0900
+diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
+index 37f4443ce..41bc5ed60 100644
+--- a/drivers/spi/spi-mem.c
++++ b/drivers/spi/spi-mem.c
 @@ -8,6 +8,7 @@
  #include <linux/dmaengine.h>
  #include <linux/iopoll.h>
@@ -1469,7 +1389,7 @@
  /**
   * spi_controller_dma_map_mem_op_data() - DMA-map the buffer attached to a
   *					  memory operation
-@@ -371,6 +391,7 @@
+@@ -371,6 +391,7 @@ int spi_mem_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
  		xfers[xferpos].tx_buf = tmpbuf + op->addr.nbytes + 1;
  		xfers[xferpos].len = op->dummy.nbytes;
  		xfers[xferpos].tx_nbits = op->dummy.buswidth;
@@ -1477,7 +1397,7 @@
  		xfers[xferpos].dummy_data = 1;
  		spi_message_add_tail(&xfers[xferpos], &msg);
  		xferpos++;
-@@ -386,6 +407,7 @@
+@@ -386,6 +407,7 @@ int spi_mem_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
  			xfers[xferpos].tx_nbits = op->data.buswidth;
  		}
  
@@ -1485,8 +1405,10 @@
  		xfers[xferpos].len = op->data.nbytes;
  		spi_message_add_tail(&xfers[xferpos], &msg);
  		xferpos++;
---- linux-5.15.36/drivers/spi/spi-xilinx.c	2023-04-14 12:26:06.822032900 +0900
-+++ linux-xlnx-2022.2/drivers/spi/spi-xilinx.c	2023-04-14 12:24:13.875624000 +0900
+diff --git a/drivers/spi/spi-xilinx.c b/drivers/spi/spi-xilinx.c
+index 523edfdf5..ca965b322 100644
+--- a/drivers/spi/spi-xilinx.c
++++ b/drivers/spi/spi-xilinx.c
 @@ -16,10 +16,11 @@
  #include <linux/of.h>
  #include <linux/platform_device.h>
@@ -1556,7 +1478,7 @@
  	u8 *rx_ptr;		/* pointer in the Tx buffer */
  	const u8 *tx_ptr;	/* pointer in the Rx buffer */
  	u8 bytes_per_word;
-@@ -91,8 +129,69 @@
+@@ -91,8 +129,69 @@ struct xilinx_spi {
  	u32 cs_inactive;	/* Level of the CS pins when inactive*/
  	unsigned int (*read_fn)(void __iomem *);
  	void (*write_fn)(u32, void __iomem *);
@@ -1626,7 +1548,7 @@
  static void xspi_write32(u32 val, void __iomem *addr)
  {
  	iowrite32(val, addr);
-@@ -113,53 +212,15 @@
+@@ -113,53 +212,15 @@ static unsigned int xspi_read32_be(void __iomem *addr)
  	return ioread32be(addr);
  }
  
@@ -1689,7 +1611,7 @@
  static void xspi_init_hw(struct xilinx_spi *xspi)
  {
  	void __iomem *regs_base = xspi->regs;
-@@ -183,49 +244,106 @@
+@@ -183,49 +244,106 @@ static void xspi_init_hw(struct xilinx_spi *xspi)
  		regs_base + XSPI_CR_OFFSET);
  }
  
@@ -1825,7 +1747,7 @@
  
  	if (spi->mode & SPI_CS_HIGH)
  		xspi->cs_inactive &= ~BIT(spi->chip_select);
-@@ -235,218 +353,425 @@
+@@ -235,218 +353,425 @@ static int xilinx_spi_setup_transfer(struct spi_device *spi,
  	return 0;
  }
  
@@ -1868,72 +1790,16 @@
 -		xspi->write_fn(XIPIF_V123B_GINTR_ENABLE,
 -				xspi->regs + XIPIF_V123B_DGIER_OFFSET);
 -		reinit_completion(&xspi->done);
--	}
--
--	while (remaining_words) {
--		int n_words, tx_words, rx_words;
--		u32 sr;
--		int stalled;
--
--		n_words = min(remaining_words, xspi->buffer_size);
--
--		tx_words = n_words;
--		while (tx_words--)
--			xilinx_spi_tx(xspi);
 +	int ret;
 +	struct xilinx_spi *xqspi = spi_master_get_devdata(qspi->master);
- 
--		/* Start the transfer by not inhibiting the transmitter any
--		 * longer
--		 */
++
 +	if (qspi->master->busy)
 +		return -EBUSY;
- 
--		if (use_irq) {
--			xspi->write_fn(cr, xspi->regs + XSPI_CR_OFFSET);
--			wait_for_completion(&xspi->done);
--			/* A transmit has just completed. Process received data
--			 * and check for more data to transmit. Always inhibit
--			 * the transmitter while the Isr refills the transmit
--			 * register/FIFO, or make sure it is stopped if we're
--			 * done.
--			 */
--			xspi->write_fn(cr | XSPI_CR_TRANS_INHIBIT,
--				       xspi->regs + XSPI_CR_OFFSET);
--			sr = XSPI_SR_TX_EMPTY_MASK;
--		} else
--			sr = xspi->read_fn(xspi->regs + XSPI_SR_OFFSET);
--
--		/* Read out all the data from the Rx FIFO */
--		rx_words = n_words;
--		stalled = 10;
--		while (rx_words) {
--			if (rx_words == n_words && !(stalled--) &&
--			    !(sr & XSPI_SR_TX_EMPTY_MASK) &&
--			    (sr & XSPI_SR_RX_EMPTY_MASK)) {
--				dev_err(&spi->dev,
--					"Detected stall. Check C_SPI_MODE and C_SPI_MEMORY\n");
--				xspi_init_hw(xspi);
--				return -EIO;
--			}
--
--			if ((sr & XSPI_SR_TX_EMPTY_MASK) && (rx_words > 1)) {
--				xilinx_spi_rx(xspi);
--				rx_words--;
--				continue;
--			}
--
--			sr = xspi->read_fn(xspi->regs + XSPI_SR_OFFSET);
--			if (!(sr & XSPI_SR_RX_EMPTY_MASK)) {
--				xilinx_spi_rx(xspi);
--				rx_words--;
--			}
--		}
++
 +	ret = pm_runtime_get_sync(xqspi->dev);
 +	if (ret < 0)
 +		return ret;
- 
--		remaining_words -= n_words;
++
 +	ret = xilinx_spi_setup_transfer(qspi, NULL);
 +	pm_runtime_put_sync(xqspi->dev);
 +
@@ -1976,9 +1842,10 @@
 +		xqspi->bytes_to_receive = transfer->len;
  	}
  
--	if (use_irq) {
--		xspi->write_fn(0, xspi->regs + XIPIF_V123B_DGIER_OFFSET);
--		xspi->write_fn(cr, xspi->regs + XSPI_CR_OFFSET);
+-	while (remaining_words) {
+-		int n_words, tx_words, rx_words;
+-		u32 sr;
+-		int stalled;
 +	xilinx_spi_setup_transfer(qspi, transfer);
 +	cr = xqspi->read_fn(xqspi->regs + XSPI_CR_OFFSET);
 +	/* Enable master transaction inhibit */
@@ -1993,7 +1860,8 @@
 +
 +	return transfer->len;
 +}
-+
+ 
+-		n_words = min(remaining_words, xspi->buffer_size);
 +/**
 + * xspi_prepare_transfer_hardware -	Prepares hardware for transfer.
 + * @master:	Pointer to the spi_master structure which provides
@@ -2006,14 +1874,60 @@
 +static int xspi_prepare_transfer_hardware(struct spi_master *master)
 +{
 +	struct xilinx_spi *xqspi = spi_master_get_devdata(master);
-+
+ 
+-		tx_words = n_words;
+-		while (tx_words--)
+-			xilinx_spi_tx(xspi);
 +	u32 cr;
 +	int ret;
-+
+ 
+-		/* Start the transfer by not inhibiting the transmitter any
+-		 * longer
+-		 */
 +	ret = pm_runtime_get_sync(xqspi->dev);
 +	if (ret < 0)
 +		return ret;
-+
+ 
+-		if (use_irq) {
+-			xspi->write_fn(cr, xspi->regs + XSPI_CR_OFFSET);
+-			wait_for_completion(&xspi->done);
+-			/* A transmit has just completed. Process received data
+-			 * and check for more data to transmit. Always inhibit
+-			 * the transmitter while the Isr refills the transmit
+-			 * register/FIFO, or make sure it is stopped if we're
+-			 * done.
+-			 */
+-			xspi->write_fn(cr | XSPI_CR_TRANS_INHIBIT,
+-				       xspi->regs + XSPI_CR_OFFSET);
+-			sr = XSPI_SR_TX_EMPTY_MASK;
+-		} else
+-			sr = xspi->read_fn(xspi->regs + XSPI_SR_OFFSET);
+-
+-		/* Read out all the data from the Rx FIFO */
+-		rx_words = n_words;
+-		stalled = 10;
+-		while (rx_words) {
+-			if (rx_words == n_words && !(stalled--) &&
+-			    !(sr & XSPI_SR_TX_EMPTY_MASK) &&
+-			    (sr & XSPI_SR_RX_EMPTY_MASK)) {
+-				dev_err(&spi->dev,
+-					"Detected stall. Check C_SPI_MODE and C_SPI_MEMORY\n");
+-				xspi_init_hw(xspi);
+-				return -EIO;
+-			}
+-
+-			if ((sr & XSPI_SR_TX_EMPTY_MASK) && (rx_words > 1)) {
+-				xilinx_spi_rx(xspi);
+-				rx_words--;
+-				continue;
+-			}
+-
+-			sr = xspi->read_fn(xspi->regs + XSPI_SR_OFFSET);
+-			if (!(sr & XSPI_SR_RX_EMPTY_MASK)) {
+-				xilinx_spi_rx(xspi);
+-				rx_words--;
+-			}
+-		}
 +	cr = xqspi->read_fn(xqspi->regs + XSPI_CR_OFFSET);
 +	cr |= XSPI_CR_ENABLE;
 +	xqspi->write_fn(cr, xqspi->regs + XSPI_CR_OFFSET);
@@ -2063,20 +1977,24 @@
 +		dev_err(dev, "Can not enable AXI clock\n");
 +		return ret;
 +	}
-+
+ 
+-		remaining_words -= n_words;
 +	ret = clk_enable(xspi->axi4_clk);
 +	if (ret) {
 +		dev_err(dev, "Can not enable AXI4 clock\n");
 +		goto clk_disable_axi_clk;
  	}
  
--	return t->len;
+-	if (use_irq) {
+-		xspi->write_fn(0, xspi->regs + XIPIF_V123B_DGIER_OFFSET);
+-		xspi->write_fn(cr, xspi->regs + XSPI_CR_OFFSET);
 +	ret = clk_enable(xspi->spi_clk);
 +	if (ret) {
 +		dev_err(dev, "Can not enable SPI clock\n");
 +		goto clk_disable_axi4_clk;
-+	}
-+
+ 	}
+ 
+-	return t->len;
 +	return 0;
 +
 +clk_disable_axi4_clk:
@@ -2099,15 +2017,15 @@
 +{
 +	struct spi_master *master = dev_get_drvdata(dev);
 +	struct xilinx_spi *xspi = spi_master_get_devdata(master);
++
++	clk_disable(xspi->axi_clk);
++	clk_disable(xspi->axi4_clk);
++	clk_disable(xspi->spi_clk);
  
 -/* This driver supports single master mode only. Hence Tx FIFO Empty
 - * is the only interrupt we care about.
 - * Receive FIFO Overrun, Transmit FIFO Underrun, Mode Fault, and Slave Mode
 - * Fault are not to happen.
-+	clk_disable(xspi->axi_clk);
-+	clk_disable(xspi->axi4_clk);
-+	clk_disable(xspi->spi_clk);
-+
 +	return 0;
 +}
 +
@@ -2177,9 +2095,6 @@
 +	ret = spi_master_suspend(master);
 +	if (ret)
 +		return ret;
-+
-+	if (!pm_runtime_suspended(dev))
-+		xilinx_spi_runtime_suspend(dev);
  
 -	/* Fill the Tx FIFO with as many words as possible */
 -	do {
@@ -2187,9 +2102,12 @@
 -		sr = xspi->read_fn(xspi->regs + XSPI_SR_OFFSET);
 -		n_words++;
 -	} while (!(sr & XSPI_SR_TX_FULL_MASK));
-+	xspi_unprepare_transfer_hardware(master);
++	if (!pm_runtime_suspended(dev))
++		xilinx_spi_runtime_suspend(dev);
  
 -	return n_words;
++	xspi_unprepare_transfer_hardware(master);
++
 +	return ret;
  }
  
@@ -2205,25 +2123,54 @@
  };
 -MODULE_DEVICE_TABLE(of, xilinx_spi_of_match);
  
--static int xilinx_spi_probe(struct platform_device *pdev)
 +/* This driver supports single master mode only. Hence Tx FIFO Empty
 + * is the only interrupt we care about.
 + * Receive FIFO Overrun, Transmit FIFO Underrun, Mode Fault, and Slave Mode
 + * Fault are not to happen.
 + */
 +static irqreturn_t xilinx_spi_irq(int irq, void *dev_id)
- {
--	struct xilinx_spi *xspi;
--	struct xspi_platform_data *pdata;
--	struct resource *res;
--	int ret, num_cs = 0, bits_per_word;
--	struct spi_master *master;
--	u32 tmp;
--	u8 i;
++{
 +	struct spi_master *master = dev_id;
 +	struct xilinx_spi *xspi = spi_master_get_devdata(dev_id);
 +	u32 ipif_isr;
 +	irqreturn_t status = IRQ_NONE;
++
++	/* Get the IPIF interrupts, and clear them immediately */
++	ipif_isr = xspi->read_fn(xspi->regs + XIPIF_V123B_IISR_OFFSET);
++	xspi->write_fn(ipif_isr, xspi->regs + XIPIF_V123B_IISR_OFFSET);
++	if (ipif_isr & XSPI_INTR_TX_EMPTY)  {
++		/* Transmission completed */
++		xspi->rx_fifo(xspi);
++		if (xspi->bytes_to_transfer) {
++			/* There is more data to send */
++			xspi->tx_fifo(xspi);
++		}
++		status = IRQ_HANDLED;
++	}
++
++	if (!xspi->bytes_to_receive && !xspi->bytes_to_transfer) {
++		/* Disable the interrupts here. */
++		xspi->write_fn(0x0, xspi->regs + XIPIF_V123B_DGIER_OFFSET);
++		spi_finalize_current_transfer(master);
++	}
++
++	return status;
++}
+ static int xilinx_spi_probe(struct platform_device *pdev)
+ {
+ 	struct xilinx_spi *xspi;
+-	struct xspi_platform_data *pdata;
+ 	struct resource *res;
+-	int ret, num_cs = 0, bits_per_word;
++	int ret;
++	u32 num_cs = 0, bits_per_word = 8;
++	u32 cs_num;
+ 	struct spi_master *master;
+-	u32 tmp;
+-	u8 i;
++	struct device_node *nc;
++	u32 tmp, rx_bus_width, fifo_size;
++	bool startup_block;
  
 -	pdata = dev_get_platdata(&pdev->dev);
 -	if (pdata) {
@@ -2237,49 +2184,19 @@
 -					   &bits_per_word);
 -		if (ret)
 -			bits_per_word = 8;
-+	/* Get the IPIF interrupts, and clear them immediately */
-+	ipif_isr = xspi->read_fn(xspi->regs + XIPIF_V123B_IISR_OFFSET);
-+	xspi->write_fn(ipif_isr, xspi->regs + XIPIF_V123B_IISR_OFFSET);
-+	if (ipif_isr & XSPI_INTR_TX_EMPTY)  {
-+		/* Transmission completed */
-+		xspi->rx_fifo(xspi);
-+		if (xspi->bytes_to_transfer) {
-+			/* There is more data to send */
-+			xspi->tx_fifo(xspi);
-+		}
-+		status = IRQ_HANDLED;
- 	}
- 
+-	}
+-
 -	if (!num_cs) {
 -		dev_err(&pdev->dev,
 -			"Missing slave select configuration data\n");
 -		return -EINVAL;
-+	if (!xspi->bytes_to_receive && !xspi->bytes_to_transfer) {
-+		/* Disable the interrupts here. */
-+		xspi->write_fn(0x0, xspi->regs + XIPIF_V123B_DGIER_OFFSET);
-+		spi_finalize_current_transfer(master);
- 	}
- 
-+	return status;
-+}
-+static int xilinx_spi_probe(struct platform_device *pdev)
-+{
-+	struct xilinx_spi *xspi;
-+	struct resource *res;
-+	int ret;
-+	u32 num_cs = 0, bits_per_word = 8;
-+	u32 cs_num;
-+	struct spi_master *master;
-+	struct device_node *nc;
-+	u32 tmp, rx_bus_width, fifo_size;
-+	bool startup_block;
-+
+-	}
 +	if (of_property_read_u32(pdev->dev.of_node, "num-cs", &num_cs))
 +		dev_info(&pdev->dev,
 +			 "Missing num-cs optional property, assuming default as <1>\n");
 +	if (!num_cs)
 +		num_cs = 1;
-+
+ 
  	if (num_cs > XILINX_SPI_MAX_CS) {
  		dev_err(&pdev->dev, "Invalid number of spi slaves\n");
  		return -EINVAL;
@@ -2413,7 +2330,7 @@
  
  	/*
  	 * Detect endianess on the IP via loop bit in CR. Detection
-@@ -466,61 +791,112 @@
+@@ -466,61 +791,112 @@ static int xilinx_spi_probe(struct platform_device *pdev)
  		xspi->write_fn = xspi_write32_be;
  	}
  
@@ -2547,7 +2464,7 @@
  
  	return 0;
  }
-@@ -528,12 +904,21 @@
+@@ -528,12 +904,21 @@ static int xilinx_spi_remove(struct platform_device *pdev)
  /* work with hotplug and coldplug */
  MODULE_ALIAS("platform:" XILINX_SPI_NAME);
  
@@ -2569,8 +2486,10 @@
  	},
  };
  module_platform_driver(xilinx_spi_driver);
---- linux-5.15.36/drivers/spi/spi-zynq-qspi.c	2023-04-14 12:26:06.822032900 +0900
-+++ linux-xlnx-2022.2/drivers/spi/spi-zynq-qspi.c	2023-04-14 12:24:13.875624000 +0900
+diff --git a/drivers/spi/spi-zynq-qspi.c b/drivers/spi/spi-zynq-qspi.c
+index 78f31b61a..e77e46d19 100644
+--- a/drivers/spi/spi-zynq-qspi.c
++++ b/drivers/spi/spi-zynq-qspi.c
 @@ -62,6 +62,7 @@
  #define ZYNQ_QSPI_CONFIG_BAUD_DIV_MAX	GENMASK(2, 0) /* Baud rate maximum */
  #define ZYNQ_QSPI_CONFIG_BAUD_DIV_SHIFT	3 /* Baud rate divisor shift */
@@ -2599,7 +2518,7 @@
   */
  struct zynq_qspi {
  	struct device *dev;
-@@ -141,6 +148,8 @@
+@@ -141,6 +148,8 @@ struct zynq_qspi {
  	int tx_bytes;
  	int rx_bytes;
  	struct completion data_completion;
@@ -2608,7 +2527,7 @@
  };
  
  /*
-@@ -185,13 +194,7 @@
+@@ -185,13 +194,7 @@ static void zynq_qspi_init_hw(struct zynq_qspi *xqspi, unsigned int num_cs)
  	zynq_qspi_write(xqspi, ZYNQ_QSPI_ENABLE_OFFSET, 0);
  	zynq_qspi_write(xqspi, ZYNQ_QSPI_IDIS_OFFSET, ZYNQ_QSPI_IXR_ALL_MASK);
  
@@ -2623,7 +2542,7 @@
  
  	/* Clear the RX FIFO */
  	while (zynq_qspi_read(xqspi, ZYNQ_QSPI_STATUS_OFFSET) &
-@@ -217,9 +220,20 @@
+@@ -217,9 +220,20 @@ static void zynq_qspi_init_hw(struct zynq_qspi *xqspi, unsigned int num_cs)
  			ZYNQ_QSPI_RX_THRESHOLD);
  	zynq_qspi_write(xqspi, ZYNQ_QSPI_TX_THRESH_OFFSET,
  			ZYNQ_QSPI_TX_THRESHOLD);
@@ -2647,7 +2566,7 @@
  }
  
  static bool zynq_qspi_supports_op(struct spi_mem *mem,
-@@ -227,13 +241,6 @@
+@@ -227,13 +241,6 @@ static bool zynq_qspi_supports_op(struct spi_mem *mem,
  {
  	if (!spi_mem_default_supports_op(mem, op))
  		return false;
@@ -2661,7 +2580,7 @@
  	return true;
  }
  
-@@ -245,11 +252,15 @@
+@@ -245,11 +252,15 @@ static bool zynq_qspi_supports_op(struct spi_mem *mem,
  static void zynq_qspi_rxfifo_op(struct zynq_qspi *xqspi, unsigned int size)
  {
  	u32 data;
@@ -2678,7 +2597,7 @@
  		xqspi->rxbuf += size;
  	}
  
-@@ -269,6 +280,7 @@
+@@ -269,6 +280,7 @@ static void zynq_qspi_txfifo_op(struct zynq_qspi *xqspi, unsigned int size)
  		ZYNQ_QSPI_TXD_00_01_OFFSET, ZYNQ_QSPI_TXD_00_10_OFFSET,
  		ZYNQ_QSPI_TXD_00_11_OFFSET, ZYNQ_QSPI_TXD_00_00_OFFSET };
  	u32 data;
@@ -2686,7 +2605,7 @@
  
  	if (xqspi->txbuf) {
  		data = 0xffffffff;
-@@ -279,7 +291,11 @@
+@@ -279,7 +291,11 @@ static void zynq_qspi_txfifo_op(struct zynq_qspi *xqspi, unsigned int size)
  	}
  
  	xqspi->tx_bytes -= size;
@@ -2699,7 +2618,7 @@
  }
  
  /**
-@@ -292,25 +308,29 @@
+@@ -292,25 +308,29 @@ static void zynq_qspi_chipselect(struct spi_device *spi, bool assert)
  	struct spi_controller *ctlr = spi->master;
  	struct zynq_qspi *xqspi = spi_controller_get_devdata(ctlr);
  	u32 config_reg;
@@ -2743,7 +2662,7 @@
  	zynq_qspi_write(xqspi, ZYNQ_QSPI_CONFIG_OFFSET, config_reg);
  }
  
-@@ -383,8 +403,6 @@
+@@ -383,8 +403,6 @@ static int zynq_qspi_setup_op(struct spi_device *spi)
  	if (ctlr->busy)
  		return -EBUSY;
  
@@ -2752,7 +2671,7 @@
  	zynq_qspi_write(qspi, ZYNQ_QSPI_ENABLE_OFFSET,
  			ZYNQ_QSPI_ENABLE_ENABLE_MASK);
  
-@@ -520,7 +538,8 @@
+@@ -520,7 +538,8 @@ static irqreturn_t zynq_qspi_irq(int irq, void *dev_id)
   *
   * This function first selects the chip and starts the memory operation.
   *
@@ -2762,7 +2681,7 @@
   */
  static int zynq_qspi_exec_mem_op(struct spi_mem *mem,
  				 const struct spi_mem_op *op)
-@@ -528,11 +547,15 @@
+@@ -528,11 +547,15 @@ static int zynq_qspi_exec_mem_op(struct spi_mem *mem,
  	struct zynq_qspi *xqspi = spi_controller_get_devdata(mem->spi->master);
  	int err = 0, i;
  	u8 *tmpbuf;
@@ -2778,7 +2697,7 @@
  	zynq_qspi_chipselect(mem->spi, true);
  	zynq_qspi_config_op(xqspi, mem->spi);
  
-@@ -551,6 +574,7 @@
+@@ -551,6 +574,7 @@ static int zynq_qspi_exec_mem_op(struct spi_mem *mem,
  	}
  
  	if (op->addr.nbytes) {
@@ -2786,7 +2705,7 @@
  		for (i = 0; i < op->addr.nbytes; i++) {
  			xqspi->txbuf[i] = op->addr.val >>
  					(8 * (op->addr.nbytes - i - 1));
-@@ -590,6 +614,8 @@
+@@ -590,6 +614,8 @@ static int zynq_qspi_exec_mem_op(struct spi_mem *mem,
  	}
  
  	if (op->data.nbytes) {
@@ -2795,7 +2714,7 @@
  		reinit_completion(&xqspi->data_completion);
  		if (op->data.dir == SPI_MEM_DATA_OUT) {
  			xqspi->txbuf = (u8 *)op->data.buf.out;
-@@ -610,6 +636,9 @@
+@@ -610,6 +636,9 @@ static int zynq_qspi_exec_mem_op(struct spi_mem *mem,
  							       msecs_to_jiffies(1000)))
  			err = -ETIMEDOUT;
  	}
@@ -2805,7 +2724,7 @@
  	zynq_qspi_chipselect(mem->spi, false);
  
  	return err;
-@@ -650,6 +679,11 @@
+@@ -650,6 +679,11 @@ static int zynq_qspi_probe(struct platform_device *pdev)
  		goto remove_master;
  	}
  
@@ -2817,7 +2736,7 @@
  	xqspi->pclk = devm_clk_get(&pdev->dev, "pclk");
  	if (IS_ERR(xqspi->pclk)) {
  		dev_err(&pdev->dev, "pclk clock not found.\n");
-@@ -703,7 +737,7 @@
+@@ -703,7 +737,7 @@ static int zynq_qspi_probe(struct platform_device *pdev)
  		ctlr->num_chipselect = num_cs;
  	}
  
@@ -2826,8 +2745,10 @@
  			    SPI_TX_DUAL | SPI_TX_QUAD;
  	ctlr->mem_ops = &zynq_qspi_mem_ops;
  	ctlr->setup = zynq_qspi_setup_op;
---- linux-5.15.36/drivers/spi/spi-zynqmp-gqspi.c	2023-04-14 12:26:06.822032900 +0900
-+++ linux-xlnx-2022.2/drivers/spi/spi-zynqmp-gqspi.c	2023-04-14 12:24:13.875624000 +0900
+diff --git a/drivers/spi/spi-zynqmp-gqspi.c b/drivers/spi/spi-zynqmp-gqspi.c
+index 2b5afae8f..a9e950f34 100644
+--- a/drivers/spi/spi-zynqmp-gqspi.c
++++ b/drivers/spi/spi-zynqmp-gqspi.c
 @@ -16,12 +16,14 @@
  #include <linux/module.h>
  #include <linux/of_irq.h>
@@ -2859,7 +2780,7 @@
  
  /* GQSPI register bit masks */
  #define GQSPI_SEL_MASK				0x00000001
-@@ -133,11 +137,44 @@
+@@ -133,10 +137,43 @@
  #define GQSPI_SELECT_MODE_QUADSPI	0x4
  #define GQSPI_DMA_UNALIGN		0x3
  #define GQSPI_DEFAULT_NUM_CS	1	/* Default number of chip selects */
@@ -2892,7 +2813,7 @@
  #define SPI_AUTOSUSPEND_TIMEOUT		3000
  enum mode_type {GQSPI_MODE_IO, GQSPI_MODE_DMA};
  
- /**
++/**
 + * struct qspi_platform_data - zynqmp qspi platform data structure
 + * @quirks:	Flags is used to identify the platform
 + */
@@ -2900,11 +2821,10 @@
 +	u32 quirks;
 +};
 +
-+/**
+ /**
   * struct zynqmp_qspi - Defines qspi driver instance
   * @regs:		Virtual address of the QSPI controller registers
-  * @refclk:		Pointer to the peripheral clock
-@@ -152,9 +189,15 @@
+@@ -152,9 +189,15 @@ enum mode_type {GQSPI_MODE_IO, GQSPI_MODE_DMA};
   * @genfifobus:		Used to select the upper or lower bus
   * @dma_rx_bytes:	Remaining bytes to receive by DMA mode
   * @dma_addr:		DMA address after mapping the kernel buffer
@@ -2920,7 +2840,7 @@
   */
  struct zynqmp_qspi {
  	struct spi_controller *ctlr;
-@@ -171,13 +214,40 @@
+@@ -171,12 +214,39 @@ struct zynqmp_qspi {
  	u32 genfifobus;
  	u32 dma_rx_bytes;
  	dma_addr_t dma_addr;
@@ -2935,7 +2855,7 @@
  	struct mutex op_lock;
  };
  
- /**
++/**
 + * zynqmp_get_addr_buswidth - Get address buswidth
 + * @op:	The memory operation to execute
 + *
@@ -2957,14 +2877,14 @@
 +		return op->addr.buswidth;
 +}
 +
-+/**
+ /**
   * zynqmp_gqspi_read - For GQSPI controller read operation
   * @xqspi:	Pointer to the zynqmp_qspi structure
-  * @offset:	Offset from where to read
-@@ -248,6 +318,70 @@
+@@ -247,6 +317,70 @@ static void zynqmp_gqspi_selectslave(struct zynqmp_qspi *instanceptr,
+ 	}
  }
  
- /**
++/**
 + * zynqmp_qspi_set_tapdelay:	To configure qspi tap delays
 + * @xqspi:		Pointer to the zynqmp_qspi structure
 + * @baudrateval:	Buadrate to configure
@@ -3028,11 +2948,10 @@
 +	return value;
 +}
 +
-+/**
+ /**
   * zynqmp_qspi_init_hw - Initialize the hardware
   * @xqspi:	Pointer to the zynqmp_qspi structure
-  *
-@@ -268,13 +402,13 @@
+@@ -268,13 +402,13 @@ static void zynqmp_gqspi_selectslave(struct zynqmp_qspi *instanceptr,
  static void zynqmp_qspi_init_hw(struct zynqmp_qspi *xqspi)
  {
  	u32 config_reg;
@@ -3049,7 +2968,7 @@
  	/* Clear the DMA STS */
  	zynqmp_gqspi_write(xqspi, GQSPI_QSPIDMA_DST_I_STS_OFST,
  			   zynqmp_gqspi_read(xqspi,
-@@ -313,9 +447,11 @@
+@@ -313,9 +447,11 @@ static void zynqmp_qspi_init_hw(struct zynqmp_qspi *xqspi)
  			   GQSPI_FIFO_CTRL_RST_TX_FIFO_MASK |
  			   GQSPI_FIFO_CTRL_RST_GEN_FIFO_MASK);
  	/* Set by default to allow for high frequencies */
@@ -3064,7 +2983,7 @@
  	/* Reset thresholds */
  	zynqmp_gqspi_write(xqspi, GQSPI_TX_THRESHOLD_OFST,
  			   GQSPI_TX_FIFO_THRESHOLD_RESET_VAL);
-@@ -326,11 +462,11 @@
+@@ -326,11 +462,11 @@ static void zynqmp_qspi_init_hw(struct zynqmp_qspi *xqspi)
  	zynqmp_gqspi_selectslave(xqspi,
  				 GQSPI_SELECT_FLASH_CS_LOWER,
  				 GQSPI_SELECT_FLASH_BUS_LOWER);
@@ -3081,7 +3000,7 @@
  	/* Enable the GQSPI */
  	zynqmp_gqspi_write(xqspi, GQSPI_EN_OFST, GQSPI_EN_MASK);
  }
-@@ -361,11 +497,22 @@
+@@ -361,11 +497,22 @@ static void zynqmp_qspi_chipselect(struct spi_device *qspi, bool is_high)
  	u32 genfifoentry = 0, statusreg;
  
  	genfifoentry |= GQSPI_GENFIFO_MODE_SPI;
@@ -3107,7 +3026,7 @@
  		genfifoentry |= xqspi->genfifocs;
  		genfifoentry |= GQSPI_GENFIFO_CS_SETUP;
  	} else {
-@@ -385,8 +532,7 @@
+@@ -385,8 +532,7 @@ static void zynqmp_qspi_chipselect(struct spi_device *qspi, bool is_high)
  	do {
  		statusreg = zynqmp_gqspi_read(xqspi, GQSPI_ISR_OFST);
  
@@ -3117,7 +3036,7 @@
  			break;
  		cpu_relax();
  	} while (!time_after_eq(jiffies, timeout));
-@@ -448,30 +594,38 @@
+@@ -448,30 +594,38 @@ static int zynqmp_qspi_config_op(struct zynqmp_qspi *xqspi,
  				 struct spi_device *qspi)
  {
  	ulong clk_rate;
@@ -3137,14 +3056,13 @@
 +		/* Set the clock frequency */
 +		/* If req_hz == 0, default to lowest speed */
 +		clk_rate = clk_get_rate(xqspi->refclk);
-+
+ 
+-	config_reg = zynqmp_gqspi_read(xqspi, GQSPI_CONFIG_OFST);
 +		while ((baud_rate_val < GQSPI_BAUD_DIV_MAX) &&
 +		       (clk_rate /
 +			(GQSPI_BAUD_DIV_SHIFT << baud_rate_val)) > req_hz)
 +			baud_rate_val++;
  
--	config_reg = zynqmp_gqspi_read(xqspi, GQSPI_CONFIG_OFST);
--
 -	/* Set the QSPI clock phase and clock polarity */
 -	config_reg &= (~GQSPI_CFG_CLK_PHA_MASK) & (~GQSPI_CFG_CLK_POL_MASK);
 +		config_reg = zynqmp_gqspi_read(xqspi, GQSPI_CONFIG_OFST);
@@ -3175,7 +3093,7 @@
  	return 0;
  }
  
-@@ -488,10 +642,24 @@
+@@ -488,10 +642,24 @@ static int zynqmp_qspi_setup_op(struct spi_device *qspi)
  {
  	struct spi_controller *ctlr = qspi->master;
  	struct zynqmp_qspi *xqspi = spi_controller_get_devdata(ctlr);
@@ -3200,7 +3118,7 @@
  	zynqmp_gqspi_write(xqspi, GQSPI_EN_OFST, GQSPI_EN_MASK);
  
  	return 0;
-@@ -616,6 +784,12 @@
+@@ -616,6 +784,12 @@ static void zynqmp_qspi_fillgenfifo(struct zynqmp_qspi *xqspi, u8 nbits,
  		if (imm_data != 0) {
  			genfifoentry &= ~GQSPI_GENFIFO_EXP;
  			genfifoentry &= ~GQSPI_GENFIFO_IMM_DATA_MASK;
@@ -3213,7 +3131,7 @@
  			genfifoentry |= (u8)(imm_data & 0xFF);
  			zynqmp_gqspi_write(xqspi, GQSPI_GEN_FIFO_OFST,
  					   genfifoentry);
-@@ -705,28 +879,34 @@
+@@ -705,28 +879,34 @@ static irqreturn_t zynqmp_qspi_irq(int irq, void *dev_id)
  		zynqmp_gqspi_write(xqspi, GQSPI_QSPIDMA_DST_I_STS_OFST,
  				   dma_status);
  	}
@@ -3258,7 +3176,7 @@
  }
  
  /**
-@@ -739,8 +919,9 @@
+@@ -739,8 +919,9 @@ static int zynqmp_qspi_setuprxdma(struct zynqmp_qspi *xqspi)
  	dma_addr_t addr;
  	u64 dma_align =  (u64)(uintptr_t)xqspi->rxbuf;
  
@@ -3270,7 +3188,7 @@
  		/* Setting to IO mode */
  		config_reg = zynqmp_gqspi_read(xqspi, GQSPI_CONFIG_OFST);
  		config_reg &= ~GQSPI_CFG_MODE_EN_MASK;
-@@ -840,8 +1021,8 @@
+@@ -840,8 +1021,8 @@ static int zynqmp_qspi_read_op(struct zynqmp_qspi *xqspi, u8 rx_nbits,
   */
  static int __maybe_unused zynqmp_qspi_suspend(struct device *dev)
  {
@@ -3281,7 +3199,7 @@
  	int ret;
  
  	ret = spi_controller_suspend(ctlr);
-@@ -864,13 +1045,28 @@
+@@ -864,13 +1045,28 @@ static int __maybe_unused zynqmp_qspi_suspend(struct device *dev)
   */
  static int __maybe_unused zynqmp_qspi_resume(struct device *dev)
  {
@@ -3297,14 +3215,14 @@
 +		dev_err(dev, "Cannot enable APB clock.\n");
 +		return ret;
 +	}
- 
++
 +	ret = clk_enable(xqspi->refclk);
 +	if (ret) {
 +		dev_err(dev, "Cannot enable device clock.\n");
 +		clk_disable(xqspi->pclk);
 +		return ret;
 +	}
-+
+ 
 +	zynqmp_qspi_init_hw(xqspi);
  	spi_controller_resume(ctlr);
  
@@ -3313,7 +3231,7 @@
  	return 0;
  }
  
-@@ -884,10 +1080,11 @@
+@@ -884,10 +1080,11 @@ static int __maybe_unused zynqmp_qspi_resume(struct device *dev)
   */
  static int __maybe_unused zynqmp_runtime_suspend(struct device *dev)
  {
@@ -3328,7 +3246,7 @@
  
  	return 0;
  }
-@@ -902,19 +1099,20 @@
+@@ -902,19 +1099,20 @@ static int __maybe_unused zynqmp_runtime_suspend(struct device *dev)
   */
  static int __maybe_unused zynqmp_runtime_resume(struct device *dev)
  {
@@ -3353,7 +3271,7 @@
  		return ret;
  	}
  
-@@ -941,6 +1139,7 @@
+@@ -941,6 +1139,7 @@ static int zynqmp_qspi_exec_op(struct spi_mem *mem,
  	u32 genfifoentry = 0;
  	u16 opcode = op->cmd.opcode;
  	u64 opaddr;
@@ -3361,7 +3279,7 @@
  
  	dev_dbg(xqspi->dev, "cmd:%#x mode:%d.%d.%d.%d\n",
  		op->cmd.opcode, op->cmd.buswidth, op->addr.buswidth,
-@@ -958,11 +1157,14 @@
+@@ -958,11 +1157,14 @@ static int zynqmp_qspi_exec_op(struct spi_mem *mem,
  		xqspi->rxbuf = NULL;
  		xqspi->bytes_to_transfer = op->cmd.nbytes;
  		xqspi->bytes_to_receive = 0;
@@ -3377,7 +3295,7 @@
  				   GQSPI_IER_GENFIFOEMPTY_MASK |
  				   GQSPI_IER_TXNOT_FULL_MASK);
  		if (!wait_for_completion_timeout
-@@ -983,7 +1185,7 @@
+@@ -983,7 +1185,7 @@ static int zynqmp_qspi_exec_op(struct spi_mem *mem,
  		xqspi->rxbuf = NULL;
  		xqspi->bytes_to_transfer = op->addr.nbytes;
  		xqspi->bytes_to_receive = 0;
@@ -3386,7 +3304,7 @@
  		zynqmp_gqspi_write(xqspi, GQSPI_CONFIG_OFST,
  				   zynqmp_gqspi_read(xqspi,
  						     GQSPI_CONFIG_OFST) |
-@@ -1020,6 +1222,10 @@
+@@ -1020,6 +1222,10 @@ static int zynqmp_qspi_exec_op(struct spi_mem *mem,
  	}
  
  	if (op->data.nbytes) {
@@ -3397,7 +3315,7 @@
  		reinit_completion(&xqspi->data_completion);
  		if (op->data.dir == SPI_MEM_DATA_OUT) {
  			xqspi->txbuf = (u8 *)op->data.buf.out;
-@@ -1062,7 +1268,7 @@
+@@ -1062,7 +1268,7 @@ static int zynqmp_qspi_exec_op(struct spi_mem *mem,
  			}
  		}
  		if (!wait_for_completion_timeout
@@ -3406,7 +3324,7 @@
  			err = -ETIMEDOUT;
  	}
  
-@@ -1074,12 +1280,35 @@
+@@ -1074,12 +1280,35 @@ static int zynqmp_qspi_exec_op(struct spi_mem *mem,
  	return err;
  }
  
@@ -3443,7 +3361,7 @@
  static const struct spi_controller_mem_ops zynqmp_qspi_mem_ops = {
  	.exec_op = zynqmp_qspi_exec_op,
  };
-@@ -1098,6 +1327,11 @@
+@@ -1098,6 +1327,11 @@ static int zynqmp_qspi_probe(struct platform_device *pdev)
  	struct spi_controller *ctlr;
  	struct zynqmp_qspi *xqspi;
  	struct device *dev = &pdev->dev;
@@ -3455,24 +3373,24 @@
  	struct device_node *np = dev->of_node;
  
  	ctlr = spi_alloc_master(&pdev->dev, sizeof(*xqspi));
-@@ -1107,8 +1341,15 @@
+@@ -1107,8 +1341,15 @@ static int zynqmp_qspi_probe(struct platform_device *pdev)
  	xqspi = spi_controller_get_devdata(ctlr);
  	xqspi->dev = dev;
  	xqspi->ctlr = ctlr;
 -	platform_set_drvdata(pdev, xqspi);
 +	platform_set_drvdata(pdev, ctlr);
-+
+ 
 +	match = of_match_node(zynqmp_qspi_of_match, pdev->dev.of_node);
 +	if (match) {
 +		const struct qspi_platform_data *p_data = match->data;
- 
++
 +		if (p_data && (p_data->quirks & QSPI_QUIRK_HAS_TAPDELAY))
 +			xqspi->has_tapdelay = true;
 +	}
  	xqspi->regs = devm_platform_ioremap_resource(pdev, 0);
  	if (IS_ERR(xqspi->regs)) {
  		ret = PTR_ERR(xqspi->regs);
-@@ -1150,6 +1391,12 @@
+@@ -1150,6 +1391,12 @@ static int zynqmp_qspi_probe(struct platform_device *pdev)
  	pm_runtime_set_active(&pdev->dev);
  	pm_runtime_enable(&pdev->dev);
  
@@ -3485,7 +3403,7 @@
  	ret = pm_runtime_get_sync(&pdev->dev);
  	if (ret < 0) {
  		dev_err(&pdev->dev, "Failed to pm_runtime_get_sync: %d\n", ret);
-@@ -1162,6 +1409,7 @@
+@@ -1162,6 +1409,7 @@ static int zynqmp_qspi_probe(struct platform_device *pdev)
  	xqspi->irq = platform_get_irq(pdev, 0);
  	if (xqspi->irq <= 0) {
  		ret = -ENXIO;
@@ -3493,7 +3411,7 @@
  		goto clk_dis_all;
  	}
  	ret = devm_request_irq(&pdev->dev, xqspi->irq, zynqmp_qspi_irq,
-@@ -1172,15 +1420,43 @@
+@@ -1172,15 +1420,43 @@ static int zynqmp_qspi_probe(struct platform_device *pdev)
  		goto clk_dis_all;
  	}
  
@@ -3539,7 +3457,7 @@
  	ctlr->bits_per_word_mask = SPI_BPW_MASK(8);
  	ctlr->mode_bits = SPI_CPOL | SPI_CPHA | SPI_RX_DUAL | SPI_RX_QUAD |
  			    SPI_TX_DUAL | SPI_TX_QUAD;
-@@ -1234,11 +1510,6 @@
+@@ -1234,11 +1510,6 @@ static int zynqmp_qspi_remove(struct platform_device *pdev)
  	return 0;
  }
  
@@ -3551,9 +3469,11 @@
  MODULE_DEVICE_TABLE(of, zynqmp_qspi_of_match);
  
  static struct platform_driver zynqmp_qspi_driver = {
---- linux-5.15.36/drivers/spi/spi.c	2023-04-14 12:26:06.822032900 +0900
-+++ linux-xlnx-2022.2/drivers/spi/spi.c	2023-04-14 12:24:13.875624000 +0900
-@@ -1210,10 +1210,10 @@
+diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+index 06dd1be54..7da707617 100644
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -1212,10 +1212,10 @@ static int spi_transfer_wait(struct spi_controller *ctlr,
  		do_div(ms, speed_hz);
  
  		/*
@@ -3566,7 +3486,7 @@
  		if (ms > UINT_MAX)
  			ms = UINT_MAX;
  
-@@ -2108,6 +2108,9 @@
+@@ -2110,6 +2110,9 @@ static int of_spi_parse_dt(struct spi_controller *ctlr, struct spi_device *spi,
  	if (!of_property_read_u32(nc, "spi-max-frequency", &value))
  		spi->max_speed_hz = value;
  
@@ -3575,4 +3495,102 @@
 +		spi->multi_die = true;
  	return 0;
  }
+ 
+diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
+index 85e2ff7b8..2ca3c8112 100644
+--- a/include/linux/spi/spi-mem.h
++++ b/include/linux/spi/spi-mem.h
+@@ -55,6 +55,8 @@
+ 
+ #define SPI_MEM_OP_NO_DATA	{ }
+ 
++#define SPI_MEM_DEV_MAX_ID_LEN		6
++
+ /**
+  * enum spi_mem_data_dir - describes the direction of a SPI memory data
+  *			   transfer from the controller perspective
+@@ -195,6 +197,9 @@ struct spi_mem {
+ 	struct spi_device *spi;
+ 	void *drvpriv;
+ 	const char *name;
++	u8 device_id[SPI_MEM_DEV_MAX_ID_LEN];
++	struct delayed_work	complete_work;
++	struct completion	request_completion;
+ };
+ 
+ /**
+@@ -356,6 +361,7 @@ bool spi_mem_dtr_supports_op(struct spi_mem *mem,
+ 
+ int spi_mem_adjust_op_size(struct spi_mem *mem, struct spi_mem_op *op);
+ 
++bool update_stripe(const struct spi_mem_op *op);
+ bool spi_mem_supports_op(struct spi_mem *mem,
+ 			 const struct spi_mem_op *op);
+ 
+diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+index 6b0b686f6..7900a85a3 100644
+--- a/include/linux/spi/spi.h
++++ b/include/linux/spi/spi.h
+@@ -147,6 +147,7 @@ extern int spi_delay_exec(struct spi_delay *_delay, struct spi_transfer *xfer);
+  *	not using a GPIO line)
+  * @word_delay: delay to be inserted between consecutive
+  *	words of a transfer
++ * @multi_die: Flash device with multiple dies.
+  * @cs_setup: delay to be introduced by the controller after CS is asserted
+  * @cs_hold: delay to be introduced by the controller before CS is deasserted
+  * @cs_inactive: delay to be introduced by the controller after CS is
+@@ -192,6 +193,7 @@ struct spi_device {
+ 	int			cs_gpio;	/* LEGACY: chip select gpio */
+ 	struct gpio_desc	*cs_gpiod;	/* chip select gpio desc */
+ 	struct spi_delay	word_delay; /* inter-word delay */
++	bool			multi_die;	/* flash with multiple dies*/
+ 	/* CS delays */
+ 	struct spi_delay	cs_setup;
+ 	struct spi_delay	cs_hold;
+@@ -514,7 +516,20 @@ struct spi_controller {
+ #define SPI_CONTROLLER_MUST_TX		BIT(4)	/* requires tx */
+ 
+ #define SPI_MASTER_GPIO_SS		BIT(5)	/* GPIO CS must select slave */
+-
++	/*
++	 * Controller may support data stripe feature when more than one
++	 * chips are present.
++	 * Setting data stripe will send data in following manner:
++	 * -> even bytes i.e. 0, 2, 4,... are transmitted on lower data bus
++	 * -> odd bytes i.e. 1, 3, 5,.. are transmitted on upper data bus
++	 */
++#define SPI_MASTER_DATA_STRIPE BIT(7)		/* support data stripe */
++	/*
++	 * Controller may support asserting more than one chip select at once.
++	 * This flag will enable that feature.
++	 */
++#define SPI_MASTER_BOTH_CS	BIT(8)		/* assert both chip selects */
++#define SPI_MASTER_U_PAGE	BIT(9)		/* select upper flash */
+ 	/* flag indicating if the allocation of this struct is devres-managed */
+ 	bool			devm_allocated;
+ 
+@@ -829,6 +844,7 @@ extern void spi_res_release(struct spi_controller *ctlr,
+  * @len: size of rx and tx buffers (in bytes)
+  * @speed_hz: Select a speed other than the device default for this
+  *      transfer. If 0 the default (from @spi_device) is used.
++ * @dummy: number of dummy cycles.
+  * @bits_per_word: select a bits_per_word other than the device default
+  *      for this transfer. If 0 the default (from @spi_device) is used.
+  * @dummy_data: indicates transfer is dummy bytes transfer.
+@@ -846,6 +862,7 @@ extern void spi_res_release(struct spi_controller *ctlr,
+  * @transfer_list: transfers are sequenced through @spi_message.transfers
+  * @tx_sg: Scatterlist for transmit, currently not for client use
+  * @rx_sg: Scatterlist for receive, currently not for client use
++ * @stripe: true-> enable stripe, false-> disable stripe.
+  * @ptp_sts_word_pre: The word (subject to bits_per_word semantics) offset
+  *	within @tx_buf for which the SPI device is requesting that the time
+  *	snapshot for this transfer begins. Upon completing the SPI transfer,
+@@ -953,6 +970,8 @@ struct spi_transfer {
+ 	struct spi_delay	cs_change_delay;
+ 	struct spi_delay	word_delay;
+ 	u32		speed_hz;
++	u32		dummy;
++	bool		stripe;
+ 
+ 	u32		effective_speed_hz;
  
