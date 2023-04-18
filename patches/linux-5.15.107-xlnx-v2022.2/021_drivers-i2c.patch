@@ -1,6 +1,8 @@
---- linux-5.15.36/Documentation/devicetree/bindings/i2c/xlnx,xps-iic-2.00.a.yaml	2023-04-14 12:25:42.049973300 +0900
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/i2c/xlnx,xps-iic-2.00.a.yaml	2023-04-14 12:23:49.068732200 +0900
-@@ -14,7 +14,9 @@
+diff --git a/Documentation/devicetree/bindings/i2c/xlnx,xps-iic-2.00.a.yaml b/Documentation/devicetree/bindings/i2c/xlnx,xps-iic-2.00.a.yaml
+index 715dcfa5a..fc8afd6aa 100644
+--- a/Documentation/devicetree/bindings/i2c/xlnx,xps-iic-2.00.a.yaml
++++ b/Documentation/devicetree/bindings/i2c/xlnx,xps-iic-2.00.a.yaml
+@@ -14,7 +14,9 @@ allOf:
  
  properties:
    compatible:
@@ -11,7 +13,7 @@
  
    reg:
      maxItems: 1
-@@ -30,6 +32,13 @@
+@@ -30,6 +32,13 @@ properties:
      description: |
        Input clock name.
  
@@ -25,14 +27,16 @@
  required:
    - compatible
    - reg
-@@ -48,4 +57,5 @@
+@@ -48,4 +57,5 @@ examples:
  
        #size-cells = <0>;
        #address-cells = <1>;
 +      clock-frequency = <400000>;
      };
---- linux-5.15.36/drivers/i2c/busses/i2c-cadence.c	2023-04-14 12:25:58.281197300 +0900
-+++ linux-xlnx-2022.2/drivers/i2c/busses/i2c-cadence.c	2023-04-14 12:24:05.379523100 +0900
+diff --git a/drivers/i2c/busses/i2c-cadence.c b/drivers/i2c/busses/i2c-cadence.c
+index 33f5588a5..2c9fc28ef 100644
+--- a/drivers/i2c/busses/i2c-cadence.c
++++ b/drivers/i2c/busses/i2c-cadence.c
 @@ -7,13 +7,16 @@
  
  #include <linux/clk.h>
@@ -65,7 +69,7 @@
  #define CDNS_I2C_CR_HOLD		BIT(4) /* Hold Bus bit */
  #define CDNS_I2C_CR_ACK_EN		BIT(3)
  #define CDNS_I2C_CR_NEA			BIT(2)
-@@ -179,6 +184,10 @@
+@@ -179,6 +184,10 @@ enum cdns_i2c_slave_state {
   * @clk_rate_change_nb:	Notifier block for clock rate changes
   * @quirks:		flag for broken hold bit usage in r1p10
   * @ctrl_reg:		Cached value of the control register.
@@ -76,7 +80,7 @@
   * @ctrl_reg_diva_divb: value of fields DIV_A and DIV_B from CR register
   * @slave:		Registered slave instance.
   * @dev_mode:		I2C operating role(master/slave).
-@@ -204,6 +213,10 @@
+@@ -204,6 +213,10 @@ struct cdns_i2c {
  	struct notifier_block clk_rate_change_nb;
  	u32 quirks;
  	u32 ctrl_reg;
@@ -87,73 +91,7 @@
  #if IS_ENABLED(CONFIG_I2C_SLAVE)
  	u16 ctrl_reg_diva_divb;
  	struct i2c_client *slave;
-@@ -388,9 +401,9 @@
-  */
- static irqreturn_t cdns_i2c_master_isr(void *ptr)
- {
--	unsigned int isr_status, avail_bytes, updatetx;
-+	unsigned int isr_status, avail_bytes;
- 	unsigned int bytes_to_send;
--	bool hold_quirk;
-+	bool updatetx;
- 	struct cdns_i2c *id = ptr;
- 	/* Signal completion only after everything is updated */
- 	int done_flag = 0;
-@@ -410,11 +423,7 @@
- 	 * Check if transfer size register needs to be updated again for a
- 	 * large data receive operation.
- 	 */
--	updatetx = 0;
--	if (id->recv_count > id->curr_recv_count)
--		updatetx = 1;
--
--	hold_quirk = (id->quirks & CDNS_I2C_BROKEN_HOLD_BIT) && updatetx;
-+	updatetx = id->recv_count > id->curr_recv_count;
- 
- 	/* When receiving, handle data interrupt and completion interrupt */
- 	if (id->p_recv_buf &&
-@@ -445,7 +454,7 @@
- 				break;
- 			}
- 
--			if (cdns_is_holdquirk(id, hold_quirk))
-+			if (cdns_is_holdquirk(id, updatetx))
- 				break;
- 		}
- 
-@@ -456,7 +465,7 @@
- 		 * maintain transfer size non-zero while performing a large
- 		 * receive operation.
- 		 */
--		if (cdns_is_holdquirk(id, hold_quirk)) {
-+		if (cdns_is_holdquirk(id, updatetx)) {
- 			/* wait while fifo is full */
- 			while (cdns_i2c_readreg(CDNS_I2C_XFER_SIZE_OFFSET) !=
- 			       (id->curr_recv_count - CDNS_I2C_FIFO_DEPTH))
-@@ -478,22 +487,6 @@
- 						  CDNS_I2C_XFER_SIZE_OFFSET);
- 				id->curr_recv_count = id->recv_count;
- 			}
--		} else if (id->recv_count && !hold_quirk &&
--						!id->curr_recv_count) {
--
--			/* Set the slave address in address register*/
--			cdns_i2c_writereg(id->p_msg->addr & CDNS_I2C_ADDR_MASK,
--						CDNS_I2C_ADDR_OFFSET);
--
--			if (id->recv_count > CDNS_I2C_TRANSFER_SIZE) {
--				cdns_i2c_writereg(CDNS_I2C_TRANSFER_SIZE,
--						CDNS_I2C_XFER_SIZE_OFFSET);
--				id->curr_recv_count = CDNS_I2C_TRANSFER_SIZE;
--			} else {
--				cdns_i2c_writereg(id->recv_count,
--						CDNS_I2C_XFER_SIZE_OFFSET);
--				id->curr_recv_count = id->recv_count;
--			}
- 		}
- 
- 		/* Clear hold (if not repeated start) and signal completion */
-@@ -540,6 +533,23 @@
+@@ -520,6 +533,23 @@ static irqreturn_t cdns_i2c_master_isr(void *ptr)
  		status = IRQ_HANDLED;
  	}
  
@@ -177,10 +115,11 @@
  	/* Update the status for errors */
  	id->err_status |= isr_status & CDNS_I2C_IXR_ERR_INTR_MASK;
  	if (id->err_status)
-@@ -729,6 +739,40 @@
+@@ -713,6 +743,40 @@ static void cdns_i2c_msend(struct cdns_i2c *id)
+ 	cdns_i2c_writereg(CDNS_I2C_ENABLED_INTR_MASK, CDNS_I2C_IER_OFFSET);
  }
  
- /**
++/**
 + * cdns_i2c_slvmon - Handling Slav monitor mode feature
 + * @id:		pointer to the i2c device
 + */
@@ -214,11 +153,10 @@
 +	cdns_i2c_writereg(CDNS_I2C_IXR_SLV_RDY, CDNS_I2C_IER_OFFSET);
 +}
 +
-+/**
+ /**
   * cdns_i2c_master_reset - Reset the interface
   * @adap:	pointer to the i2c adapter driver instance
-  *
-@@ -744,7 +788,7 @@
+@@ -729,7 +793,7 @@ static void cdns_i2c_master_reset(struct i2c_adapter *adap)
  	cdns_i2c_writereg(CDNS_I2C_IXR_ALL_INTR_MASK, CDNS_I2C_IDR_OFFSET);
  	/* Clear the hold bit and fifos */
  	regval = cdns_i2c_readreg(CDNS_I2C_CR_OFFSET);
@@ -227,7 +165,7 @@
  	regval |= CDNS_I2C_CR_CLR_FIFO;
  	cdns_i2c_writereg(regval, CDNS_I2C_CR_OFFSET);
  	/* Update the transfercount register to zero */
-@@ -778,9 +822,11 @@
+@@ -763,9 +827,11 @@ static int cdns_i2c_process_msg(struct cdns_i2c *id, struct i2c_msg *msg,
  			cdns_i2c_writereg(reg | CDNS_I2C_CR_NEA,
  					CDNS_I2C_CR_OFFSET);
  	}
@@ -242,15 +180,15 @@
  		cdns_i2c_mrecv(id);
  	else
  		cdns_i2c_msend(id);
-@@ -788,6 +834,7 @@
+@@ -781,6 +847,7 @@ static int cdns_i2c_process_msg(struct cdns_i2c *id, struct i2c_msg *msg,
  	/* Wait for the signal of completion */
- 	time_left = wait_for_completion_timeout(&id->xfer_done, adap->timeout);
+ 	time_left = wait_for_completion_timeout(&id->xfer_done, msg_timeout);
  	if (time_left == 0) {
 +		i2c_recover_bus(adap);
  		cdns_i2c_master_reset(adap);
  		dev_err(id->adap.dev.parent,
  				"timeout waiting on completion\n");
-@@ -844,10 +891,11 @@
+@@ -840,10 +907,11 @@ static int cdns_i2c_master_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs,
  #endif
  
  	/* Check if the bus is free */
@@ -266,7 +204,7 @@
  
  	hold_quirk = !!(id->quirks & CDNS_I2C_BROKEN_HOLD_BIT);
  	/*
-@@ -1208,6 +1256,96 @@
+@@ -1204,6 +1272,96 @@ static int __maybe_unused cdns_i2c_runtime_resume(struct device *dev)
  	return 0;
  }
  
@@ -363,7 +301,7 @@
  static const struct dev_pm_ops cdns_i2c_dev_pm_ops = {
  	SET_RUNTIME_PM_OPS(cdns_i2c_runtime_suspend,
  			   cdns_i2c_runtime_resume, NULL)
-@@ -1254,6 +1392,13 @@
+@@ -1250,6 +1408,13 @@ static int cdns_i2c_probe(struct platform_device *pdev)
  		id->quirks = data->quirks;
  	}
  
@@ -377,8 +315,10 @@
  	id->membase = devm_platform_get_and_ioremap_resource(pdev, 0, &r_mem);
  	if (IS_ERR(id->membase))
  		return PTR_ERR(id->membase);
---- linux-5.15.36/drivers/i2c/busses/i2c-xiic.c	2023-04-14 12:25:58.343682300 +0900
-+++ linux-xlnx-2022.2/drivers/i2c/busses/i2c-xiic.c	2023-04-14 12:24:05.442008100 +0900
+diff --git a/drivers/i2c/busses/i2c-xiic.c b/drivers/i2c/busses/i2c-xiic.c
+index 34b8da949..a5b4cf46a 100644
+--- a/drivers/i2c/busses/i2c-xiic.c
++++ b/drivers/i2c/busses/i2c-xiic.c
 @@ -33,6 +33,8 @@
  
  #define DRIVER_NAME "xiic-i2c"
@@ -388,7 +328,7 @@
  enum xilinx_i2c_state {
  	STATE_DONE,
  	STATE_ERROR,
-@@ -60,6 +62,12 @@
+@@ -60,6 +62,12 @@ enum xiic_endian {
   * @clk: Pointer to AXI4-lite input clock
   * @state: See STATE_
   * @singlemaster: Indicates bus is single master
@@ -401,7 +341,7 @@
   */
  struct xiic_i2c {
  	struct device *dev;
-@@ -76,26 +84,64 @@
+@@ -76,26 +84,64 @@ struct xiic_i2c {
  	struct clk *clk;
  	enum xilinx_i2c_state state;
  	bool singlemaster;
@@ -477,7 +417,7 @@
  
  /* Control Register masks */
  #define XIIC_CR_ENABLE_DEVICE_MASK        0x01	/* Device enable = 1      */
-@@ -144,6 +190,9 @@
+@@ -144,6 +190,9 @@ struct xiic_i2c {
  #define XIIC_TX_DYN_START_MASK            0x0100 /* 1 = Set dynamic start */
  #define XIIC_TX_DYN_STOP_MASK             0x0200 /* 1 = Set dynamic stop */
  
@@ -487,7 +427,7 @@
  /*
   * The following constants define the register offsets for the Interrupt
   * registers. There are some holes in the memory map for reserved addresses
-@@ -172,6 +221,7 @@
+@@ -172,6 +221,7 @@ struct xiic_i2c {
  
  static int xiic_start_xfer(struct xiic_i2c *i2c);
  static void __xiic_start_xfer(struct xiic_i2c *i2c);
@@ -495,7 +435,7 @@
  
  /*
   * For the register read and write functions, a little-endian and big-endian
-@@ -230,18 +280,21 @@
+@@ -230,18 +280,21 @@ static inline int xiic_getreg32(struct xiic_i2c *i2c, int reg)
  static inline void xiic_irq_dis(struct xiic_i2c *i2c, u32 mask)
  {
  	u32 ier = xiic_getreg32(i2c, XIIC_IIER_OFFSET);
@@ -517,7 +457,7 @@
  	xiic_setreg32(i2c, XIIC_IISR_OFFSET, isr & mask);
  }
  
-@@ -270,12 +323,34 @@
+@@ -270,12 +323,34 @@ static int xiic_clear_rx_fifo(struct xiic_i2c *i2c)
  	return 0;
  }
  
@@ -552,7 +492,7 @@
  	/* Set receive Fifo depth to maximum (zero based). */
  	xiic_setreg8(i2c, XIIC_RFD_REG_OFFSET, IIC_RX_FIFO_DEPTH - 1);
  
-@@ -309,15 +384,64 @@
+@@ -309,15 +384,64 @@ static void xiic_deinit(struct xiic_i2c *i2c)
  	xiic_setreg8(i2c, XIIC_CR_REG_OFFSET, cr & ~XIIC_CR_ENABLE_DEVICE_MASK);
  }
  
@@ -619,7 +559,7 @@
  		__func__, bytes_in_fifo, xiic_rx_space(i2c),
  		xiic_getreg8(i2c, XIIC_SR_REG_OFFSET),
  		xiic_getreg8(i2c, XIIC_CR_REG_OFFSET));
-@@ -325,13 +449,59 @@
+@@ -325,13 +449,59 @@ static void xiic_read_rx(struct xiic_i2c *i2c)
  	if (bytes_in_fifo > xiic_rx_space(i2c))
  		bytes_in_fifo = xiic_rx_space(i2c);
  
@@ -683,7 +623,7 @@
  }
  
  static int xiic_tx_fifo_space(struct xiic_i2c *i2c)
-@@ -352,7 +522,8 @@
+@@ -352,7 +522,8 @@ static void xiic_fill_tx_fifo(struct xiic_i2c *i2c)
  
  	while (len--) {
  		u16 data = i2c->tx_msg->buf[i2c->tx_pos++];
@@ -693,7 +633,7 @@
  			/* last message in transfer -> STOP */
  			data |= XIIC_TX_DYN_STOP_MASK;
  			dev_dbg(i2c->adap.dev.parent, "%s TX STOP\n", __func__);
-@@ -361,7 +532,63 @@
+@@ -361,7 +532,63 @@ static void xiic_fill_tx_fifo(struct xiic_i2c *i2c)
  	}
  }
  
@@ -758,7 +698,7 @@
  {
  	i2c->tx_msg = NULL;
  	i2c->rx_msg = NULL;
-@@ -375,6 +602,7 @@
+@@ -375,6 +602,7 @@ static irqreturn_t xiic_process(int irq, void *dev_id)
  	struct xiic_i2c *i2c = dev_id;
  	u32 pend, isr, ier;
  	u32 clr = 0;
@@ -766,7 +706,7 @@
  
  	/* Get the interrupt Status from the IPIF. There is no clearing of
  	 * interrupts in the IPIF. Interrupts must be cleared at the source.
-@@ -391,12 +619,14 @@
+@@ -391,12 +619,14 @@ static irqreturn_t xiic_process(int irq, void *dev_id)
  	dev_dbg(i2c->adap.dev.parent, "%s: SR: 0x%x, msg: %p, nmsgs: %d\n",
  		__func__, xiic_getreg8(i2c, XIIC_SR_REG_OFFSET),
  		i2c->tx_msg, i2c->nmsgs);
@@ -784,7 +724,7 @@
  		/* bus arbritration lost, or...
  		 * Transmit error _OR_ RX completed
  		 * if this happens when RX_FULL is not set
-@@ -409,7 +639,9 @@
+@@ -409,7 +639,9 @@ static irqreturn_t xiic_process(int irq, void *dev_id)
  		 * fifos and the next message is a TX with len 0 (only addr)
  		 * reset the IP instead of just flush fifos
  		 */
@@ -795,7 +735,7 @@
  
  		if (i2c->rx_msg)
  			xiic_wakeup(i2c, STATE_ERROR);
-@@ -453,22 +685,6 @@
+@@ -453,22 +685,6 @@ static irqreturn_t xiic_process(int irq, void *dev_id)
  			}
  		}
  	}
@@ -818,7 +758,7 @@
  	if (pend & (XIIC_INTR_TX_EMPTY_MASK | XIIC_INTR_TX_HALF_MASK)) {
  		/* Transmit register/FIFO is empty or ½ empty */
  
-@@ -481,7 +697,10 @@
+@@ -481,7 +697,10 @@ static irqreturn_t xiic_process(int irq, void *dev_id)
  			goto out;
  		}
  
@@ -830,7 +770,7 @@
  
  		/* current message sent and there is space in the fifo */
  		if (!xiic_tx_space(i2c) && xiic_tx_fifo_space(i2c) >= 2) {
-@@ -505,6 +724,30 @@
+@@ -505,6 +724,30 @@ static irqreturn_t xiic_process(int irq, void *dev_id)
  			 */
  			xiic_irq_dis(i2c, XIIC_INTR_TX_HALF_MASK);
  	}
@@ -861,7 +801,7 @@
  out:
  	dev_dbg(i2c->adap.dev.parent, "%s clr: 0x%x\n", __func__, clr);
  
-@@ -552,35 +795,114 @@
+@@ -552,35 +795,114 @@ static int xiic_busy(struct xiic_i2c *i2c)
  
  static void xiic_start_recv(struct xiic_i2c *i2c)
  {
@@ -999,7 +939,7 @@
  
  	if (i2c->nmsgs == 1)
  		/* very last, enable bus not busy as well */
-@@ -588,10 +910,17 @@
+@@ -588,10 +910,17 @@ static void xiic_start_recv(struct xiic_i2c *i2c)
  
  	/* the message is tx:ed */
  	i2c->tx_pos = msg->len;
@@ -1017,7 +957,7 @@
  	struct i2c_msg *msg = i2c->tx_msg;
  
  	xiic_irq_clr(i2c, XIIC_INTR_TX_ERROR_MASK);
-@@ -602,22 +931,71 @@
+@@ -602,22 +931,71 @@ static void xiic_start_send(struct xiic_i2c *i2c)
  		__func__, xiic_getreg32(i2c, XIIC_IISR_OFFSET),
  		xiic_getreg8(i2c, XIIC_CR_REG_OFFSET));
  
@@ -1056,7 +996,7 @@
 +		 */
 +		if (i2c->prev_msg_tx) {
 +			int status;
- 
++
 +			status = xiic_wait_tx_empty(i2c);
 +			if (status)
 +				return;
@@ -1071,7 +1011,7 @@
 +				     XIIC_CR_DIR_IS_TX_MASK) &
 +				     ~(XIIC_CR_NO_ACK_MASK));
 +		}
-+
+ 
 +		/* Write address to FIFO */
 +		data = i2c_8bit_addr_from_msg(msg);
  		xiic_setreg16(i2c, XIIC_DTR_REG_OFFSET, data);
@@ -1101,7 +1041,7 @@
  }
  
  static irqreturn_t xiic_isr(int irq, void *dev_id)
-@@ -644,6 +1022,7 @@
+@@ -644,6 +1022,7 @@ static void __xiic_start_xfer(struct xiic_i2c *i2c)
  {
  	int first = 1;
  	int fifo_space = xiic_tx_fifo_space(i2c);
@@ -1109,7 +1049,7 @@
  	dev_dbg(i2c->adap.dev.parent, "%s entry, msg: %p, fifos space: %d\n",
  		__func__, i2c->tx_msg, fifo_space);
  
-@@ -658,19 +1037,20 @@
+@@ -658,19 +1037,20 @@ static void __xiic_start_xfer(struct xiic_i2c *i2c)
  			i2c->nmsgs--;
  			i2c->tx_msg++;
  			i2c->tx_pos = 0;
@@ -1137,7 +1077,7 @@
  		}
  
  		fifo_space = xiic_tx_fifo_space(i2c);
-@@ -681,12 +1061,12 @@
+@@ -681,12 +1061,12 @@ static void __xiic_start_xfer(struct xiic_i2c *i2c)
  	 */
  	if (i2c->nmsgs > 1 || xiic_tx_space(i2c))
  		xiic_irq_clr_en(i2c, XIIC_INTR_TX_HALF_MASK);
@@ -1151,7 +1091,7 @@
  	mutex_lock(&i2c->lock);
  
  	ret = xiic_reinit(i2c);
-@@ -700,8 +1080,9 @@
+@@ -700,8 +1080,9 @@ static int xiic_start_xfer(struct xiic_i2c *i2c)
  
  static int xiic_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs, int num)
  {
@@ -1162,7 +1102,7 @@
  
  	dev_dbg(adap->dev.parent, "%s entry SR: 0x%x\n", __func__,
  		xiic_getreg8(i2c, XIIC_SR_REG_OFFSET));
-@@ -717,14 +1098,42 @@
+@@ -717,14 +1098,42 @@ static int xiic_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs, int num)
  	i2c->tx_msg = msgs;
  	i2c->nmsgs = num;
  
@@ -1207,7 +1147,7 @@
  		err = (i2c->state == STATE_DONE) ? num : -EIO;
  		goto out;
  	} else {
-@@ -742,7 +1151,7 @@
+@@ -742,7 +1151,7 @@ static int xiic_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs, int num)
  
  static u32 xiic_func(struct i2c_adapter *adap)
  {
@@ -1216,7 +1156,7 @@
  }
  
  static const struct i2c_algorithm xiic_algorithm = {
-@@ -750,22 +1159,129 @@
+@@ -750,22 +1159,129 @@ static const struct i2c_algorithm xiic_algorithm = {
  	.functionality = xiic_func,
  };
  
@@ -1351,7 +1291,7 @@
  	struct resource *res;
  	int ret, irq;
  	u8 i;
-@@ -775,6 +1291,13 @@
+@@ -775,6 +1291,13 @@ static int xiic_i2c_probe(struct platform_device *pdev)
  	if (!i2c)
  		return -ENOMEM;
  
@@ -1365,7 +1305,7 @@
  	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
  	i2c->base = devm_ioremap_resource(&pdev->dev, res);
  	if (IS_ERR(i2c->base))
-@@ -813,6 +1336,15 @@
+@@ -813,6 +1336,15 @@ static int xiic_i2c_probe(struct platform_device *pdev)
  	pm_runtime_use_autosuspend(i2c->dev);
  	pm_runtime_set_active(i2c->dev);
  	pm_runtime_enable(i2c->dev);
@@ -1381,7 +1321,7 @@
  	ret = devm_request_threaded_irq(&pdev->dev, irq, xiic_isr,
  					xiic_process, IRQF_ONESHOT,
  					pdev->name, i2c);
-@@ -856,6 +1388,9 @@
+@@ -856,6 +1388,9 @@ static int xiic_i2c_probe(struct platform_device *pdev)
  			i2c_new_client_device(&i2c->adap, pdata->devices + i);
  	}
  
@@ -1391,7 +1331,7 @@
  	return 0;
  
  err_clk_dis:
-@@ -887,14 +1422,6 @@
+@@ -887,14 +1422,6 @@ static int xiic_i2c_remove(struct platform_device *pdev)
  	return 0;
  }
  
@@ -1406,7 +1346,7 @@
  static int __maybe_unused xiic_i2c_runtime_suspend(struct device *dev)
  {
  	struct xiic_i2c *i2c = dev_get_drvdata(dev);
-@@ -922,6 +1449,7 @@
+@@ -922,6 +1449,7 @@ static const struct dev_pm_ops xiic_dev_pm_ops = {
  	SET_RUNTIME_PM_OPS(xiic_i2c_runtime_suspend,
  			   xiic_i2c_runtime_resume, NULL)
  };
@@ -1414,14 +1354,16 @@
  static struct platform_driver xiic_i2c_driver = {
  	.probe   = xiic_i2c_probe,
  	.remove  = xiic_i2c_remove,
-@@ -937,4 +1465,3 @@
+@@ -938,4 +1466,3 @@ MODULE_ALIAS("platform:" DRIVER_NAME);
  MODULE_AUTHOR("info@mocean-labs.com");
  MODULE_DESCRIPTION("Xilinx I2C bus driver");
  MODULE_LICENSE("GPL v2");
 -MODULE_ALIAS("platform:"DRIVER_NAME);
---- linux-5.15.36/drivers/i2c/muxes/i2c-mux-pca954x.c	2023-04-14 12:25:58.343682300 +0900
-+++ linux-xlnx-2022.2/drivers/i2c/muxes/i2c-mux-pca954x.c	2023-04-14 12:24:05.442008100 +0900
-@@ -239,11 +239,9 @@
+diff --git a/drivers/i2c/muxes/i2c-mux-pca954x.c b/drivers/i2c/muxes/i2c-mux-pca954x.c
+index 4ad665757..a5c692232 100644
+--- a/drivers/i2c/muxes/i2c-mux-pca954x.c
++++ b/drivers/i2c/muxes/i2c-mux-pca954x.c
+@@ -239,11 +239,9 @@ static int pca954x_select_chan(struct i2c_mux_core *muxc, u32 chan)
  	int ret = 0;
  
  	regval = pca954x_regval(data, chan);
@@ -1436,9 +1378,11 @@
  
  	return ret;
  }
---- linux-5.15.36/drivers/i3c/master/dw-i3c-master.c	2023-04-14 12:25:58.359304500 +0900
-+++ linux-xlnx-2022.2/drivers/i3c/master/dw-i3c-master.c	2023-04-14 12:24:05.457629200 +0900
-@@ -536,6 +536,7 @@
+diff --git a/drivers/i3c/master/dw-i3c-master.c b/drivers/i3c/master/dw-i3c-master.c
+index 51a860820..27313373f 100644
+--- a/drivers/i3c/master/dw-i3c-master.c
++++ b/drivers/i3c/master/dw-i3c-master.c
+@@ -536,6 +536,7 @@ static int dw_i3c_clk_cfg(struct dw_i3c_master *master)
  		lcnt = SCL_I3C_TIMING_CNT_MIN;
  
  	scl_timing = SCL_I3C_TIMING_HCNT(hcnt) | SCL_I3C_TIMING_LCNT(lcnt);
@@ -1446,7 +1390,7 @@
  	writel(scl_timing, master->regs + SCL_I3C_PP_TIMING);
  
  	if (!(readl(master->regs + DEVICE_CTRL) & DEV_CTRL_I2C_SLAVE_PRESENT))
-@@ -543,6 +544,7 @@
+@@ -543,6 +544,7 @@ static int dw_i3c_clk_cfg(struct dw_i3c_master *master)
  
  	lcnt = DIV_ROUND_UP(I3C_BUS_TLOW_OD_MIN_NS, core_period);
  	scl_timing = SCL_I3C_TIMING_HCNT(hcnt) | SCL_I3C_TIMING_LCNT(lcnt);
