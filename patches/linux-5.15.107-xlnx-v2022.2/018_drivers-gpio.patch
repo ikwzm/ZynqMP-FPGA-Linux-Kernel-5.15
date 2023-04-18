@@ -1,5 +1,8 @@
+diff --git a/Documentation/devicetree/bindings/gpio/gpio-slg7xl45106.yaml b/Documentation/devicetree/bindings/gpio/gpio-slg7xl45106.yaml
+new file mode 100644
+index 000000000..3f153e417
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/gpio/gpio-slg7xl45106.yaml	2023-04-14 12:23:48.970498300 +0900
++++ b/Documentation/devicetree/bindings/gpio/gpio-slg7xl45106.yaml
 @@ -0,0 +1,47 @@
 +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 +%YAML 1.2
@@ -48,23 +51,11 @@
 +    };
 +
 +...
---- linux-5.15.36/Documentation/devicetree/bindings/gpio/gpio-zynq.yaml	2023-04-14 12:25:41.967856900 +0900
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/gpio/gpio-zynq.yaml	2023-04-14 12:23:48.986119000 +0900
-@@ -11,7 +11,11 @@
- 
- properties:
-   compatible:
--    const: xlnx,zynq-gpio-1.0
-+    enum:
-+      - xlnx,zynq-gpio-1.0
-+      - xlnx,zynqmp-gpio-1.0
-+      - xlnx,versal-gpio-1.0
-+      - xlnx,pmc-gpio-1.0
- 
-   reg:
-     maxItems: 1
+diff --git a/Documentation/devicetree/bindings/gpio/xlnx,gpio-xilinx.yaml b/Documentation/devicetree/bindings/gpio/xlnx,gpio-xilinx.yaml
+new file mode 100644
+index 000000000..f333ee228
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/gpio/xlnx,gpio-xilinx.yaml	2023-04-14 12:23:49.001740800 +0900
++++ b/Documentation/devicetree/bindings/gpio/xlnx,gpio-xilinx.yaml
 @@ -0,0 +1,154 @@
 +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
 +%YAML 1.2
@@ -220,8 +211,11 @@
 +        };
 +
 +...
+diff --git a/Documentation/devicetree/bindings/gpio/xlnx,zynqmp-gpio-modepin.yaml b/Documentation/devicetree/bindings/gpio/xlnx,zynqmp-gpio-modepin.yaml
+new file mode 100644
+index 000000000..31c0fc345
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/gpio/xlnx,zynqmp-gpio-modepin.yaml	2023-04-14 12:23:49.001740800 +0900
++++ b/Documentation/devicetree/bindings/gpio/xlnx,zynqmp-gpio-modepin.yaml
 @@ -0,0 +1,43 @@
 +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 +%YAML 1.2
@@ -266,9 +260,11 @@
 +    };
 +
 +...
---- linux-5.15.36/drivers/gpio/Kconfig	2023-04-14 12:25:54.503370100 +0900
-+++ linux-xlnx-2022.2/drivers/gpio/Kconfig	2023-04-14 12:24:01.591395200 +0900
-@@ -764,6 +764,18 @@
+diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
+index 7b9def6b1..b84b12801 100644
+--- a/drivers/gpio/Kconfig
++++ b/drivers/gpio/Kconfig
+@@ -764,6 +764,18 @@ config GPIO_ZYNQ
  	help
  	  Say yes here to support Xilinx Zynq GPIO controller.
  
@@ -287,7 +283,7 @@
  config GPIO_LOONGSON1
  	tristate "Loongson1 GPIO support"
  	depends on MACH_LOONGSON32
-@@ -1080,6 +1092,15 @@
+@@ -1080,6 +1092,15 @@ config GPIO_PCF857X
  	  This driver provides an in-kernel interface to those GPIOs using
  	  platform-neutral GPIO calls.
  
@@ -303,9 +299,11 @@
  config GPIO_TPIC2810
  	tristate "TPIC2810 8-Bit I2C GPO expander"
  	help
---- linux-5.15.36/drivers/gpio/Makefile	2023-04-14 12:25:54.503370100 +0900
-+++ linux-xlnx-2022.2/drivers/gpio/Makefile	2023-04-14 12:24:01.591395200 +0900
-@@ -135,6 +135,7 @@
+diff --git a/drivers/gpio/Makefile b/drivers/gpio/Makefile
+index fbcda637d..e0e6a65ea 100644
+--- a/drivers/gpio/Makefile
++++ b/drivers/gpio/Makefile
+@@ -135,6 +135,7 @@ obj-$(CONFIG_GPIO_SCH)			+= gpio-sch.o
  obj-$(CONFIG_GPIO_SIFIVE)		+= gpio-sifive.o
  obj-$(CONFIG_GPIO_SIOX)			+= gpio-siox.o
  obj-$(CONFIG_GPIO_SL28CPLD)		+= gpio-sl28cpld.o
@@ -313,13 +311,16 @@
  obj-$(CONFIG_GPIO_SODAVILLE)		+= gpio-sodaville.o
  obj-$(CONFIG_GPIO_SPEAR_SPICS)		+= gpio-spear-spics.o
  obj-$(CONFIG_GPIO_SPRD)			+= gpio-sprd.o
-@@ -184,3 +185,4 @@
+@@ -184,3 +185,4 @@ obj-$(CONFIG_GPIO_XRA1403)		+= gpio-xra1403.o
  obj-$(CONFIG_GPIO_XTENSA)		+= gpio-xtensa.o
  obj-$(CONFIG_GPIO_ZEVIO)		+= gpio-zevio.o
  obj-$(CONFIG_GPIO_ZYNQ)			+= gpio-zynq.o
 +obj-$(CONFIG_GPIO_ZYNQMP_MODEPIN)	+= gpio-zynqmp-modepin.o
+diff --git a/drivers/gpio/gpio-slg7xl45106.c b/drivers/gpio/gpio-slg7xl45106.c
+new file mode 100644
+index 000000000..bf25e6fb6
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/gpio/gpio-slg7xl45106.c	2023-04-14 12:24:01.653880600 +0900
++++ b/drivers/gpio/gpio-slg7xl45106.c
 @@ -0,0 +1,127 @@
 +// SPDX-License-Identifier: GPL-2.0-only
 +/*
@@ -448,34 +449,11 @@
 +MODULE_AUTHOR("Raviteja Narayanam <raviteja.narayanam@xilinx.com>");
 +MODULE_DESCRIPTION("GPIO expander driver for slg7xl45106");
 +MODULE_LICENSE("GPL v2");
---- linux-5.15.36/drivers/gpio/gpio-xilinx.c	2023-04-14 12:25:54.581486400 +0900
-+++ linux-xlnx-2022.2/drivers/gpio/gpio-xilinx.c	2023-04-14 12:24:01.669501900 +0900
-@@ -99,7 +99,7 @@
- 	const unsigned long offset = (bit % BITS_PER_LONG) & BIT(5);
- 
- 	map[index] &= ~(0xFFFFFFFFul << offset);
--	map[index] |= v << offset;
-+	map[index] |= (unsigned long)v << offset;
- }
- 
- static inline int xgpio_regoffset(struct xgpio_instance *chip, int ch)
-@@ -117,12 +117,14 @@
- static void xgpio_read_ch(struct xgpio_instance *chip, int reg, int bit, unsigned long *a)
- {
- 	void __iomem *addr = chip->regs + reg + xgpio_regoffset(chip, bit / 32);
-+
- 	xgpio_set_value32(a, bit, xgpio_readreg(addr));
- }
- 
- static void xgpio_write_ch(struct xgpio_instance *chip, int reg, int bit, unsigned long *a)
- {
- 	void __iomem *addr = chip->regs + reg + xgpio_regoffset(chip, bit / 32);
-+
- 	xgpio_writereg(addr, xgpio_get_value32(a, bit));
- }
- 
+diff --git a/drivers/gpio/gpio-zynqmp-modepin.c b/drivers/gpio/gpio-zynqmp-modepin.c
+new file mode 100644
+index 000000000..a0d69387c
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/gpio/gpio-zynqmp-modepin.c	2023-04-14 12:24:01.669501900 +0900
++++ b/drivers/gpio/gpio-zynqmp-modepin.c
 @@ -0,0 +1,162 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
