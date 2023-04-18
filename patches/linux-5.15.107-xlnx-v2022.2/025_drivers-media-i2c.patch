@@ -1,5 +1,8 @@
+diff --git a/Documentation/devicetree/bindings/media/i2c/onnn,ap1302.yaml b/Documentation/devicetree/bindings/media/i2c/onnn,ap1302.yaml
+new file mode 100644
+index 000000000..d96e9dbb5
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/media/i2c/onnn,ap1302.yaml	2023-04-14 12:23:49.347300900 +0900
++++ b/Documentation/devicetree/bindings/media/i2c/onnn,ap1302.yaml
 @@ -0,0 +1,202 @@
 +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 +%YAML 1.2
@@ -203,9 +206,11 @@
 +    };
 +
 +...
---- linux-5.15.36/drivers/media/i2c/Kconfig	2023-04-14 12:25:59.859278300 +0900
-+++ linux-xlnx-2022.2/drivers/media/i2c/Kconfig	2023-04-14 12:24:06.883971300 +0900
-@@ -632,6 +632,17 @@
+diff --git a/drivers/media/i2c/Kconfig b/drivers/media/i2c/Kconfig
+index 6157e73ee..18216450f 100644
+--- a/drivers/media/i2c/Kconfig
++++ b/drivers/media/i2c/Kconfig
+@@ -632,6 +632,17 @@ config VIDEO_UPD64083
  	  module will be called upd64083.
  endmenu
  
@@ -223,9 +228,11 @@
  menu "Audio/Video compression chips"
  	visible if !MEDIA_HIDE_ANCILLARY_SUBDRV
  
---- linux-5.15.36/drivers/media/i2c/Makefile	2023-04-14 12:25:59.859278300 +0900
-+++ linux-xlnx-2022.2/drivers/media/i2c/Makefile	2023-04-14 12:24:06.883971300 +0900
-@@ -64,6 +64,7 @@
+diff --git a/drivers/media/i2c/Makefile b/drivers/media/i2c/Makefile
+index 83268f20a..0a5dcafa4 100644
+--- a/drivers/media/i2c/Makefile
++++ b/drivers/media/i2c/Makefile
+@@ -64,6 +64,7 @@ obj-$(CONFIG_VIDEO_VP27SMPX) += vp27smpx.o
  obj-$(CONFIG_VIDEO_SONY_BTF_MPX) += sony-btf-mpx.o
  obj-$(CONFIG_VIDEO_UPD64031A) += upd64031a.o
  obj-$(CONFIG_VIDEO_UPD64083) += upd64083.o
@@ -233,9 +240,11 @@
  obj-$(CONFIG_VIDEO_OV02A10) += ov02a10.o
  obj-$(CONFIG_VIDEO_OV2640) += ov2640.o
  obj-$(CONFIG_VIDEO_OV2680) += ov2680.o
---- linux-5.15.36/drivers/media/i2c/adv7511-v4l2.c	2023-04-14 12:25:59.874899300 +0900
-+++ linux-xlnx-2022.2/drivers/media/i2c/adv7511-v4l2.c	2023-04-14 12:24:06.899592300 +0900
-@@ -52,6 +52,7 @@
+diff --git a/drivers/media/i2c/adv7511-v4l2.c b/drivers/media/i2c/adv7511-v4l2.c
+index 221700426..06df2febf 100644
+--- a/drivers/media/i2c/adv7511-v4l2.c
++++ b/drivers/media/i2c/adv7511-v4l2.c
+@@ -52,6 +52,7 @@ MODULE_LICENSE("GPL v2");
  #define ADV7511_MAX_HEIGHT 1200
  #define ADV7511_MIN_PIXELCLOCK 20000000
  #define ADV7511_MAX_PIXELCLOCK 225000000
@@ -243,7 +252,7 @@
  
  #define ADV7511_MAX_ADDRS (3)
  
-@@ -79,7 +80,50 @@
+@@ -79,7 +80,50 @@ struct adv7511_state_edid {
  	bool complete;
  };
  
@@ -294,7 +303,7 @@
  	struct adv7511_platform_data pdata;
  	struct v4l2_subdev sd;
  	struct media_pad pad;
-@@ -368,6 +412,10 @@
+@@ -368,6 +412,10 @@ static void adv7511_set_rgb_quantization_mode(struct v4l2_subdev *sd, struct v4l
  {
  	struct adv7511_state *state = get_adv7511_state(sd);
  
@@ -305,17 +314,33 @@
  	/* Only makes sense for RGB formats */
  	if (state->fmt_code != MEDIA_BUS_FMT_RGB888_1X24) {
  		/* so just keep quantization */
-@@ -1516,34 +1564,278 @@
+@@ -1516,34 +1564,278 @@ static void adv7511_audio_setup(struct v4l2_subdev *sd)
  	adv7511_s_routing(sd, 0, 0, 0);
  }
  
+-/* Configure hdmi transmitter. */
+-static void adv7511_setup(struct v4l2_subdev *sd)
 +static void adv7511_set_ofdt_config(struct v4l2_subdev *sd)
-+{
-+	struct adv7511_state *state = get_adv7511_state(sd);
+ {
+ 	struct adv7511_state *state = get_adv7511_state(sd);
 +	struct adv7511_config *config = &state->cfg;
 +	uint8_t val_mask, val;
-+	v4l2_dbg(1, debug, sd, "%s\n", __func__);
-+
+ 	v4l2_dbg(1, debug, sd, "%s\n", __func__);
+ 
+-	/* Input format: RGB 4:4:4 */
+-	adv7511_wr_and_or(sd, 0x15, 0xf0, 0x0);
+-	/* Output format: RGB 4:4:4 */
+-	adv7511_wr_and_or(sd, 0x16, 0x7f, 0x0);
+-	/* 1st order interpolation 4:2:2 -> 4:4:4 up conversion, Aspect ratio: 16:9 */
+-	adv7511_wr_and_or(sd, 0x17, 0xf9, 0x06);
+-	/* Disable pixel repetition */
+-	adv7511_wr_and_or(sd, 0x3b, 0x9f, 0x0);
+-	/* Disable CSC */
+-	adv7511_wr_and_or(sd, 0x18, 0x7f, 0x0);
+-	/* Output format: RGB 4:4:4, Active Format Information is valid,
+-	 * underscanned */
+-	adv7511_wr_and_or(sd, 0x55, 0x9c, 0x12);
+-	/* AVI Info frame packet enable, Audio Info frame disable */
 +	/* Input format */
 +	val_mask = 0;
 +	switch (config->in_params.input_id) {
@@ -477,8 +502,14 @@
 +	}
 +
 +	/* AVI Info, Audio Info */
-+	adv7511_wr_and_or(sd, 0x44, 0xe7, 0x10);
-+
+ 	adv7511_wr_and_or(sd, 0x44, 0xe7, 0x10);
+-	/* Colorimetry, Active format aspect ratio: same as picure. */
+-	adv7511_wr(sd, 0x56, 0xa8);
+-	/* No encryption */
+-	adv7511_wr_and_or(sd, 0xaf, 0xed, 0x0);
+ 
+-	/* Positive clk edge capture for input video clock */
+-	adv7511_wr_and_or(sd, 0xba, 0x1f, 0x60);
 +	/* Video input justification */
 +	val_mask = 0;
 +	switch (config->in_params.bit_justification) {
@@ -549,31 +580,12 @@
 +	adv7511_wr_and_or(sd, 0xba, 0x1f, val_mask);
 +}
 +
- /* Configure hdmi transmitter. */
- static void adv7511_setup(struct v4l2_subdev *sd)
- {
- 	struct adv7511_state *state = get_adv7511_state(sd);
- 	v4l2_dbg(1, debug, sd, "%s\n", __func__);
- 
--	/* Input format: RGB 4:4:4 */
--	adv7511_wr_and_or(sd, 0x15, 0xf0, 0x0);
--	/* Output format: RGB 4:4:4 */
--	adv7511_wr_and_or(sd, 0x16, 0x7f, 0x0);
--	/* 1st order interpolation 4:2:2 -> 4:4:4 up conversion, Aspect ratio: 16:9 */
--	adv7511_wr_and_or(sd, 0x17, 0xf9, 0x06);
--	/* Disable pixel repetition */
--	adv7511_wr_and_or(sd, 0x3b, 0x9f, 0x0);
--	/* Disable CSC */
--	adv7511_wr_and_or(sd, 0x18, 0x7f, 0x0);
--	/* Output format: RGB 4:4:4, Active Format Information is valid,
--	 * underscanned */
--	adv7511_wr_and_or(sd, 0x55, 0x9c, 0x12);
--	/* AVI Info frame packet enable, Audio Info frame disable */
--	adv7511_wr_and_or(sd, 0x44, 0xe7, 0x10);
--	/* Colorimetry, Active format aspect ratio: same as picure. */
--	adv7511_wr(sd, 0x56, 0xa8);
--	/* No encryption */
--	adv7511_wr_and_or(sd, 0xaf, 0xed, 0x0);
++/* Configure hdmi transmitter. */
++static void adv7511_setup(struct v4l2_subdev *sd)
++{
++	struct adv7511_state *state = get_adv7511_state(sd);
++	v4l2_dbg(1, debug, sd, "%s\n", __func__);
++
 +	if (!state->cfg.loaded) {
 +		/* Input format: RGB 4:4:4 */
 +		adv7511_wr_and_or(sd, 0x15, 0xf0, 0x0);
@@ -594,9 +606,7 @@
 +		adv7511_wr(sd, 0x56, 0xa8);
 +		/* No encryption */
 +		adv7511_wr_and_or(sd, 0xaf, 0xed, 0x0);
- 
--	/* Positive clk edge capture for input video clock */
--	adv7511_wr_and_or(sd, 0xba, 0x1f, 0x60);
++
 +		/* Positive clk edge capture for input video clock */
 +		adv7511_wr_and_or(sd, 0xba, 0x1f, 0x60);
 +	} else {
@@ -605,7 +615,7 @@
  
  	adv7511_audio_setup(sd);
  
-@@ -1786,6 +2078,181 @@
+@@ -1786,6 +2078,181 @@ static void adv7511_init_setup(struct v4l2_subdev *sd)
  	adv7511_cec_write(sd, 0x4e, ratio << 2);
  }
  
@@ -787,7 +797,7 @@
  static int adv7511_probe(struct i2c_client *client, const struct i2c_device_id *id)
  {
  	struct adv7511_state *state;
-@@ -1803,11 +2270,17 @@
+@@ -1803,11 +2270,17 @@ static int adv7511_probe(struct i2c_client *client, const struct i2c_device_id *
  	if (!state)
  		return -ENOMEM;
  
@@ -809,7 +819,7 @@
  	memcpy(&state->pdata, pdata, sizeof(state->pdata));
  	state->fmt_code = MEDIA_BUS_FMT_RGB888_1X24;
  	state->colorspace = V4L2_COLORSPACE_SRGB;
-@@ -1818,6 +2291,7 @@
+@@ -1818,6 +2291,7 @@ static int adv7511_probe(struct i2c_client *client, const struct i2c_device_id *
  			 client->addr << 1);
  
  	v4l2_i2c_subdev_init(sd, client, &adv7511_ops);
@@ -817,7 +827,7 @@
  	sd->internal_ops = &adv7511_int_ops;
  
  	hdl = &state->hdl;
-@@ -1911,7 +2385,9 @@
+@@ -1911,7 +2385,9 @@ static int adv7511_probe(struct i2c_client *client, const struct i2c_device_id *
  
  	INIT_DELAYED_WORK(&state->edid_handler, adv7511_edid_handler);
  
@@ -827,7 +837,7 @@
  
  #if IS_ENABLED(CONFIG_VIDEO_ADV7511_CEC)
  	state->cec_adap = cec_allocate_adapter(&adv7511_cec_adap_ops,
-@@ -1925,8 +2401,9 @@
+@@ -1925,8 +2401,9 @@ static int adv7511_probe(struct i2c_client *client, const struct i2c_device_id *
  #endif
  
  	adv7511_set_isr(sd, true);
@@ -838,8 +848,11 @@
  	v4l2_info(sd, "%s found @ 0x%x (%s)\n", client->name,
  			  client->addr << 1, client->adapter->name);
  	return 0;
+diff --git a/drivers/media/i2c/ap1302.c b/drivers/media/i2c/ap1302.c
+new file mode 100644
+index 000000000..e2e7f66b6
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/media/i2c/ap1302.c	2023-04-14 12:24:06.899592300 +0900
++++ b/drivers/media/i2c/ap1302.c
 @@ -0,0 +1,2920 @@
 +// SPDX-License-Identifier: GPL-2.0-only
 +/*
@@ -3761,9 +3774,11 @@
 +
 +MODULE_DESCRIPTION("ON Semiconductor AP1302 ISP driver");
 +MODULE_LICENSE("GPL");
---- linux-5.15.36/drivers/media/i2c/ov5640.c	2023-04-14 12:25:59.928745200 +0900
-+++ linux-xlnx-2022.2/drivers/media/i2c/ov5640.c	2023-04-14 12:24:06.958374600 +0900
-@@ -1406,6 +1406,7 @@
+diff --git a/drivers/media/i2c/ov5640.c b/drivers/media/i2c/ov5640.c
+index a14155253..703b48566 100644
+--- a/drivers/media/i2c/ov5640.c
++++ b/drivers/media/i2c/ov5640.c
+@@ -1406,6 +1406,7 @@ static int ov5640_get_light_freq(struct ov5640_dev *sensor)
  			light_freq = 50;
  		} else {
  			/* 60Hz */
@@ -3771,7 +3786,7 @@
  		}
  	}
  
-@@ -2663,6 +2664,13 @@
+@@ -2663,6 +2664,13 @@ static int ov5640_g_volatile_ctrl(struct v4l2_ctrl *ctrl)
  
  	/* v4l2_ctrl_lock() locks our own mutex */
  
