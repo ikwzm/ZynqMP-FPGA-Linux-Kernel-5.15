@@ -1,6 +1,8 @@
---- linux-5.15.36/Documentation/userspace-api/media/v4l/biblio.rst	2023-04-14 12:25:44.587153000 +0900
-+++ linux-xlnx-2022.2/Documentation/userspace-api/media/v4l/biblio.rst	2023-04-14 12:23:51.436151500 +0900
-@@ -417,3 +417,13 @@
+diff --git a/Documentation/userspace-api/media/v4l/biblio.rst b/Documentation/userspace-api/media/v4l/biblio.rst
+index 7b8e6738f..aa42992df 100644
+--- a/Documentation/userspace-api/media/v4l/biblio.rst
++++ b/Documentation/userspace-api/media/v4l/biblio.rst
+@@ -417,3 +417,13 @@ VP8
  :title:     RFC 6386: "VP8 Data Format and Decoding Guide"
  
  :author:    J. Bankoski et al.
@@ -14,9 +16,11 @@
 +:title:     ITU-R Recommendation BT.2100-2 (07/2018) "Image parameter values for high dynamic range television for use in production and international programme exchange"
 +
 +:author:    International Telecommunication Union (http://www.itu.int)
---- linux-5.15.36/Documentation/userspace-api/media/v4l/colorspaces-defs.rst	2023-04-14 12:25:44.587153000 +0900
-+++ linux-xlnx-2022.2/Documentation/userspace-api/media/v4l/colorspaces-defs.rst	2023-04-14 12:23:51.451772600 +0900
-@@ -99,6 +99,8 @@
+diff --git a/Documentation/userspace-api/media/v4l/colorspaces-defs.rst b/Documentation/userspace-api/media/v4l/colorspaces-defs.rst
+index fe9f8aa8a..54915db2c 100644
+--- a/Documentation/userspace-api/media/v4l/colorspaces-defs.rst
++++ b/Documentation/userspace-api/media/v4l/colorspaces-defs.rst
+@@ -99,6 +99,8 @@ whole range, 0-255, dividing the angular value by 1.41. The enum
        - Use the DCI-P3 transfer function.
      * - ``V4L2_XFER_FUNC_SMPTE2084``
        - Use the SMPTE 2084 transfer function. See :ref:`xf-smpte-2084`.
@@ -25,9 +29,11 @@
  
  
  
---- linux-5.15.36/Documentation/userspace-api/media/v4l/colorspaces-details.rst	2023-04-14 12:25:44.587153000 +0900
-+++ linux-xlnx-2022.2/Documentation/userspace-api/media/v4l/colorspaces-details.rst	2023-04-14 12:23:51.451772600 +0900
-@@ -773,3 +773,34 @@
+diff --git a/Documentation/userspace-api/media/v4l/colorspaces-details.rst b/Documentation/userspace-api/media/v4l/colorspaces-details.rst
+index 26a4ace42..df948ebc8 100644
+--- a/Documentation/userspace-api/media/v4l/colorspaces-details.rst
++++ b/Documentation/userspace-api/media/v4l/colorspaces-details.rst
+@@ -773,3 +773,34 @@ luminance values over 100 cd/m\ :sup:`2` to 100 cd/m\ :sup:`2`.
  
  There are better methods, see e.g. :ref:`colimg` for more in-depth information
  about this.
@@ -62,9 +68,11 @@
 +
 +     x' =\begin{cases}x^{2} / 3  & 0 \leq x \leq \frac{1}{12}
 +     \\(exp((x - c) / a) + b) / 12 & \frac{1}{12} \le x \leq 1\end{cases}
---- linux-5.15.36/Documentation/userspace-api/media/v4l/subdev-formats.rst	2023-04-14 12:25:44.649637800 +0900
-+++ linux-xlnx-2022.2/Documentation/userspace-api/media/v4l/subdev-formats.rst	2023-04-14 12:23:51.514257700 +0900
-@@ -1603,6 +1603,43 @@
+diff --git a/Documentation/userspace-api/media/v4l/subdev-formats.rst b/Documentation/userspace-api/media/v4l/subdev-formats.rst
+index bd68588b2..ee8d11ac5 100644
+--- a/Documentation/userspace-api/media/v4l/subdev-formats.rst
++++ b/Documentation/userspace-api/media/v4l/subdev-formats.rst
+@@ -1603,6 +1603,43 @@ The following tables list existing packed RGB formats.
        - b\ :sub:`2`
        - b\ :sub:`1`
        - b\ :sub:`0`
@@ -108,7 +116,7 @@
  
  .. raw:: latex
  
-@@ -1710,6 +1747,47 @@
+@@ -1710,6 +1747,47 @@ The following table list existing packed 36bit wide RGB formats.
        - b\ :sub:`2`
        - b\ :sub:`1`
        - b\ :sub:`0`
@@ -156,7 +164,7 @@
  
  .. raw:: latex
  
-@@ -1879,6 +1957,78 @@
+@@ -1879,6 +1957,78 @@ The following table list existing packed 48bit wide RGB formats.
        - b\ :sub:`2`
        - b\ :sub:`1`
        - b\ :sub:`0`
@@ -235,27 +243,34 @@
  
  .. raw:: latex
  
-@@ -5259,6 +5409,148 @@
+@@ -5259,10 +5409,10 @@ the following codes.
        - u\ :sub:`2`
        - u\ :sub:`1`
        - u\ :sub:`0`
+-    * .. _MEDIA-BUS-FMT-Y12-1X12:
 +    * .. _MEDIA-BUS-FMT-VYYUYY10_4X20:
-+
+ 
+-      - MEDIA_BUS_FMT_Y12_1X12
+-      - 0x2013
 +      - MEDIA_BUS_FMT_VYYUYY10_4X20
 +      - 0x2101
-+      -
-+      -
-+      -
-+      -
-+      -
-+      -
-+      -
-+      -
-+      -
-+      -
-+      -
-+      -
-+      -
+       -
+       -
+       -
+@@ -5276,16 +5426,16 @@ the following codes.
+       -
+       -
+       -
+-      -
+-      -
+-      -
+-      -
+-      -
+-      -
+-      -
+-      -
+-      - y\ :sub:`11`
+-      - y\ :sub:`10`
 +      - u\ :sub:`9`
 +      - u\ :sub:`8`
 +      - u\ :sub:`7`
@@ -266,31 +281,30 @@
 +      - u\ :sub:`2`
 +      - u\ :sub:`1`
 +      - u\ :sub:`0`
-+      - y\ :sub:`9`
-+      - y\ :sub:`8`
-+      - y\ :sub:`7`
-+      - y\ :sub:`6`
-+      - y\ :sub:`5`
-+      - y\ :sub:`4`
-+      - y\ :sub:`3`
-+      - y\ :sub:`2`
-+      - y\ :sub:`1`
-+      - y\ :sub:`0`
+       - y\ :sub:`9`
+       - y\ :sub:`8`
+       - y\ :sub:`7`
+@@ -5296,15 +5446,7 @@ the following codes.
+       - y\ :sub:`2`
+       - y\ :sub:`1`
+       - y\ :sub:`0`
+-    * .. _MEDIA-BUS-FMT-UYVY12-2X12:
+-
+-      - MEDIA_BUS_FMT_UYVY12_2X12
+-      - 0x201c
+-      -
+-      -
+-      -
+-      -
+-      -
 +    * -
-+      -
-+      -
-+      -
-+      -
-+      -
-+      -
-+      -
-+      -
-+      -
-+      -
-+      -
-+      -
-+      -
-+      -
+       -
+       -
+       -
+@@ -5319,21 +5461,29 @@ the following codes.
+       -
+       -
+       -
 +      - v\ :sub:`9`
 +      - v\ :sub:`8`
 +      - v\ :sub:`7`
@@ -312,30 +326,52 @@
 +      - y\ :sub:`1`
 +      - y\ :sub:`0`
 +    * -
-+      -
-+      -
-+      -
-+      -
-+      -
-+      -
-+      -
-+      -
-+      -
-+      -
-+      -
-+      -
-+      -
-+      -
-+      -
-+      -
-+      -
-+      -
-+      -
-+      -
-+      -
-+      -
-+      -
-+      -
+       -
+       -
+-      - u\ :sub:`11`
+-      - u\ :sub:`10`
+-      - u\ :sub:`9`
+-      - u\ :sub:`8`
+-      - u\ :sub:`7`
+-      - u\ :sub:`6`
+-      - u\ :sub:`5`
+-      - u\ :sub:`4`
+-      - u\ :sub:`3`
+-      - u\ :sub:`2`
+-      - u\ :sub:`1`
+-      - u\ :sub:`0`
+-    * -
+       -
+       -
+       -
+@@ -5356,8 +5506,6 @@ the following codes.
+       -
+       -
+       -
+-      - y\ :sub:`11`
+-      - y\ :sub:`10`
+       - y\ :sub:`9`
+       - y\ :sub:`8`
+       - y\ :sub:`7`
+@@ -5391,21 +5539,23 @@ the following codes.
+       -
+       -
+       -
+-      - v\ :sub:`11`
+-      - v\ :sub:`10`
+-      - v\ :sub:`9`
+-      - v\ :sub:`8`
+-      - v\ :sub:`7`
+-      - v\ :sub:`6`
+-      - v\ :sub:`5`
+-      - v\ :sub:`4`
+-      - v\ :sub:`3`
+-      - v\ :sub:`2`
+-      - v\ :sub:`1`
+-      - v\ :sub:`0`
+-    * -
+       -
+       -
 +      - y\ :sub:`9`
 +      - y\ :sub:`8`
 +      - y\ :sub:`7`
@@ -346,6 +382,56 @@
 +      - y\ :sub:`2`
 +      - y\ :sub:`1`
 +      - y\ :sub:`0`
++    * .. _MEDIA-BUS-FMT-Y12-1X12:
++
++      - MEDIA_BUS_FMT_Y12_1X12
++      - 0x2013
++      -
+       -
+       -
+       -
+@@ -5438,10 +5588,10 @@ the following codes.
+       - y\ :sub:`2`
+       - y\ :sub:`1`
+       - y\ :sub:`0`
+-    * .. _MEDIA-BUS-FMT-VYUY12-2X12:
++    * .. _MEDIA-BUS-FMT-UYVY12-2X12:
+ 
+-      - MEDIA_BUS_FMT_VYUY12_2X12
+-      - 0x201d
++      - MEDIA_BUS_FMT_UYVY12_2X12
++      - 0x201c
+       -
+       -
+       -
+@@ -5463,18 +5613,160 @@ the following codes.
+       -
+       -
+       -
+-      - v\ :sub:`11`
+-      - v\ :sub:`10`
+-      - v\ :sub:`9`
+-      - v\ :sub:`8`
+-      - v\ :sub:`7`
+-      - v\ :sub:`6`
+-      - v\ :sub:`5`
+-      - v\ :sub:`4`
+-      - v\ :sub:`3`
+-      - v\ :sub:`2`
+-      - v\ :sub:`1`
+-      - v\ :sub:`0`
++      - u\ :sub:`11`
++      - u\ :sub:`10`
++      - u\ :sub:`9`
++      - u\ :sub:`8`
++      - u\ :sub:`7`
++      - u\ :sub:`6`
++      - u\ :sub:`5`
++      - u\ :sub:`4`
++      - u\ :sub:`3`
++      - u\ :sub:`2`
++      - u\ :sub:`1`
++      - u\ :sub:`0`
 +    * -
 +      -
 +      -
@@ -369,50 +455,6 @@
 +      -
 +      -
 +      -
-+      -
-+      -
-+      - y\ :sub:`9`
-+      - y\ :sub:`8`
-+      - y\ :sub:`7`
-+      - y\ :sub:`6`
-+      - y\ :sub:`5`
-+      - y\ :sub:`4`
-+      - y\ :sub:`3`
-+      - y\ :sub:`2`
-+      - y\ :sub:`1`
-+      - y\ :sub:`0`
-     * .. _MEDIA-BUS-FMT-Y12-1X12:
- 
-       - MEDIA_BUS_FMT_Y12_1X12
-@@ -7053,6 +7345,185 @@
-       - u\ :sub:`2`
-       - u\ :sub:`1`
-       - u\ :sub:`0`
-+    * .. _MEDIA-BUS-FMT-UYYVYY12-4X24:
-+
-+      - MEDIA_BUS_FMT_UYYVYY12_4X24
-+      - 0x2103
-+      -
-+      -
-+      -
-+      -
-+      -
-+      -
-+      -
-+      -
-+      -
-+      - u\ :sub:`11`
-+      - u\ :sub:`10`
-+      - u\ :sub:`9`
-+      - u\ :sub:`8`
-+      - u\ :sub:`7`
-+      - u\ :sub:`6`
-+      - u\ :sub:`5`
-+      - u\ :sub:`4`
-+      - u\ :sub:`3`
-+      - u\ :sub:`2`
-+      - u\ :sub:`1`
-+      - u\ :sub:`0`
 +      - y\ :sub:`11`
 +      - y\ :sub:`10`
 +      - y\ :sub:`9`
@@ -426,6 +468,18 @@
 +      - y\ :sub:`1`
 +      - y\ :sub:`0`
 +    * -
++      -
++      -
++      -
++      -
++      -
++      -
++      -
++      -
++      -
++      -
++      -
++      -
 +      -
 +      -
 +      -
@@ -448,18 +502,6 @@
 +      - v\ :sub:`2`
 +      - v\ :sub:`1`
 +      - v\ :sub:`0`
-+      - y\ :sub:`11`
-+      - y\ :sub:`10`
-+      - y\ :sub:`9`
-+      - y\ :sub:`8`
-+      - y\ :sub:`7`
-+      - y\ :sub:`6`
-+      - y\ :sub:`5`
-+      - y\ :sub:`4`
-+      - y\ :sub:`3`
-+      - y\ :sub:`2`
-+      - y\ :sub:`1`
-+      - y\ :sub:`0`
 +    * -
 +      -
 +      -
@@ -495,8 +537,198 @@
 +      - y\ :sub:`2`
 +      - y\ :sub:`1`
 +      - y\ :sub:`0`
++    * .. _MEDIA-BUS-FMT-VYUY12-2X12:
++
++      - MEDIA_BUS_FMT_VYUY12_2X12
++      - 0x201d
++      -
++      -
++      -
++      -
++      -
++      -
++      -
++      -
++      -
++      -
++      -
++      -
++      -
++      -
++      -
++      -
++      -
++      -
++      -
++      -
++      -
++      - v\ :sub:`11`
++      - v\ :sub:`10`
++      - v\ :sub:`9`
++      - v\ :sub:`8`
++      - v\ :sub:`7`
++      - v\ :sub:`6`
++      - v\ :sub:`5`
++      - v\ :sub:`4`
++      - v\ :sub:`3`
++      - v\ :sub:`2`
++      - v\ :sub:`1`
++      - v\ :sub:`0`
+     * -
+       -
+       -
+@@ -7053,50 +7345,21 @@ the following codes.
+       - u\ :sub:`2`
+       - u\ :sub:`1`
+       - u\ :sub:`0`
+-    * .. _MEDIA-BUS-FMT-YUV10-1X30:
++    * .. _MEDIA-BUS-FMT-UYYVYY12-4X24:
+ 
+-      - MEDIA_BUS_FMT_YUV10_1X30
+-      - 0x2016
++      - MEDIA_BUS_FMT_UYYVYY12_4X24
++      - 0x2103
++      -
+       -
+       -
+       -
+-      - y\ :sub:`9`
+-      - y\ :sub:`8`
+-      - y\ :sub:`7`
+-      - y\ :sub:`6`
+-      - y\ :sub:`5`
+-      - y\ :sub:`4`
+-      - y\ :sub:`3`
+-      - y\ :sub:`2`
+-      - y\ :sub:`1`
+-      - y\ :sub:`0`
+-      - u\ :sub:`9`
+-      - u\ :sub:`8`
+-      - u\ :sub:`7`
+-      - u\ :sub:`6`
+-      - u\ :sub:`5`
+-      - u\ :sub:`4`
+-      - u\ :sub:`3`
+-      - u\ :sub:`2`
+-      - u\ :sub:`1`
+-      - u\ :sub:`0`
+-      - v\ :sub:`9`
+-      - v\ :sub:`8`
+-      - v\ :sub:`7`
+-      - v\ :sub:`6`
+-      - v\ :sub:`5`
+-      - v\ :sub:`4`
+-      - v\ :sub:`3`
+-      - v\ :sub:`2`
+-      - v\ :sub:`1`
+-      - v\ :sub:`0`
+-    * .. _MEDIA-BUS-FMT-UYYVYY10-0-5X30:
+-
+-      - MEDIA_BUS_FMT_UYYVYY10_0_5X30
+-      - 0x2027
+       -
+       -
+       -
++      -
++      -
++      - u\ :sub:`11`
++      - u\ :sub:`10`
+       - u\ :sub:`9`
+       - u\ :sub:`8`
+       - u\ :sub:`7`
+@@ -7107,16 +7370,8 @@ the following codes.
+       - u\ :sub:`2`
+       - u\ :sub:`1`
+       - u\ :sub:`0`
+-      - y\ :sub:`9`
+-      - y\ :sub:`8`
+-      - y\ :sub:`7`
+-      - y\ :sub:`6`
+-      - y\ :sub:`5`
+-      - y\ :sub:`4`
+-      - y\ :sub:`3`
+-      - y\ :sub:`2`
+-      - y\ :sub:`1`
+-      - y\ :sub:`0`
++      - y\ :sub:`11`
++      - y\ :sub:`10`
+       - y\ :sub:`9`
+       - y\ :sub:`8`
+       - y\ :sub:`7`
+@@ -7132,6 +7387,14 @@ the following codes.
+       -
+       -
+       -
++      -
++      -
++      -
++      -
++      -
++      -
++      - v\ :sub:`11`
++      - v\ :sub:`10`
+       - v\ :sub:`9`
+       - v\ :sub:`8`
+       - v\ :sub:`7`
+@@ -7142,6 +7405,8 @@ the following codes.
+       - v\ :sub:`2`
+       - v\ :sub:`1`
+       - v\ :sub:`0`
++      - y\ :sub:`11`
++      - y\ :sub:`10`
+       - y\ :sub:`9`
+       - y\ :sub:`8`
+       - y\ :sub:`7`
+@@ -7152,6 +7417,31 @@ the following codes.
+       - y\ :sub:`2`
+       - y\ :sub:`1`
+       - y\ :sub:`0`
 +    * -
 +      -
++      -
++      -
++      -
++      -
++      -
++      -
++      -
++      -
++      -
++      -
++      -
++      -
++      -
++      -
++      -
++      -
++      -
++      -
++      -
++      -
++      -
++      - y\ :sub:`11`
++      - y\ :sub:`10`
+       - y\ :sub:`9`
+       - y\ :sub:`8`
+       - y\ :sub:`7`
+@@ -7162,19 +7452,432 @@ the following codes.
+       - y\ :sub:`2`
+       - y\ :sub:`1`
+       - y\ :sub:`0`
+-    * .. _MEDIA-BUS-FMT-AYUV8-1X32:
+-
+-      - MEDIA_BUS_FMT_AYUV8_1X32
+-      - 0x2017
++    * -
+       -
+-      - a\ :sub:`7`
+-      - a\ :sub:`6`
+-      - a\ :sub:`5`
+-      - a\ :sub:`4`
+-      - a\ :sub:`3`
+-      - a\ :sub:`2`
+-      - a\ :sub:`1`
+-      - a\ :sub:`0`
 +      -
 +      -
 +      -
@@ -567,13 +799,43 @@
 +      - y\ :sub:`2`
 +      - y\ :sub:`1`
 +      - y\ :sub:`0`
-     * .. _MEDIA-BUS-FMT-YUV10-1X30:
- 
-       - MEDIA_BUS_FMT_YUV10_1X30
-@@ -7090,6 +7561,43 @@
-       - v\ :sub:`2`
-       - v\ :sub:`1`
-       - v\ :sub:`0`
++    * .. _MEDIA-BUS-FMT-YUV10-1X30:
++
++      - MEDIA_BUS_FMT_YUV10_1X30
++      - 0x2016
++      -
++      -
++      -
++      - y\ :sub:`9`
++      - y\ :sub:`8`
++      - y\ :sub:`7`
++      - y\ :sub:`6`
++      - y\ :sub:`5`
++      - y\ :sub:`4`
++      - y\ :sub:`3`
++      - y\ :sub:`2`
++      - y\ :sub:`1`
++      - y\ :sub:`0`
++      - u\ :sub:`9`
++      - u\ :sub:`8`
++      - u\ :sub:`7`
++      - u\ :sub:`6`
++      - u\ :sub:`5`
++      - u\ :sub:`4`
++      - u\ :sub:`3`
++      - u\ :sub:`2`
++      - u\ :sub:`1`
++      - u\ :sub:`0`
++      - v\ :sub:`9`
++      - v\ :sub:`8`
++      - v\ :sub:`7`
++      - v\ :sub:`6`
++      - v\ :sub:`5`
++      - v\ :sub:`4`
++      - v\ :sub:`3`
++      - v\ :sub:`2`
++      - v\ :sub:`1`
++      - v\ :sub:`0`
 +    * .. _MEDIA-BUS-FMT-VUY10-1X30:
 +
 +      - MEDIA_BUS_FMT_VUY10_1X30
@@ -611,13 +873,78 @@
 +      - y\ :sub:`2`
 +      - y\ :sub:`1`
 +      - y\ :sub:`0`
-     * .. _MEDIA-BUS-FMT-UYYVYY10-0-5X30:
- 
-       - MEDIA_BUS_FMT_UYYVYY10_0_5X30
-@@ -7162,6 +7670,43 @@
-       - y\ :sub:`2`
-       - y\ :sub:`1`
-       - y\ :sub:`0`
++    * .. _MEDIA-BUS-FMT-UYYVYY10-0-5X30:
++
++      - MEDIA_BUS_FMT_UYYVYY10_0_5X30
++      - 0x2027
++      -
++      -
++      -
++      - u\ :sub:`9`
++      - u\ :sub:`8`
++      - u\ :sub:`7`
++      - u\ :sub:`6`
++      - u\ :sub:`5`
++      - u\ :sub:`4`
++      - u\ :sub:`3`
++      - u\ :sub:`2`
++      - u\ :sub:`1`
++      - u\ :sub:`0`
++      - y\ :sub:`9`
++      - y\ :sub:`8`
++      - y\ :sub:`7`
++      - y\ :sub:`6`
++      - y\ :sub:`5`
++      - y\ :sub:`4`
++      - y\ :sub:`3`
++      - y\ :sub:`2`
++      - y\ :sub:`1`
++      - y\ :sub:`0`
++      - y\ :sub:`9`
++      - y\ :sub:`8`
++      - y\ :sub:`7`
++      - y\ :sub:`6`
++      - y\ :sub:`5`
++      - y\ :sub:`4`
++      - y\ :sub:`3`
++      - y\ :sub:`2`
++      - y\ :sub:`1`
++      - y\ :sub:`0`
++    * -
++      -
++      -
++      -
++      -
++      - v\ :sub:`9`
++      - v\ :sub:`8`
++      - v\ :sub:`7`
++      - v\ :sub:`6`
++      - v\ :sub:`5`
++      - v\ :sub:`4`
++      - v\ :sub:`3`
++      - v\ :sub:`2`
++      - v\ :sub:`1`
++      - v\ :sub:`0`
++      - y\ :sub:`9`
++      - y\ :sub:`8`
++      - y\ :sub:`7`
++      - y\ :sub:`6`
++      - y\ :sub:`5`
++      - y\ :sub:`4`
++      - y\ :sub:`3`
++      - y\ :sub:`2`
++      - y\ :sub:`1`
++      - y\ :sub:`0`
++      - y\ :sub:`9`
++      - y\ :sub:`8`
++      - y\ :sub:`7`
++      - y\ :sub:`6`
++      - y\ :sub:`5`
++      - y\ :sub:`4`
++      - y\ :sub:`3`
++      - y\ :sub:`2`
++      - y\ :sub:`1`
++      - y\ :sub:`0`
 +    * .. _MEDIA-BUS-FMT-Y16-1X16:
 +
 +      - MEDIA_BUS_FMT_Y16_1X16
@@ -655,13 +982,43 @@
 +      - y\ :sub:`2`
 +      - y\ :sub:`1`
 +      - y\ :sub:`0`
-     * .. _MEDIA-BUS-FMT-AYUV8-1X32:
- 
-       - MEDIA_BUS_FMT_AYUV8_1X32
-@@ -7199,6 +7744,220 @@
-       - v\ :sub:`2`
-       - v\ :sub:`1`
-       - v\ :sub:`0`
++    * .. _MEDIA-BUS-FMT-AYUV8-1X32:
++
++      - MEDIA_BUS_FMT_AYUV8_1X32
++      - 0x2017
++      -
++      - a\ :sub:`7`
++      - a\ :sub:`6`
++      - a\ :sub:`5`
++      - a\ :sub:`4`
++      - a\ :sub:`3`
++      - a\ :sub:`2`
++      - a\ :sub:`1`
++      - a\ :sub:`0`
++      - y\ :sub:`7`
++      - y\ :sub:`6`
++      - y\ :sub:`5`
++      - y\ :sub:`4`
++      - y\ :sub:`3`
++      - y\ :sub:`2`
++      - y\ :sub:`1`
++      - y\ :sub:`0`
++      - u\ :sub:`7`
++      - u\ :sub:`6`
++      - u\ :sub:`5`
++      - u\ :sub:`4`
++      - u\ :sub:`3`
++      - u\ :sub:`2`
++      - u\ :sub:`1`
++      - u\ :sub:`0`
++      - v\ :sub:`7`
++      - v\ :sub:`6`
++      - v\ :sub:`5`
++      - v\ :sub:`4`
++      - v\ :sub:`3`
++      - v\ :sub:`2`
++      - v\ :sub:`1`
++      - v\ :sub:`0`
 +    * .. _MEDIA-BUS-FMT-UYYVYY16-4X32:
 +
 +      - MEDIA_BUS_FMT_UYYVYY16_4X32
@@ -796,14 +1153,13 @@
 +      - y\ :sub:`10`
 +      - y\ :sub:`9`
 +      - y\ :sub:`8`
-+      - y\ :sub:`7`
-+      - y\ :sub:`6`
-+      - y\ :sub:`5`
-+      - y\ :sub:`4`
-+      - y\ :sub:`3`
-+      - y\ :sub:`2`
-+      - y\ :sub:`1`
-+      - y\ :sub:`0`
+       - y\ :sub:`7`
+       - y\ :sub:`6`
+       - y\ :sub:`5`
+@@ -7183,6 +7886,19 @@ the following codes.
+       - y\ :sub:`2`
+       - y\ :sub:`1`
+       - y\ :sub:`0`
 +    * .. _MEDIA-BUS-FMT-UYVY16-2X32:
 +
 +      - MEDIA_BUS_FMT_UYVY16_2X32
@@ -817,14 +1173,13 @@
 +      - u\ :sub:`10`
 +      - u\ :sub:`9`
 +      - u\ :sub:`8`
-+      - u\ :sub:`7`
-+      - u\ :sub:`6`
-+      - u\ :sub:`5`
-+      - u\ :sub:`4`
-+      - u\ :sub:`3`
-+      - u\ :sub:`2`
-+      - u\ :sub:`1`
-+      - u\ :sub:`0`
+       - u\ :sub:`7`
+       - u\ :sub:`6`
+       - u\ :sub:`5`
+@@ -7191,6 +7907,33 @@ the following codes.
+       - u\ :sub:`2`
+       - u\ :sub:`1`
+       - u\ :sub:`0`
 +      - y\ :sub:`15`
 +      - y\ :sub:`14`
 +      - y\ :sub:`13`
@@ -852,14 +1207,13 @@
 +      - v\ :sub:`10`
 +      - v\ :sub:`9`
 +      - v\ :sub:`8`
-+      - v\ :sub:`7`
-+      - v\ :sub:`6`
-+      - v\ :sub:`5`
-+      - v\ :sub:`4`
-+      - v\ :sub:`3`
-+      - v\ :sub:`2`
-+      - v\ :sub:`1`
-+      - v\ :sub:`0`
+       - v\ :sub:`7`
+       - v\ :sub:`6`
+       - v\ :sub:`5`
+@@ -7199,6 +7942,22 @@ the following codes.
+       - v\ :sub:`2`
+       - v\ :sub:`1`
+       - v\ :sub:`0`
 +      - y\ :sub:`15`
 +      - y\ :sub:`14`
 +      - y\ :sub:`13`
@@ -879,7 +1233,7 @@
  
  
  .. raw:: latex
-@@ -7387,6 +8146,47 @@
+@@ -7387,6 +8146,47 @@ The following table list existing packed 36bit wide YUV formats.
        - v\ :sub:`2`
        - v\ :sub:`1`
        - v\ :sub:`0`
@@ -927,7 +1281,7 @@
  
  
  .. raw:: latex
-@@ -7557,6 +8357,78 @@
+@@ -7557,6 +8357,78 @@ The following table list existing packed 48bit wide YUV formats.
        - v\ :sub:`2`
        - v\ :sub:`1`
        - v\ :sub:`0`
@@ -1006,9 +1360,11 @@
      * .. _MEDIA-BUS-FMT-UYYVYY16-0-5X48:
  
        - MEDIA_BUS_FMT_UYYVYY16_0_5X48
---- linux-5.15.36/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst	2023-04-14 12:25:44.680882300 +0900
-+++ linux-xlnx-2022.2/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst	2023-04-14 12:23:51.529879000 +0900
-@@ -471,6 +471,12 @@
+diff --git a/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst b/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst
+index f9ecf6276..7593b82d7 100644
+--- a/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst
++++ b/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst
+@@ -471,6 +471,12 @@ See also the examples in :ref:`control`.
        - n/a
        - A struct :c:type:`v4l2_ctrl_h264_decode_params`, containing H264
  	decode parameters for stateless video decoders.
@@ -1021,9 +1377,11 @@
      * - ``V4L2_CTRL_TYPE_FWHT_PARAMS``
        - n/a
        - n/a
---- linux-5.15.36/Documentation/userspace-api/media/videodev2.h.rst.exceptions	2023-04-14 12:25:44.684895700 +0900
-+++ linux-xlnx-2022.2/Documentation/userspace-api/media/videodev2.h.rst.exceptions	2023-04-14 12:23:51.545500400 +0900
-@@ -81,6 +81,7 @@
+diff --git a/Documentation/userspace-api/media/videodev2.h.rst.exceptions b/Documentation/userspace-api/media/videodev2.h.rst.exceptions
+index 2217b56c2..00cd5c3e7 100644
+--- a/Documentation/userspace-api/media/videodev2.h.rst.exceptions
++++ b/Documentation/userspace-api/media/videodev2.h.rst.exceptions
+@@ -81,6 +81,7 @@ replace symbol V4L2_XFER_FUNC_NONE :c:type:`v4l2_xfer_func`
  replace symbol V4L2_XFER_FUNC_SMPTE2084 :c:type:`v4l2_xfer_func`
  replace symbol V4L2_XFER_FUNC_SMPTE240M :c:type:`v4l2_xfer_func`
  replace symbol V4L2_XFER_FUNC_SRGB :c:type:`v4l2_xfer_func`
@@ -1031,9 +1389,164 @@
  
  # Documented enum v4l2_ycbcr_encoding
  replace symbol V4L2_YCBCR_ENC_601 :c:type:`v4l2_ycbcr_encoding`
---- linux-5.15.36/include/media/v4l2-subdev.h	2023-04-14 12:26:12.094311200 +0900
-+++ linux-xlnx-2022.2/include/media/v4l2-subdev.h	2023-04-14 12:24:19.368882400 +0900
-@@ -770,6 +770,10 @@
+diff --git a/drivers/media/v4l2-core/v4l2-common.c b/drivers/media/v4l2-core/v4l2-common.c
+index 04af03285..bde993043 100644
+--- a/drivers/media/v4l2-core/v4l2-common.c
++++ b/drivers/media/v4l2-core/v4l2-common.c
+@@ -273,6 +273,7 @@ const struct v4l2_format_info *v4l2_format_info(u32 format)
+ 		{ .format = V4L2_PIX_FMT_YUV420,  .pixel_enc = V4L2_PIXEL_ENC_YUV, .mem_planes = 1, .comp_planes = 3, .bpp = { 1, 1, 1, 0 }, .hdiv = 2, .vdiv = 2 },
+ 		{ .format = V4L2_PIX_FMT_YVU420,  .pixel_enc = V4L2_PIXEL_ENC_YUV, .mem_planes = 1, .comp_planes = 3, .bpp = { 1, 1, 1, 0 }, .hdiv = 2, .vdiv = 2 },
+ 		{ .format = V4L2_PIX_FMT_YUV422P, .pixel_enc = V4L2_PIXEL_ENC_YUV, .mem_planes = 1, .comp_planes = 3, .bpp = { 1, 1, 1, 0 }, .hdiv = 2, .vdiv = 1 },
++		{ .format = V4L2_PIX_FMT_YUV444P, .pixel_enc = V4L2_PIXEL_ENC_YUV, .mem_planes = 1, .comp_planes = 3, .bpp = { 1, 1, 1, 0 }, .hdiv = 1, .vdiv = 1 },
+ 		{ .format = V4L2_PIX_FMT_GREY,    .pixel_enc = V4L2_PIXEL_ENC_YUV, .mem_planes = 1, .comp_planes = 1, .bpp = { 1, 0, 0, 0 }, .hdiv = 1, .vdiv = 1 },
+ 
+ 		/* YUV planar formats, non contiguous variant */
+diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
+index 7c596a85f..19a328556 100644
+--- a/drivers/media/v4l2-core/v4l2-ioctl.c
++++ b/drivers/media/v4l2-core/v4l2-ioctl.c
+@@ -16,6 +16,7 @@
+ #include <linux/kernel.h>
+ #include <linux/version.h>
+ 
++#include <linux/v4l2-subdev.h>
+ #include <linux/videodev2.h>
+ 
+ #include <media/v4l2-common.h>
+@@ -1255,6 +1256,9 @@ static void v4l_fill_fmtdesc(struct v4l2_fmtdesc *fmt)
+ 	case V4L2_PIX_FMT_BGRX32:	descr = "32-bit XBGR 8-8-8-8"; break;
+ 	case V4L2_PIX_FMT_RGBA32:	descr = "32-bit RGBA 8-8-8-8"; break;
+ 	case V4L2_PIX_FMT_RGBX32:	descr = "32-bit RGBX 8-8-8-8"; break;
++	case V4L2_PIX_FMT_XBGR30:	descr = "32-bit XBGR 2-10-10-10"; break;
++	case V4L2_PIX_FMT_XBGR40:	descr = "40-bit XBGR 4-12-12-12"; break;
++	case V4L2_PIX_FMT_BGR48:	descr = "48-bit BGR 16-16-16"; break;
+ 	case V4L2_PIX_FMT_GREY:		descr = "8-bit Greyscale"; break;
+ 	case V4L2_PIX_FMT_Y4:		descr = "4-bit Greyscale"; break;
+ 	case V4L2_PIX_FMT_Y6:		descr = "6-bit Greyscale"; break;
+@@ -1280,9 +1284,14 @@ static void v4l_fill_fmtdesc(struct v4l2_fmtdesc *fmt)
+ 	case V4L2_PIX_FMT_UYVY:		descr = "UYVY 4:2:2"; break;
+ 	case V4L2_PIX_FMT_VYUY:		descr = "VYUY 4:2:2"; break;
+ 	case V4L2_PIX_FMT_YUV422P:	descr = "Planar YUV 4:2:2"; break;
++	case V4L2_PIX_FMT_YUV444P:	descr = "3 Planar YUV 4:4:4 8-bit"; break;
+ 	case V4L2_PIX_FMT_YUV411P:	descr = "Planar YUV 4:1:1"; break;
++	case V4L2_PIX_FMT_X403:		descr = "3 Planar YUV 4:4:4 10-bit"; break;
+ 	case V4L2_PIX_FMT_Y41P:		descr = "YUV 4:1:1 (Packed)"; break;
+ 	case V4L2_PIX_FMT_YUV444:	descr = "16-bit A/XYUV 4-4-4-4"; break;
++	case V4L2_PIX_FMT_XVUY32:	descr = "32-bit packed XVUY 8-8-8-8"; break;
++	case V4L2_PIX_FMT_AVUY32:	descr = "32-bit packed AVUY 8-8-8-8"; break;
++	case V4L2_PIX_FMT_VUY24:	descr = "24-bit packed VUY 8-8-8"; break;
+ 	case V4L2_PIX_FMT_YUV555:	descr = "16-bit A/XYUV 1-5-5-5"; break;
+ 	case V4L2_PIX_FMT_YUV565:	descr = "16-bit YUV 5-6-5"; break;
+ 	case V4L2_PIX_FMT_YUV24:	descr = "24-bit YUV 4:4:4 8-8-8"; break;
+@@ -1296,24 +1305,41 @@ static void v4l_fill_fmtdesc(struct v4l2_fmtdesc *fmt)
+ 	case V4L2_PIX_FMT_HI240:	descr = "8-bit Dithered RGB (BTTV)"; break;
+ 	case V4L2_PIX_FMT_HM12:		descr = "YUV 4:2:0 (16x16 Macroblocks)"; break;
+ 	case V4L2_PIX_FMT_M420:		descr = "YUV 4:2:0 (M420)"; break;
++	case V4L2_PIX_FMT_XVUY10:	descr = "XVUY 2-10-10-10"; break;
+ 	case V4L2_PIX_FMT_NV12:		descr = "Y/CbCr 4:2:0"; break;
+ 	case V4L2_PIX_FMT_NV21:		descr = "Y/CrCb 4:2:0"; break;
+ 	case V4L2_PIX_FMT_NV16:		descr = "Y/CbCr 4:2:2"; break;
+ 	case V4L2_PIX_FMT_NV61:		descr = "Y/CrCb 4:2:2"; break;
+ 	case V4L2_PIX_FMT_NV24:		descr = "Y/CbCr 4:4:4"; break;
+ 	case V4L2_PIX_FMT_NV42:		descr = "Y/CrCb 4:4:4"; break;
++	case V4L2_PIX_FMT_XV15:         descr = "Y/CrCb 4:2:0 10-bit"; break;
++	case V4L2_PIX_FMT_XV20:		descr = "Y/CrCb 4:2:2 10-bit"; break;
+ 	case V4L2_PIX_FMT_NV12M:	descr = "Y/CbCr 4:2:0 (N-C)"; break;
+ 	case V4L2_PIX_FMT_NV21M:	descr = "Y/CrCb 4:2:0 (N-C)"; break;
+ 	case V4L2_PIX_FMT_NV16M:	descr = "Y/CbCr 4:2:2 (N-C)"; break;
+ 	case V4L2_PIX_FMT_NV61M:	descr = "Y/CrCb 4:2:2 (N-C)"; break;
+ 	case V4L2_PIX_FMT_NV12MT:	descr = "Y/CbCr 4:2:0 (64x32 MB, N-C)"; break;
+ 	case V4L2_PIX_FMT_NV12MT_16X16:	descr = "Y/CbCr 4:2:0 (16x16 MB, N-C)"; break;
++	case V4L2_PIX_FMT_XV20M:        descr = "Y/CrCb 4:2:2 10-bit (N-C)"; break;
++	case V4L2_PIX_FMT_XV15M:        descr = "Y/CrCb 4:2:0 10-bit (N-C)"; break;
+ 	case V4L2_PIX_FMT_YUV420M:	descr = "Planar YUV 4:2:0 (N-C)"; break;
+ 	case V4L2_PIX_FMT_YVU420M:	descr = "Planar YVU 4:2:0 (N-C)"; break;
+ 	case V4L2_PIX_FMT_YUV422M:	descr = "Planar YUV 4:2:2 (N-C)"; break;
+ 	case V4L2_PIX_FMT_YVU422M:	descr = "Planar YVU 4:2:2 (N-C)"; break;
+ 	case V4L2_PIX_FMT_YUV444M:	descr = "Planar YUV 4:4:4 (N-C)"; break;
+ 	case V4L2_PIX_FMT_YVU444M:	descr = "Planar YVU 4:4:4 (N-C)"; break;
++	case V4L2_PIX_FMT_X012:		descr = "Y/CbCr 4:2:0, 4-12-12-12"; break;
++	case V4L2_PIX_FMT_X012M:	descr = "Y/CbCr 4:2:0, 4-12-12-12 (N-C)"; break;
++	case V4L2_PIX_FMT_X212:		descr = "Y/CbCr 4:2:2, 4-12-12-12"; break;
++	case V4L2_PIX_FMT_X212M:	descr = "Y/CbCr 4:2:2, 4-12-12-12 (N-C)"; break;
++	case V4L2_PIX_FMT_X412:		descr = "Y/CbCr 4:4:4, 4-12-12-12"; break;
++	case V4L2_PIX_FMT_X412M:	descr = "Y/CbCr 4:4:4, 4-12-12-12 (N-C)"; break;
++	case V4L2_PIX_FMT_X016:		descr = "Y/CbCr 4:2:0, 16-16-16"; break;
++	case V4L2_PIX_FMT_X016M:	descr = "Y/CbCr 4:2:0, 16-16-16 (N-C)"; break;
++	case V4L2_PIX_FMT_X216:		descr = "Y/CbCr 4:2:2, 16-16-16"; break;
++	case V4L2_PIX_FMT_X216M:	descr = "Y/CbCr 4:2:2, 16-16-16 (N-C)"; break;
++	case V4L2_PIX_FMT_X416:		descr = "Y/CbCr 4:4:4, 16-16-16"; break;
++	case V4L2_PIX_FMT_X416M:	descr = "Y/CbCr 4:4:4, 16-16-16 (N-C)"; break;
+ 	case V4L2_PIX_FMT_SBGGR8:	descr = "8-bit Bayer BGBG/GRGR"; break;
+ 	case V4L2_PIX_FMT_SGBRG8:	descr = "8-bit Bayer GBGB/RGRG"; break;
+ 	case V4L2_PIX_FMT_SGRBG8:	descr = "8-bit Bayer GRGR/BGBG"; break;
+@@ -3069,6 +3095,23 @@ static int check_array_args(unsigned int cmd, void *parg, size_t *array_size,
+ 		}
+ 		break;
+ 	}
++
++	case VIDIOC_SUBDEV_G_ROUTING:
++	case VIDIOC_SUBDEV_S_ROUTING: {
++		struct v4l2_subdev_routing *route = parg;
++
++		if (route->num_routes > 0) {
++			if (route->num_routes > 256)
++				return -EINVAL;
++
++			*user_ptr = (void __user *)route->routes;
++			*kernel_ptr = (void *)&route->routes;
++			*array_size = sizeof(struct v4l2_plane)
++				    * route->num_routes;
++			ret = 1;
++		}
++		break;
++	}
+ 	case VIDIOC_G_FMT:
+ 	case VIDIOC_S_FMT:
+ 	case VIDIOC_TRY_FMT: {
+diff --git a/drivers/media/v4l2-core/v4l2-subdev.c b/drivers/media/v4l2-core/v4l2-subdev.c
+index 5d27a27cc..7aa927b26 100644
+--- a/drivers/media/v4l2-core/v4l2-subdev.c
++++ b/drivers/media/v4l2-core/v4l2-subdev.c
+@@ -634,6 +634,33 @@ static long subdev_do_ioctl(struct file *file, unsigned int cmd, void *arg)
+ 
+ 		return v4l2_subdev_call(sd, video, s_dv_timings, arg);
+ 
++	case VIDIOC_SUBDEV_G_ROUTING:
++		return v4l2_subdev_call(sd, pad, get_routing, arg);
++
++	case VIDIOC_SUBDEV_S_ROUTING: {
++		struct v4l2_subdev_routing *route = arg;
++		unsigned int i;
++
++		if (route->num_routes > sd->entity.num_pads)
++			return -EINVAL;
++
++		for (i = 0; i < route->num_routes; ++i) {
++			unsigned int sink = route->routes[i].sink;
++			unsigned int source = route->routes[i].source;
++			struct media_pad *pads = sd->entity.pads;
++
++			if (sink >= sd->entity.num_pads ||
++			    source >= sd->entity.num_pads)
++				return -EINVAL;
++
++			if (!(pads[sink].flags & MEDIA_PAD_FL_SINK) ||
++			    !(pads[source].flags & MEDIA_PAD_FL_SOURCE))
++				return -EINVAL;
++		}
++
++		return v4l2_subdev_call(sd, pad, set_routing, route);
++	}
++
+ 	case VIDIOC_SUBDEV_G_STD:
+ 		return v4l2_subdev_call(sd, video, g_std, arg);
+ 
+diff --git a/include/media/v4l2-subdev.h b/include/media/v4l2-subdev.h
+index 9a476f902..96f9b127d 100644
+--- a/include/media/v4l2-subdev.h
++++ b/include/media/v4l2-subdev.h
+@@ -770,6 +770,10 @@ struct v4l2_subdev_pad_ops {
  			       struct v4l2_mbus_config *config);
  	int (*set_mbus_config)(struct v4l2_subdev *sd, unsigned int pad,
  			       struct v4l2_mbus_config *config);
@@ -1044,8 +1557,10 @@
  };
  
  /**
---- linux-5.15.36/include/uapi/linux/media-bus-format.h	2023-04-14 12:26:12.738743500 +0900
-+++ linux-xlnx-2022.2/include/uapi/linux/media-bus-format.h	2023-04-14 12:24:20.011141300 +0900
+diff --git a/include/uapi/linux/media-bus-format.h b/include/uapi/linux/media-bus-format.h
+index 0dfc11ee2..689131982 100644
+--- a/include/uapi/linux/media-bus-format.h
++++ b/include/uapi/linux/media-bus-format.h
 @@ -157,6 +157,22 @@
  /* HSV - next is	0x6002 */
  #define MEDIA_BUS_FMT_AHSV8888_1X32		0x6001
@@ -1069,9 +1584,11 @@
  /*
   * This format should be used when the same driver handles
   * both sides of the link and the bus format is a fixed
---- linux-5.15.36/include/uapi/linux/v4l2-mediabus.h	2023-04-14 12:26:12.922640400 +0900
-+++ linux-xlnx-2022.2/include/uapi/linux/v4l2-mediabus.h	2023-04-14 12:24:20.198598500 +0900
-@@ -79,6 +79,8 @@
+diff --git a/include/uapi/linux/v4l2-mediabus.h b/include/uapi/linux/v4l2-mediabus.h
+index 903e67b16..95c839d36 100644
+--- a/include/uapi/linux/v4l2-mediabus.h
++++ b/include/uapi/linux/v4l2-mediabus.h
+@@ -79,6 +79,8 @@ enum v4l2_mbus_pixelcode {
  	V4L2_MBUS_FROM_MEDIA_BUS_FMT(RGB888_2X12_BE),
  	V4L2_MBUS_FROM_MEDIA_BUS_FMT(RGB888_2X12_LE),
  	V4L2_MBUS_FROM_MEDIA_BUS_FMT(ARGB8888_1X32),
@@ -1080,7 +1597,7 @@
  
  	V4L2_MBUS_FROM_MEDIA_BUS_FMT(Y8_1X8),
  	V4L2_MBUS_FROM_MEDIA_BUS_FMT(UV8_1X8),
-@@ -115,6 +117,7 @@
+@@ -115,6 +117,7 @@ enum v4l2_mbus_pixelcode {
  	V4L2_MBUS_FROM_MEDIA_BUS_FMT(VYUY12_1X24),
  	V4L2_MBUS_FROM_MEDIA_BUS_FMT(YUYV12_1X24),
  	V4L2_MBUS_FROM_MEDIA_BUS_FMT(YVYU12_1X24),
@@ -1088,9 +1605,11 @@
  
  	V4L2_MBUS_FROM_MEDIA_BUS_FMT(SBGGR8_1X8),
  	V4L2_MBUS_FROM_MEDIA_BUS_FMT(SGBRG8_1X8),
---- linux-5.15.36/include/uapi/linux/v4l2-subdev.h	2023-04-14 12:26:12.922640400 +0900
-+++ linux-xlnx-2022.2/include/uapi/linux/v4l2-subdev.h	2023-04-14 12:24:20.198598500 +0900
-@@ -188,6 +188,26 @@
+diff --git a/include/uapi/linux/v4l2-subdev.h b/include/uapi/linux/v4l2-subdev.h
+index 658106f5b..67c140255 100644
+--- a/include/uapi/linux/v4l2-subdev.h
++++ b/include/uapi/linux/v4l2-subdev.h
+@@ -188,6 +188,26 @@ struct v4l2_subdev_capability {
  /* The v4l2 sub-device video device node is registered in read-only mode. */
  #define V4L2_SUBDEV_CAP_RO_SUBDEV		0x00000001
  
@@ -1117,7 +1636,7 @@
  /* Backwards compatibility define --- to be removed */
  #define v4l2_subdev_edid v4l2_edid
  
-@@ -215,5 +235,7 @@
+@@ -215,5 +235,7 @@ struct v4l2_subdev_capability {
  #define VIDIOC_SUBDEV_ENUM_DV_TIMINGS		_IOWR('V', 98, struct v4l2_enum_dv_timings)
  #define VIDIOC_SUBDEV_QUERY_DV_TIMINGS		_IOR('V', 99, struct v4l2_dv_timings)
  #define VIDIOC_SUBDEV_DV_TIMINGS_CAP		_IOWR('V', 100, struct v4l2_dv_timings_cap)
@@ -1125,9 +1644,11 @@
 +#define VIDIOC_SUBDEV_S_ROUTING			_IOWR('V', 39, struct v4l2_subdev_routing)
  
  #endif
---- linux-5.15.36/include/uapi/linux/videodev2.h	2023-04-14 12:26:12.938260900 +0900
-+++ linux-xlnx-2022.2/include/uapi/linux/videodev2.h	2023-04-14 12:24:20.214220100 +0900
-@@ -283,6 +283,7 @@
+diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
+index 61c5011df..5b0752265 100644
+--- a/include/uapi/linux/videodev2.h
++++ b/include/uapi/linux/videodev2.h
+@@ -283,6 +283,7 @@ enum v4l2_xfer_func {
  	V4L2_XFER_FUNC_NONE        = 5,
  	V4L2_XFER_FUNC_DCI_P3      = 6,
  	V4L2_XFER_FUNC_SMPTE2084   = 7,
@@ -1135,7 +1656,7 @@
  };
  
  /*
-@@ -555,13 +556,18 @@
+@@ -555,13 +556,18 @@ struct v4l2_pix_format {
  #define V4L2_PIX_FMT_RGBX32  v4l2_fourcc('X', 'B', '2', '4') /* 32  RGBX-8-8-8-8  */
  #define V4L2_PIX_FMT_ARGB32  v4l2_fourcc('B', 'A', '2', '4') /* 32  ARGB-8-8-8-8  */
  #define V4L2_PIX_FMT_XRGB32  v4l2_fourcc('B', 'X', '2', '4') /* 32  XRGB-8-8-8-8  */
@@ -1154,7 +1675,7 @@
  #define V4L2_PIX_FMT_Y14     v4l2_fourcc('Y', '1', '4', ' ') /* 14  Greyscale     */
  #define V4L2_PIX_FMT_Y16     v4l2_fourcc('Y', '1', '6', ' ') /* 16  Greyscale     */
  #define V4L2_PIX_FMT_Y16_BE  v4l2_fourcc_be('Y', '1', '6', ' ') /* 16  Greyscale BE  */
-@@ -584,6 +590,9 @@
+@@ -584,6 +590,9 @@ struct v4l2_pix_format {
  #define V4L2_PIX_FMT_VYUY    v4l2_fourcc('V', 'Y', 'U', 'Y') /* 16  YUV 4:2:2     */
  #define V4L2_PIX_FMT_Y41P    v4l2_fourcc('Y', '4', '1', 'P') /* 12  YUV 4:1:1     */
  #define V4L2_PIX_FMT_YUV444  v4l2_fourcc('Y', '4', '4', '4') /* 16  xxxxyyyy uuuuvvvv */
@@ -1164,7 +1685,7 @@
  #define V4L2_PIX_FMT_YUV555  v4l2_fourcc('Y', 'U', 'V', 'O') /* 16  YUV-5-5-5     */
  #define V4L2_PIX_FMT_YUV565  v4l2_fourcc('Y', 'U', 'V', 'P') /* 16  YUV-5-6-5     */
  #define V4L2_PIX_FMT_YUV24   v4l2_fourcc('Y', 'U', 'V', '3') /* 24  YUV-8-8-8     */
-@@ -593,6 +602,7 @@
+@@ -593,6 +602,7 @@ struct v4l2_pix_format {
  #define V4L2_PIX_FMT_VUYA32  v4l2_fourcc('V', 'U', 'Y', 'A') /* 32  VUYA-8-8-8-8  */
  #define V4L2_PIX_FMT_VUYX32  v4l2_fourcc('V', 'U', 'Y', 'X') /* 32  VUYX-8-8-8-8  */
  #define V4L2_PIX_FMT_M420    v4l2_fourcc('M', '4', '2', '0') /* 12  YUV 4:2:0 2 lines y, 1 line uv interleaved */
@@ -1172,7 +1693,7 @@
  
  /* two planes -- one Y, one Cr + Cb interleaved  */
  #define V4L2_PIX_FMT_NV12    v4l2_fourcc('N', 'V', '1', '2') /* 12  Y/CbCr 4:2:0  */
-@@ -601,6 +611,14 @@
+@@ -601,6 +611,14 @@ struct v4l2_pix_format {
  #define V4L2_PIX_FMT_NV61    v4l2_fourcc('N', 'V', '6', '1') /* 16  Y/CrCb 4:2:2  */
  #define V4L2_PIX_FMT_NV24    v4l2_fourcc('N', 'V', '2', '4') /* 24  Y/CbCr 4:4:4  */
  #define V4L2_PIX_FMT_NV42    v4l2_fourcc('N', 'V', '4', '2') /* 24  Y/CrCb 4:4:4  */
@@ -1187,7 +1708,7 @@
  #define V4L2_PIX_FMT_HM12    v4l2_fourcc('H', 'M', '1', '2') /*  8  YUV 4:2:0 16x16 macroblocks */
  
  /* two non contiguous planes - one Y, one Cr + Cb interleaved  */
-@@ -609,6 +627,14 @@
+@@ -609,6 +627,14 @@ struct v4l2_pix_format {
  #define V4L2_PIX_FMT_NV16M   v4l2_fourcc('N', 'M', '1', '6') /* 16  Y/CbCr 4:2:2  */
  #define V4L2_PIX_FMT_NV61M   v4l2_fourcc('N', 'M', '6', '1') /* 16  Y/CrCb 4:2:2  */
  #define V4L2_PIX_FMT_NV12MT  v4l2_fourcc('T', 'M', '1', '2') /* 12  Y/CbCr 4:2:0 64x32 macroblocks */
@@ -1202,7 +1723,7 @@
  #define V4L2_PIX_FMT_NV12MT_16X16 v4l2_fourcc('V', 'M', '1', '2') /* 12  Y/CbCr 4:2:0 16x16 macroblocks */
  
  /* three planes - Y Cb, Cr */
-@@ -618,6 +644,8 @@
+@@ -618,6 +644,8 @@ struct v4l2_pix_format {
  #define V4L2_PIX_FMT_YUV420  v4l2_fourcc('Y', 'U', '1', '2') /* 12  YUV 4:2:0     */
  #define V4L2_PIX_FMT_YVU420  v4l2_fourcc('Y', 'V', '1', '2') /* 12  YVU 4:2:0     */
  #define V4L2_PIX_FMT_YUV422P v4l2_fourcc('4', '2', '2', 'P') /* 16  YVU422 planar */
@@ -1211,7 +1732,7 @@
  
  /* three non contiguous planes - Y, Cb, Cr */
  #define V4L2_PIX_FMT_YUV420M v4l2_fourcc('Y', 'M', '1', '2') /* 12  YUV420 planar */
-@@ -1814,6 +1842,8 @@
+@@ -1815,6 +1843,8 @@ enum v4l2_ctrl_type {
  	V4L2_CTRL_TYPE_MPEG2_QUANTISATION   = 0x0250,
  	V4L2_CTRL_TYPE_MPEG2_SEQUENCE       = 0x0251,
  	V4L2_CTRL_TYPE_MPEG2_PICTURE        = 0x0252,
@@ -1220,8 +1741,10 @@
  };
  
  /*  Used in the VIDIOC_QUERYCTRL ioctl for querying controls */
---- linux-5.15.36/include/uapi/linux/xilinx-v4l2-controls.h	2023-04-14 12:26:12.957918300 +0900
-+++ linux-xlnx-2022.2/include/uapi/linux/xilinx-v4l2-controls.h	2023-04-14 12:24:20.229726200 +0900
+diff --git a/include/uapi/linux/xilinx-v4l2-controls.h b/include/uapi/linux/xilinx-v4l2-controls.h
+index b6441fe70..1966dbc07 100644
+--- a/include/uapi/linux/xilinx-v4l2-controls.h
++++ b/include/uapi/linux/xilinx-v4l2-controls.h
 @@ -70,5 +70,152 @@
  #define V4L2_CID_XILINX_TPG_STUCK_PIXEL_THRESH	(V4L2_CID_XILINX_TPG + 16)
  /* Noise level */
@@ -1375,150 +1898,3 @@
 + */
 +#define V4L2_CID_XILINX_SCD_THRESHOLD		(V4L2_CID_XILINX_SCD + 1)
  #endif /* __UAPI_XILINX_V4L2_CONTROLS_H__ */
---- linux-5.15.36/drivers/media/v4l2-core/v4l2-common.c	2023-04-14 12:26:00.920777100 +0900
-+++ linux-xlnx-2022.2/drivers/media/v4l2-core/v4l2-common.c	2023-04-14 12:24:07.926179300 +0900
-@@ -273,6 +273,7 @@
- 		{ .format = V4L2_PIX_FMT_YUV420,  .pixel_enc = V4L2_PIXEL_ENC_YUV, .mem_planes = 1, .comp_planes = 3, .bpp = { 1, 1, 1, 0 }, .hdiv = 2, .vdiv = 2 },
- 		{ .format = V4L2_PIX_FMT_YVU420,  .pixel_enc = V4L2_PIXEL_ENC_YUV, .mem_planes = 1, .comp_planes = 3, .bpp = { 1, 1, 1, 0 }, .hdiv = 2, .vdiv = 2 },
- 		{ .format = V4L2_PIX_FMT_YUV422P, .pixel_enc = V4L2_PIXEL_ENC_YUV, .mem_planes = 1, .comp_planes = 3, .bpp = { 1, 1, 1, 0 }, .hdiv = 2, .vdiv = 1 },
-+		{ .format = V4L2_PIX_FMT_YUV444P, .pixel_enc = V4L2_PIXEL_ENC_YUV, .mem_planes = 1, .comp_planes = 3, .bpp = { 1, 1, 1, 0 }, .hdiv = 1, .vdiv = 1 },
- 		{ .format = V4L2_PIX_FMT_GREY,    .pixel_enc = V4L2_PIXEL_ENC_YUV, .mem_planes = 1, .comp_planes = 1, .bpp = { 1, 0, 0, 0 }, .hdiv = 1, .vdiv = 1 },
- 
- 		/* YUV planar formats, non contiguous variant */
---- linux-5.15.36/drivers/media/v4l2-core/v4l2-ioctl.c	2023-04-14 12:26:00.936422900 +0900
-+++ linux-xlnx-2022.2/drivers/media/v4l2-core/v4l2-ioctl.c	2023-04-14 12:24:07.926179300 +0900
-@@ -16,6 +16,7 @@
- #include <linux/kernel.h>
- #include <linux/version.h>
- 
-+#include <linux/v4l2-subdev.h>
- #include <linux/videodev2.h>
- 
- #include <media/v4l2-common.h>
-@@ -1255,6 +1256,9 @@
- 	case V4L2_PIX_FMT_BGRX32:	descr = "32-bit XBGR 8-8-8-8"; break;
- 	case V4L2_PIX_FMT_RGBA32:	descr = "32-bit RGBA 8-8-8-8"; break;
- 	case V4L2_PIX_FMT_RGBX32:	descr = "32-bit RGBX 8-8-8-8"; break;
-+	case V4L2_PIX_FMT_XBGR30:	descr = "32-bit XBGR 2-10-10-10"; break;
-+	case V4L2_PIX_FMT_XBGR40:	descr = "40-bit XBGR 4-12-12-12"; break;
-+	case V4L2_PIX_FMT_BGR48:	descr = "48-bit BGR 16-16-16"; break;
- 	case V4L2_PIX_FMT_GREY:		descr = "8-bit Greyscale"; break;
- 	case V4L2_PIX_FMT_Y4:		descr = "4-bit Greyscale"; break;
- 	case V4L2_PIX_FMT_Y6:		descr = "6-bit Greyscale"; break;
-@@ -1280,9 +1284,14 @@
- 	case V4L2_PIX_FMT_UYVY:		descr = "UYVY 4:2:2"; break;
- 	case V4L2_PIX_FMT_VYUY:		descr = "VYUY 4:2:2"; break;
- 	case V4L2_PIX_FMT_YUV422P:	descr = "Planar YUV 4:2:2"; break;
-+	case V4L2_PIX_FMT_YUV444P:	descr = "3 Planar YUV 4:4:4 8-bit"; break;
- 	case V4L2_PIX_FMT_YUV411P:	descr = "Planar YUV 4:1:1"; break;
-+	case V4L2_PIX_FMT_X403:		descr = "3 Planar YUV 4:4:4 10-bit"; break;
- 	case V4L2_PIX_FMT_Y41P:		descr = "YUV 4:1:1 (Packed)"; break;
- 	case V4L2_PIX_FMT_YUV444:	descr = "16-bit A/XYUV 4-4-4-4"; break;
-+	case V4L2_PIX_FMT_XVUY32:	descr = "32-bit packed XVUY 8-8-8-8"; break;
-+	case V4L2_PIX_FMT_AVUY32:	descr = "32-bit packed AVUY 8-8-8-8"; break;
-+	case V4L2_PIX_FMT_VUY24:	descr = "24-bit packed VUY 8-8-8"; break;
- 	case V4L2_PIX_FMT_YUV555:	descr = "16-bit A/XYUV 1-5-5-5"; break;
- 	case V4L2_PIX_FMT_YUV565:	descr = "16-bit YUV 5-6-5"; break;
- 	case V4L2_PIX_FMT_YUV24:	descr = "24-bit YUV 4:4:4 8-8-8"; break;
-@@ -1296,24 +1305,41 @@
- 	case V4L2_PIX_FMT_HI240:	descr = "8-bit Dithered RGB (BTTV)"; break;
- 	case V4L2_PIX_FMT_HM12:		descr = "YUV 4:2:0 (16x16 Macroblocks)"; break;
- 	case V4L2_PIX_FMT_M420:		descr = "YUV 4:2:0 (M420)"; break;
-+	case V4L2_PIX_FMT_XVUY10:	descr = "XVUY 2-10-10-10"; break;
- 	case V4L2_PIX_FMT_NV12:		descr = "Y/CbCr 4:2:0"; break;
- 	case V4L2_PIX_FMT_NV21:		descr = "Y/CrCb 4:2:0"; break;
- 	case V4L2_PIX_FMT_NV16:		descr = "Y/CbCr 4:2:2"; break;
- 	case V4L2_PIX_FMT_NV61:		descr = "Y/CrCb 4:2:2"; break;
- 	case V4L2_PIX_FMT_NV24:		descr = "Y/CbCr 4:4:4"; break;
- 	case V4L2_PIX_FMT_NV42:		descr = "Y/CrCb 4:4:4"; break;
-+	case V4L2_PIX_FMT_XV15:         descr = "Y/CrCb 4:2:0 10-bit"; break;
-+	case V4L2_PIX_FMT_XV20:		descr = "Y/CrCb 4:2:2 10-bit"; break;
- 	case V4L2_PIX_FMT_NV12M:	descr = "Y/CbCr 4:2:0 (N-C)"; break;
- 	case V4L2_PIX_FMT_NV21M:	descr = "Y/CrCb 4:2:0 (N-C)"; break;
- 	case V4L2_PIX_FMT_NV16M:	descr = "Y/CbCr 4:2:2 (N-C)"; break;
- 	case V4L2_PIX_FMT_NV61M:	descr = "Y/CrCb 4:2:2 (N-C)"; break;
- 	case V4L2_PIX_FMT_NV12MT:	descr = "Y/CbCr 4:2:0 (64x32 MB, N-C)"; break;
- 	case V4L2_PIX_FMT_NV12MT_16X16:	descr = "Y/CbCr 4:2:0 (16x16 MB, N-C)"; break;
-+	case V4L2_PIX_FMT_XV20M:        descr = "Y/CrCb 4:2:2 10-bit (N-C)"; break;
-+	case V4L2_PIX_FMT_XV15M:        descr = "Y/CrCb 4:2:0 10-bit (N-C)"; break;
- 	case V4L2_PIX_FMT_YUV420M:	descr = "Planar YUV 4:2:0 (N-C)"; break;
- 	case V4L2_PIX_FMT_YVU420M:	descr = "Planar YVU 4:2:0 (N-C)"; break;
- 	case V4L2_PIX_FMT_YUV422M:	descr = "Planar YUV 4:2:2 (N-C)"; break;
- 	case V4L2_PIX_FMT_YVU422M:	descr = "Planar YVU 4:2:2 (N-C)"; break;
- 	case V4L2_PIX_FMT_YUV444M:	descr = "Planar YUV 4:4:4 (N-C)"; break;
- 	case V4L2_PIX_FMT_YVU444M:	descr = "Planar YVU 4:4:4 (N-C)"; break;
-+	case V4L2_PIX_FMT_X012:		descr = "Y/CbCr 4:2:0, 4-12-12-12"; break;
-+	case V4L2_PIX_FMT_X012M:	descr = "Y/CbCr 4:2:0, 4-12-12-12 (N-C)"; break;
-+	case V4L2_PIX_FMT_X212:		descr = "Y/CbCr 4:2:2, 4-12-12-12"; break;
-+	case V4L2_PIX_FMT_X212M:	descr = "Y/CbCr 4:2:2, 4-12-12-12 (N-C)"; break;
-+	case V4L2_PIX_FMT_X412:		descr = "Y/CbCr 4:4:4, 4-12-12-12"; break;
-+	case V4L2_PIX_FMT_X412M:	descr = "Y/CbCr 4:4:4, 4-12-12-12 (N-C)"; break;
-+	case V4L2_PIX_FMT_X016:		descr = "Y/CbCr 4:2:0, 16-16-16"; break;
-+	case V4L2_PIX_FMT_X016M:	descr = "Y/CbCr 4:2:0, 16-16-16 (N-C)"; break;
-+	case V4L2_PIX_FMT_X216:		descr = "Y/CbCr 4:2:2, 16-16-16"; break;
-+	case V4L2_PIX_FMT_X216M:	descr = "Y/CbCr 4:2:2, 16-16-16 (N-C)"; break;
-+	case V4L2_PIX_FMT_X416:		descr = "Y/CbCr 4:4:4, 16-16-16"; break;
-+	case V4L2_PIX_FMT_X416M:	descr = "Y/CbCr 4:4:4, 16-16-16 (N-C)"; break;
- 	case V4L2_PIX_FMT_SBGGR8:	descr = "8-bit Bayer BGBG/GRGR"; break;
- 	case V4L2_PIX_FMT_SGBRG8:	descr = "8-bit Bayer GBGB/RGRG"; break;
- 	case V4L2_PIX_FMT_SGRBG8:	descr = "8-bit Bayer GRGR/BGBG"; break;
-@@ -3068,6 +3094,23 @@
- 			ret = 1;
- 		}
- 		break;
-+	}
-+
-+	case VIDIOC_SUBDEV_G_ROUTING:
-+	case VIDIOC_SUBDEV_S_ROUTING: {
-+		struct v4l2_subdev_routing *route = parg;
-+
-+		if (route->num_routes > 0) {
-+			if (route->num_routes > 256)
-+				return -EINVAL;
-+
-+			*user_ptr = (void __user *)route->routes;
-+			*kernel_ptr = (void *)&route->routes;
-+			*array_size = sizeof(struct v4l2_plane)
-+				    * route->num_routes;
-+			ret = 1;
-+		}
-+		break;
- 	}
- 	case VIDIOC_G_FMT:
- 	case VIDIOC_S_FMT:
---- linux-5.15.36/drivers/media/v4l2-core/v4l2-subdev.c	2023-04-14 12:26:00.936422900 +0900
-+++ linux-xlnx-2022.2/drivers/media/v4l2-core/v4l2-subdev.c	2023-04-14 12:24:07.926179300 +0900
-@@ -634,6 +634,33 @@
- 
- 		return v4l2_subdev_call(sd, video, s_dv_timings, arg);
- 
-+	case VIDIOC_SUBDEV_G_ROUTING:
-+		return v4l2_subdev_call(sd, pad, get_routing, arg);
-+
-+	case VIDIOC_SUBDEV_S_ROUTING: {
-+		struct v4l2_subdev_routing *route = arg;
-+		unsigned int i;
-+
-+		if (route->num_routes > sd->entity.num_pads)
-+			return -EINVAL;
-+
-+		for (i = 0; i < route->num_routes; ++i) {
-+			unsigned int sink = route->routes[i].sink;
-+			unsigned int source = route->routes[i].source;
-+			struct media_pad *pads = sd->entity.pads;
-+
-+			if (sink >= sd->entity.num_pads ||
-+			    source >= sd->entity.num_pads)
-+				return -EINVAL;
-+
-+			if (!(pads[sink].flags & MEDIA_PAD_FL_SINK) ||
-+			    !(pads[source].flags & MEDIA_PAD_FL_SOURCE))
-+				return -EINVAL;
-+		}
-+
-+		return v4l2_subdev_call(sd, pad, set_routing, route);
-+	}
-+
- 	case VIDIOC_SUBDEV_G_STD:
- 		return v4l2_subdev_call(sd, video, g_std, arg);
- 
