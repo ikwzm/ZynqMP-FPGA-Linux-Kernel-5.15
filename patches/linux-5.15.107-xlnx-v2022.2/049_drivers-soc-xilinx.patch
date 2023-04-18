@@ -1,5 +1,8 @@
+diff --git a/Documentation/devicetree/bindings/soc/xilinx/xlnx,ai-engine-npi.txt b/Documentation/devicetree/bindings/soc/xilinx/xlnx,ai-engine-npi.txt
+new file mode 100644
+index 000000000..b1c1466a3
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/soc/xilinx/xlnx,ai-engine-npi.txt	2023-04-14 12:23:50.097417500 +0900
++++ b/Documentation/devicetree/bindings/soc/xilinx/xlnx,ai-engine-npi.txt
 @@ -0,0 +1,23 @@
 +Xilinx AI Engine NPI
 +--------------------
@@ -24,8 +27,11 @@
 +		compatible = "xlnx,ai-engine-npi";
 +		reg = <0x0 0xf70a0000 0x0 0x1000>;
 +	};
+diff --git a/Documentation/devicetree/bindings/soc/xilinx/xlnx,ai-engine.yaml b/Documentation/devicetree/bindings/soc/xilinx/xlnx,ai-engine.yaml
+new file mode 100644
+index 000000000..e7ee458e8
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/soc/xilinx/xlnx,ai-engine.yaml	2023-04-14 12:23:50.097417500 +0900
++++ b/Documentation/devicetree/bindings/soc/xilinx/xlnx,ai-engine.yaml
 @@ -0,0 +1,199 @@
 +# SPDX-License-Identifier: GPL-2.0
 +%YAML 1.2
@@ -226,8 +232,11 @@
 +        };
 +      };
 +    };
+diff --git a/Documentation/devicetree/bindings/soc/xilinx/xlnx,ai_engine.txt b/Documentation/devicetree/bindings/soc/xilinx/xlnx,ai_engine.txt
+new file mode 100644
+index 000000000..b7643a138
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/soc/xilinx/xlnx,ai_engine.txt	2023-04-14 12:23:50.097417500 +0900
++++ b/Documentation/devicetree/bindings/soc/xilinx/xlnx,ai_engine.txt
 @@ -0,0 +1,28 @@
 +Xilinx AI Engine
 +----------------
@@ -257,9 +266,11 @@
 +			     <0x0 0x96 0x1>;
 +		interrupt-names = "interrupt1", "interrupt2", "interrupt3";
 +	};
---- linux-5.15.36/drivers/soc/xilinx/Kconfig	2023-04-14 12:26:06.728304700 +0900
-+++ linux-xlnx-2022.2/drivers/soc/xilinx/Kconfig	2023-04-14 12:24:13.797517300 +0900
-@@ -25,4 +25,14 @@
+diff --git a/drivers/soc/xilinx/Kconfig b/drivers/soc/xilinx/Kconfig
+index 53af9115d..8a755a5c8 100644
+--- a/drivers/soc/xilinx/Kconfig
++++ b/drivers/soc/xilinx/Kconfig
+@@ -25,4 +25,14 @@ config ZYNQMP_PM_DOMAINS
  	  Say yes to enable device power management through PM domains
  	  If in doubt, say N.
  
@@ -274,15 +285,20 @@
 +
 +	  If in doubt, say N.
  endmenu
---- linux-5.15.36/drivers/soc/xilinx/Makefile	2023-04-14 12:26:06.728304700 +0900
-+++ linux-xlnx-2022.2/drivers/soc/xilinx/Makefile	2023-04-14 12:24:13.797517300 +0900
+diff --git a/drivers/soc/xilinx/Makefile b/drivers/soc/xilinx/Makefile
+index 9854e6f60..41e585bc9 100644
+--- a/drivers/soc/xilinx/Makefile
++++ b/drivers/soc/xilinx/Makefile
 @@ -1,3 +1,4 @@
  # SPDX-License-Identifier: GPL-2.0
  obj-$(CONFIG_ZYNQMP_POWER)	+= zynqmp_power.o
  obj-$(CONFIG_ZYNQMP_PM_DOMAINS) += zynqmp_pm_domains.o
 +obj-$(CONFIG_XLNX_EVENT_MANAGER)	+= xlnx_event_manager.o
+diff --git a/drivers/soc/xilinx/xlnx_event_manager.c b/drivers/soc/xilinx/xlnx_event_manager.c
+new file mode 100644
+index 000000000..cf152eb58
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/soc/xilinx/xlnx_event_manager.c	2023-04-14 12:24:13.797517300 +0900
++++ b/drivers/soc/xilinx/xlnx_event_manager.c
 @@ -0,0 +1,711 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
@@ -995,8 +1011,10 @@
 +};
 +module_param(sgi_num, uint, 0);
 +module_platform_driver(xlnx_event_manager_driver);
---- linux-5.15.36/drivers/soc/xilinx/zynqmp_pm_domains.c	2023-04-14 12:26:06.743926000 +0900
-+++ linux-xlnx-2022.2/drivers/soc/xilinx/zynqmp_pm_domains.c	2023-04-14 12:24:13.797517300 +0900
+diff --git a/drivers/soc/xilinx/zynqmp_pm_domains.c b/drivers/soc/xilinx/zynqmp_pm_domains.c
+index 226d343f0..69d03ad4c 100644
+--- a/drivers/soc/xilinx/zynqmp_pm_domains.c
++++ b/drivers/soc/xilinx/zynqmp_pm_domains.c
 @@ -20,8 +20,6 @@
  #include <linux/firmware/xlnx-zynqmp.h>
  
@@ -1006,7 +1024,7 @@
  
  static int min_capability;
  
-@@ -29,14 +27,17 @@
+@@ -29,14 +27,17 @@ static int min_capability;
   * struct zynqmp_pm_domain - Wrapper around struct generic_pm_domain
   * @gpd:		Generic power domain
   * @node_id:		PM node ID corresponding to device inside PM domain
@@ -1026,7 +1044,7 @@
  /**
   * zynqmp_gpd_is_active_wakeup_path() - Check if device is in wakeup source
   *					path
-@@ -71,21 +72,23 @@
+@@ -71,21 +72,23 @@ static int zynqmp_gpd_is_active_wakeup_path(struct device *dev, void *not_used)
   */
  static int zynqmp_gpd_power_on(struct generic_pm_domain *domain)
  {
@@ -1055,7 +1073,7 @@
  	return 0;
  }
  
-@@ -100,18 +103,16 @@
+@@ -100,18 +103,16 @@ static int zynqmp_gpd_power_on(struct generic_pm_domain *domain)
   */
  static int zynqmp_gpd_power_off(struct generic_pm_domain *domain)
  {
@@ -1078,7 +1096,7 @@
  		return 0;
  	}
  
-@@ -128,17 +129,16 @@
+@@ -128,17 +129,16 @@ static int zynqmp_gpd_power_off(struct generic_pm_domain *domain)
  
  	ret = zynqmp_pm_set_requirement(pd->node_id, capabilities, 0,
  					ZYNQMP_PM_REQUEST_ACK_NO);
@@ -1102,7 +1120,7 @@
  	return 0;
  }
  
-@@ -152,10 +152,14 @@
+@@ -152,10 +152,14 @@ static int zynqmp_gpd_power_off(struct generic_pm_domain *domain)
  static int zynqmp_gpd_attach_dev(struct generic_pm_domain *domain,
  				 struct device *dev)
  {
@@ -1119,7 +1137,7 @@
  
  	/* If this is not the first device to attach there is nothing to do */
  	if (domain->device_count)
-@@ -163,17 +167,17 @@
+@@ -163,17 +167,17 @@ static int zynqmp_gpd_attach_dev(struct generic_pm_domain *domain,
  
  	ret = zynqmp_pm_request_node(pd->node_id, 0, 0,
  				     ZYNQMP_PM_REQUEST_ACK_BLOCKING);
@@ -1143,7 +1161,7 @@
  	return 0;
  }
  
-@@ -185,27 +189,24 @@
+@@ -185,27 +189,24 @@ static int zynqmp_gpd_attach_dev(struct generic_pm_domain *domain,
  static void zynqmp_gpd_detach_dev(struct generic_pm_domain *domain,
  				  struct device *dev)
  {
@@ -1177,7 +1195,7 @@
  }
  
  static struct generic_pm_domain *zynqmp_gpd_xlate
-@@ -215,7 +216,7 @@
+@@ -215,7 +216,7 @@ static struct generic_pm_domain *zynqmp_gpd_xlate
  	unsigned int i, idx = genpdspec->args[0];
  	struct zynqmp_pm_domain *pd;
  
@@ -1186,7 +1204,7 @@
  
  	if (genpdspec->args_count != 1)
  		return ERR_PTR(-EINVAL);
-@@ -226,7 +227,7 @@
+@@ -226,7 +227,7 @@ static struct generic_pm_domain *zynqmp_gpd_xlate
  			goto done;
  	}
  
@@ -1195,7 +1213,7 @@
  	 * Add index in empty node_id of power domain list as no existing
  	 * power domain found for current index.
  	 */
-@@ -299,9 +300,19 @@
+@@ -299,9 +300,19 @@ static int zynqmp_gpd_remove(struct platform_device *pdev)
  	return 0;
  }
  
@@ -1215,8 +1233,10 @@
  	},
  	.probe = zynqmp_gpd_probe,
  	.remove = zynqmp_gpd_remove,
---- linux-5.15.36/drivers/soc/xilinx/zynqmp_power.c	2023-04-14 12:26:06.743926000 +0900
-+++ linux-xlnx-2022.2/drivers/soc/xilinx/zynqmp_power.c	2023-04-14 12:24:13.797517300 +0900
+diff --git a/drivers/soc/xilinx/zynqmp_power.c b/drivers/soc/xilinx/zynqmp_power.c
+index c556623da..c55869f4a 100644
+--- a/drivers/soc/xilinx/zynqmp_power.c
++++ b/drivers/soc/xilinx/zynqmp_power.c
 @@ -16,6 +16,7 @@
  #include <linux/suspend.h>
  
@@ -1225,7 +1245,7 @@
  #include <linux/mailbox/zynqmp-ipi-message.h>
  
  /**
-@@ -30,6 +31,7 @@
+@@ -30,6 +31,7 @@ struct zynqmp_pm_work_struct {
  
  static struct zynqmp_pm_work_struct *zynqmp_pm_init_suspend_work;
  static struct mbox_chan *rx_chan;
@@ -1233,7 +1253,7 @@
  
  enum pm_suspend_mode {
  	PM_SUSPEND_MODE_FIRST = 0,
-@@ -46,15 +48,22 @@
+@@ -46,15 +48,22 @@ static const char *const suspend_modes[] = {
  
  static enum pm_suspend_mode suspend_mode = PM_SUSPEND_MODE_STD;
  
@@ -1263,7 +1283,7 @@
  }
  
  static irqreturn_t zynqmp_pm_isr(int irq, void *data)
-@@ -73,8 +82,8 @@
+@@ -73,8 +82,8 @@ static irqreturn_t zynqmp_pm_isr(int irq, void *data)
  			pm_suspend(PM_SUSPEND_MEM);
  			break;
  		default:
@@ -1274,7 +1294,7 @@
  		}
  	}
  
-@@ -178,14 +187,38 @@
+@@ -178,14 +187,38 @@ static int zynqmp_pm_probe(struct platform_device *pdev)
  	u32 pm_api_version;
  	struct mbox_client *client;
  
@@ -1315,7 +1335,7 @@
  		zynqmp_pm_init_suspend_work =
  			devm_kzalloc(&pdev->dev,
  				     sizeof(struct zynqmp_pm_work_struct),
-@@ -218,8 +251,8 @@
+@@ -218,8 +251,8 @@ static int zynqmp_pm_probe(struct platform_device *pdev)
  						dev_name(&pdev->dev),
  						&pdev->dev);
  		if (ret) {
@@ -1326,7 +1346,7 @@
  			return ret;
  		}
  	} else {
-@@ -229,6 +262,11 @@
+@@ -229,6 +262,11 @@ static int zynqmp_pm_probe(struct platform_device *pdev)
  
  	ret = sysfs_create_file(&pdev->dev.kobj, &dev_attr_suspend_mode.attr);
  	if (ret) {
@@ -1338,7 +1358,7 @@
  		dev_err(&pdev->dev, "unable to create sysfs interface\n");
  		return ret;
  	}
-@@ -239,6 +277,8 @@
+@@ -239,6 +277,8 @@ static int zynqmp_pm_probe(struct platform_device *pdev)
  static int zynqmp_pm_remove(struct platform_device *pdev)
  {
  	sysfs_remove_file(&pdev->dev.kobj, &dev_attr_suspend_mode.attr);
