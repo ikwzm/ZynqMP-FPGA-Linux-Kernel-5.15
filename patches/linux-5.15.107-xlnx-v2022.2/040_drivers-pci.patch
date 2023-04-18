@@ -1,6 +1,8 @@
---- linux-5.15.36/Documentation/devicetree/bindings/pci/xilinx-versal-cpm.yaml	2023-04-14 12:25:42.748403000 +0900
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/pci/xilinx-versal-cpm.yaml	2023-04-14 12:23:49.708599400 +0900
-@@ -14,17 +14,23 @@
+diff --git a/Documentation/devicetree/bindings/pci/xilinx-versal-cpm.yaml b/Documentation/devicetree/bindings/pci/xilinx-versal-cpm.yaml
+index a2bbc0eb7..848977c32 100644
+--- a/Documentation/devicetree/bindings/pci/xilinx-versal-cpm.yaml
++++ b/Documentation/devicetree/bindings/pci/xilinx-versal-cpm.yaml
+@@ -14,17 +14,23 @@ allOf:
  
  properties:
    compatible:
@@ -27,7 +29,7 @@
  
    interrupts:
      maxItems: 1
-@@ -87,13 +93,43 @@
+@@ -87,13 +93,43 @@ examples:
                         ranges = <0x02000000 0x0 0xe0000000 0x0 0xe0000000 0x0 0x10000000>,
                                  <0x43000000 0x80 0x00000000 0x80 0x00000000 0x0 0x80000000>;
                         msi-map = <0x0 &its_gic 0x0 0x10000>;
@@ -74,8 +76,11 @@
 +               };
 +
      };
+diff --git a/Documentation/devicetree/bindings/pci/xilinx-xdma-pl-pcie.txt b/Documentation/devicetree/bindings/pci/xilinx-xdma-pl-pcie.txt
+new file mode 100644
+index 000000000..c2f7ee8e8
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/pci/xilinx-xdma-pl-pcie.txt	2023-04-14 12:23:49.708599400 +0900
++++ b/Documentation/devicetree/bindings/pci/xilinx-xdma-pl-pcie.txt
 @@ -0,0 +1,121 @@
 +* Xilinx XDMA PL PCIe Root Port Bridge DT description
 +
@@ -198,9 +203,11 @@
 +			interrupt-controller ;
 +		};
 +	};
---- linux-5.15.36/drivers/pci/controller/Kconfig	2023-04-14 12:26:04.671581400 +0900
-+++ linux-xlnx-2022.2/drivers/pci/controller/Kconfig	2023-04-14 12:24:11.851166900 +0900
-@@ -108,6 +108,14 @@
+diff --git a/drivers/pci/controller/Kconfig b/drivers/pci/controller/Kconfig
+index 326f7d130..56799caa4 100644
+--- a/drivers/pci/controller/Kconfig
++++ b/drivers/pci/controller/Kconfig
+@@ -108,6 +108,14 @@ config PCIE_XILINX_CPM
  	  Say 'Y' here if you want kernel support for the
  	  Xilinx Versal CPM host bridge.
  
@@ -215,9 +222,11 @@
  config PCI_XGENE
  	bool "X-Gene PCIe controller"
  	depends on ARM64 || COMPILE_TEST
---- linux-5.15.36/drivers/pci/controller/Makefile	2023-04-14 12:26:04.671581400 +0900
-+++ linux-xlnx-2022.2/drivers/pci/controller/Makefile	2023-04-14 12:24:11.851166900 +0900
-@@ -12,6 +12,7 @@
+diff --git a/drivers/pci/controller/Makefile b/drivers/pci/controller/Makefile
+index aaf30b3dc..220ff8722 100644
+--- a/drivers/pci/controller/Makefile
++++ b/drivers/pci/controller/Makefile
+@@ -12,6 +12,7 @@ obj-$(CONFIG_PCIE_RCAR_HOST) += pcie-rcar.o pcie-rcar-host.o
  obj-$(CONFIG_PCIE_RCAR_EP) += pcie-rcar.o pcie-rcar-ep.o
  obj-$(CONFIG_PCI_HOST_COMMON) += pci-host-common.o
  obj-$(CONFIG_PCI_HOST_GENERIC) += pci-host-generic.o
@@ -225,8 +234,11 @@
  obj-$(CONFIG_PCI_HOST_THUNDER_ECAM) += pci-thunder-ecam.o
  obj-$(CONFIG_PCI_HOST_THUNDER_PEM) += pci-thunder-pem.o
  obj-$(CONFIG_PCIE_XILINX) += pcie-xilinx.o
+diff --git a/drivers/pci/controller/pcie-xdma-pl.c b/drivers/pci/controller/pcie-xdma-pl.c
+new file mode 100644
+index 000000000..dc192c93a
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/pci/controller/pcie-xdma-pl.c	2023-04-14 12:24:11.882409800 +0900
++++ b/drivers/pci/controller/pcie-xdma-pl.c
 @@ -0,0 +1,828 @@
 +// SPDX-License-Identifier: GPL-2.0-only
 +/*
@@ -1056,8 +1068,10 @@
 +};
 +
 +builtin_platform_driver(xilinx_pcie_driver);
---- linux-5.15.36/drivers/pci/controller/pcie-xilinx-cpm.c	2023-04-14 12:26:04.734102100 +0900
-+++ linux-xlnx-2022.2/drivers/pci/controller/pcie-xilinx-cpm.c	2023-04-14 12:24:11.882409800 +0900
+diff --git a/drivers/pci/controller/pcie-xilinx-cpm.c b/drivers/pci/controller/pcie-xilinx-cpm.c
+index 95426df03..e4ab48041 100644
+--- a/drivers/pci/controller/pcie-xilinx-cpm.c
++++ b/drivers/pci/controller/pcie-xilinx-cpm.c
 @@ -35,6 +35,10 @@
  #define XILINX_CPM_PCIE_MISC_IR_ENABLE	0x00000348
  #define XILINX_CPM_PCIE_MISC_IR_LOCAL	BIT(1)
@@ -1078,8 +1092,7 @@
 +	CPM5,
 +};
 +
- /**
-- * struct xilinx_cpm_pcie_port - PCIe port information
++/**
 + * struct xilinx_cpm_variant - CPM variant information
 + * @version: CPM version
 + */
@@ -1087,7 +1100,8 @@
 +	enum xilinx_cpm_version version;
 +};
 +
-+/**
+ /**
+- * struct xilinx_cpm_pcie_port - PCIe port information
 + * struct xilinx_cpm_pcie - PCIe port information
 + * @dev: Device pointer
   * @reg_base: Bridge Register Base
@@ -1141,7 +1155,7 @@
  {
  	unsigned long val = pcie_read(port, XILINX_CPM_PCIE_REG_RPEFR);
  
-@@ -153,7 +172,7 @@
+@@ -153,7 +172,7 @@ static void cpm_pcie_clear_err_interrupts(struct xilinx_cpm_pcie_port *port)
  
  static void xilinx_cpm_mask_leg_irq(struct irq_data *data)
  {
@@ -1150,7 +1164,7 @@
  	unsigned long flags;
  	u32 mask;
  	u32 val;
-@@ -167,7 +186,7 @@
+@@ -167,7 +186,7 @@ static void xilinx_cpm_mask_leg_irq(struct irq_data *data)
  
  static void xilinx_cpm_unmask_leg_irq(struct irq_data *data)
  {
@@ -1159,7 +1173,7 @@
  	unsigned long flags;
  	u32 mask;
  	u32 val;
-@@ -211,7 +230,7 @@
+@@ -211,7 +230,7 @@ static const struct irq_domain_ops intx_domain_ops = {
  
  static void xilinx_cpm_pcie_intx_flow(struct irq_desc *desc)
  {
@@ -1168,7 +1182,7 @@
  	struct irq_chip *chip = irq_desc_get_chip(desc);
  	unsigned long val;
  	int i;
-@@ -229,7 +248,7 @@
+@@ -229,7 +248,7 @@ static void xilinx_cpm_pcie_intx_flow(struct irq_desc *desc)
  
  static void xilinx_cpm_mask_event_irq(struct irq_data *d)
  {
@@ -1177,7 +1191,7 @@
  	u32 val;
  
  	raw_spin_lock(&port->lock);
-@@ -241,7 +260,7 @@
+@@ -241,7 +260,7 @@ static void xilinx_cpm_mask_event_irq(struct irq_data *d)
  
  static void xilinx_cpm_unmask_event_irq(struct irq_data *d)
  {
@@ -1186,7 +1200,7 @@
  	u32 val;
  
  	raw_spin_lock(&port->lock);
-@@ -273,7 +292,7 @@
+@@ -273,7 +292,7 @@ static const struct irq_domain_ops event_domain_ops = {
  
  static void xilinx_cpm_pcie_event_flow(struct irq_desc *desc)
  {
@@ -1195,7 +1209,7 @@
  	struct irq_chip *chip = irq_desc_get_chip(desc);
  	unsigned long val;
  	int i;
-@@ -285,6 +304,13 @@
+@@ -285,6 +304,13 @@ static void xilinx_cpm_pcie_event_flow(struct irq_desc *desc)
  		generic_handle_domain_irq(port->cpm_domain, i);
  	pcie_write(port, val, XILINX_CPM_PCIE_REG_IDR);
  
@@ -1209,7 +1223,7 @@
  	/*
  	 * XILINX_CPM_PCIE_MISC_IR_STATUS register is mapped to
  	 * CPM SLCR block.
-@@ -327,7 +353,7 @@
+@@ -327,7 +353,7 @@ static const struct {
  
  static irqreturn_t xilinx_cpm_pcie_intr_handler(int irq, void *dev_id)
  {
@@ -1218,7 +1232,7 @@
  	struct device *dev = port->dev;
  	struct irq_data *d;
  
-@@ -350,7 +376,7 @@
+@@ -350,7 +376,7 @@ static irqreturn_t xilinx_cpm_pcie_intr_handler(int irq, void *dev_id)
  	return IRQ_HANDLED;
  }
  
@@ -1227,7 +1241,7 @@
  {
  	if (port->intx_domain) {
  		irq_domain_remove(port->intx_domain);
-@@ -369,7 +395,7 @@
+@@ -369,7 +395,7 @@ static void xilinx_cpm_free_irq_domains(struct xilinx_cpm_pcie_port *port)
   *
   * Return: '0' on success and error value on failure
   */
@@ -1236,7 +1250,7 @@
  {
  	struct device *dev = port->dev;
  	struct device_node *node = dev->of_node;
-@@ -410,7 +436,7 @@
+@@ -410,7 +436,7 @@ static int xilinx_cpm_pcie_init_irq_domain(struct xilinx_cpm_pcie_port *port)
  	return -ENOMEM;
  }
  
@@ -1245,7 +1259,7 @@
  {
  	struct device *dev = port->dev;
  	struct platform_device *pdev = to_platform_device(dev);
-@@ -462,7 +488,7 @@
+@@ -462,7 +488,7 @@ static int xilinx_cpm_setup_irq(struct xilinx_cpm_pcie_port *port)
   * xilinx_cpm_pcie_init_port - Initialize hardware
   * @port: PCIe port information
   */
@@ -1254,7 +1268,7 @@
  {
  	if (cpm_pcie_link_up(port))
  		dev_info(port->dev, "PCIe Link is UP\n");
-@@ -484,6 +510,12 @@
+@@ -484,6 +510,12 @@ static void xilinx_cpm_pcie_init_port(struct xilinx_cpm_pcie_port *port)
  	 */
  	writel(XILINX_CPM_PCIE_MISC_IR_LOCAL,
  	       port->cpm_base + XILINX_CPM_PCIE_MISC_IR_ENABLE);
@@ -1267,7 +1281,7 @@
  	/* Enable the Bridge enable bit */
  	pcie_write(port, pcie_read(port, XILINX_CPM_PCIE_REG_RPSC) |
  		   XILINX_CPM_PCIE_REG_RPSC_BEN,
-@@ -497,7 +529,7 @@
+@@ -497,7 +529,7 @@ static void xilinx_cpm_pcie_init_port(struct xilinx_cpm_pcie_port *port)
   *
   * Return: '0' on success and error value on failure
   */
@@ -1276,7 +1290,7 @@
  				    struct resource *bus_range)
  {
  	struct device *dev = port->dev;
-@@ -518,12 +550,19 @@
+@@ -518,12 +550,19 @@ static int xilinx_cpm_pcie_parse_dt(struct xilinx_cpm_pcie_port *port,
  	if (IS_ERR(port->cfg))
  		return PTR_ERR(port->cfg);
  
@@ -1298,7 +1312,7 @@
  {
  	irq_set_chained_handler_and_data(port->intx_irq, NULL, NULL);
  	irq_set_chained_handler_and_data(port->irq, NULL, NULL);
-@@ -537,7 +576,7 @@
+@@ -537,7 +576,7 @@ static void xilinx_cpm_free_interrupts(struct xilinx_cpm_pcie_port *port)
   */
  static int xilinx_cpm_pcie_probe(struct platform_device *pdev)
  {
@@ -1307,7 +1321,7 @@
  	struct device *dev = &pdev->dev;
  	struct pci_host_bridge *bridge;
  	struct resource_entry *bus;
-@@ -559,6 +598,8 @@
+@@ -559,6 +598,8 @@ static int xilinx_cpm_pcie_probe(struct platform_device *pdev)
  	if (!bus)
  		return -ENODEV;
  
@@ -1316,7 +1330,7 @@
  	err = xilinx_cpm_pcie_parse_dt(port, bus->res);
  	if (err) {
  		dev_err(dev, "Parsing DT failed\n");
-@@ -591,8 +632,23 @@
+@@ -591,8 +632,23 @@ static int xilinx_cpm_pcie_probe(struct platform_device *pdev)
  	return err;
  }
  
@@ -1341,9 +1355,11 @@
  	{}
  };
  
---- linux-5.15.36/drivers/pci/controller/pcie-xilinx-nwl.c	2023-04-14 12:26:04.734102100 +0900
-+++ linux-xlnx-2022.2/drivers/pci/controller/pcie-xilinx-nwl.c	2023-04-14 12:24:11.882409800 +0900
-@@ -476,7 +476,7 @@
+diff --git a/drivers/pci/controller/pcie-xilinx-nwl.c b/drivers/pci/controller/pcie-xilinx-nwl.c
+index a72b4f9a2..ff56383ba 100644
+--- a/drivers/pci/controller/pcie-xilinx-nwl.c
++++ b/drivers/pci/controller/pcie-xilinx-nwl.c
+@@ -476,7 +476,7 @@ static int nwl_irq_domain_alloc(struct irq_domain *domain, unsigned int virq,
  
  	for (i = 0; i < nr_irqs; i++) {
  		irq_domain_set_info(domain, virq + i, bit + i, &nwl_irq_chip,
@@ -1352,7 +1368,7 @@
  				NULL, NULL);
  	}
  	mutex_unlock(&msi->lock);
-@@ -484,7 +484,7 @@
+@@ -484,7 +484,7 @@ static int nwl_irq_domain_alloc(struct irq_domain *domain, unsigned int virq,
  }
  
  static void nwl_irq_domain_free(struct irq_domain *domain, unsigned int virq,
@@ -1361,7 +1377,7 @@
  {
  	struct irq_data *data = irq_domain_get_irq_data(domain, virq);
  	struct nwl_pcie *pcie = irq_data_get_irq_chip_data(data);
-@@ -738,7 +738,6 @@
+@@ -738,7 +738,6 @@ static int nwl_pcie_bridge_init(struct nwl_pcie *pcie)
  	/* Enable all misc interrupts */
  	nwl_bridge_writel(pcie, MSGF_MISC_SR_MASKALL, MSGF_MISC_MASK);
  
