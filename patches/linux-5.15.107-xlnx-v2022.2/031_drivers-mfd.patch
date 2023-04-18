@@ -1,6 +1,8 @@
---- linux-5.15.36/Documentation/devicetree/bindings/mfd/syscon.yaml	2023-04-14 12:25:42.486352900 +0900
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/mfd/syscon.yaml	2023-04-14 12:23:49.472299100 +0900
-@@ -55,6 +55,7 @@
+diff --git a/Documentation/devicetree/bindings/mfd/syscon.yaml b/Documentation/devicetree/bindings/mfd/syscon.yaml
+index abe3fd817..e9442473c 100644
+--- a/Documentation/devicetree/bindings/mfd/syscon.yaml
++++ b/Documentation/devicetree/bindings/mfd/syscon.yaml
+@@ -55,6 +55,7 @@ properties:
                - samsung,exynos4-sysreg
                - samsung,exynos5-sysreg
                - samsung,exynos5433-sysreg
@@ -8,8 +10,10 @@
  
            - const: syscon
  
---- linux-5.15.36/include/linux/mfd/syscon/xlnx-vcu.h	2023-04-14 12:26:11.380098400 +0900
-+++ linux-xlnx-2022.2/include/linux/mfd/syscon/xlnx-vcu.h	2023-04-14 12:24:18.661519400 +0900
+diff --git a/include/linux/mfd/syscon/xlnx-vcu.h b/include/linux/mfd/syscon/xlnx-vcu.h
+index ff7bc3656..85a9433ce 100644
+--- a/include/linux/mfd/syscon/xlnx-vcu.h
++++ b/include/linux/mfd/syscon/xlnx-vcu.h
 @@ -36,4 +36,32 @@
  #define VCU_GASKET_INIT			0x74
  #define VCU_GASKET_VALUE		0x03
