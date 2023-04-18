@@ -1,6 +1,8 @@
---- linux-5.15.36/Documentation/devicetree/bindings/pinctrl/xlnx,zynqmp-pinctrl.yaml	2023-04-14 12:25:42.901001800 +0900
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/pinctrl/xlnx,zynqmp-pinctrl.yaml	2023-04-14 12:23:49.833570300 +0900
-@@ -274,6 +274,10 @@
+diff --git a/Documentation/devicetree/bindings/pinctrl/xlnx,zynqmp-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/xlnx,zynqmp-pinctrl.yaml
+index 8ef0d07d3..dd22abf86 100644
+--- a/Documentation/devicetree/bindings/pinctrl/xlnx,zynqmp-pinctrl.yaml
++++ b/Documentation/devicetree/bindings/pinctrl/xlnx,zynqmp-pinctrl.yaml
+@@ -274,6 +274,10 @@ patternProperties:
            slew-rate:
              enum: [0, 1]
  
@@ -11,8 +13,10 @@
            drive-strength:
              description:
                Selects the drive strength for MIO pins, in mA.
---- linux-5.15.36/drivers/pinctrl/pinctrl-zynq.c	2023-04-14 12:26:05.119444400 +0900
-+++ linux-xlnx-2022.2/drivers/pinctrl/pinctrl-zynq.c	2023-04-14 12:24:12.235539600 +0900
+diff --git a/drivers/pinctrl/pinctrl-zynq.c b/drivers/pinctrl/pinctrl-zynq.c
+index a96af8a76..0e8de27d0 100644
+--- a/drivers/pinctrl/pinctrl-zynq.c
++++ b/drivers/pinctrl/pinctrl-zynq.c
 @@ -8,6 +8,7 @@
   */
  #include <linux/io.h>
@@ -21,7 +25,7 @@
  #include <linux/init.h>
  #include <linux/of.h>
  #include <linux/platform_device.h>
-@@ -1210,8 +1211,4 @@
+@@ -1210,8 +1211,4 @@ static struct platform_driver zynq_pinctrl_driver = {
  	.probe = zynq_pinctrl_probe,
  };
  
@@ -31,9 +35,11 @@
 -}
 -arch_initcall(zynq_pinctrl_init);
 +module_platform_driver(zynq_pinctrl_driver);
---- linux-5.15.36/drivers/pinctrl/pinctrl-zynqmp.c	2023-04-14 12:26:05.119444400 +0900
-+++ linux-xlnx-2022.2/drivers/pinctrl/pinctrl-zynqmp.c	2023-04-14 12:24:12.235539600 +0900
-@@ -163,6 +163,8 @@
+diff --git a/drivers/pinctrl/pinctrl-zynqmp.c b/drivers/pinctrl/pinctrl-zynqmp.c
+index e14012209..c98f35ad8 100644
+--- a/drivers/pinctrl/pinctrl-zynqmp.c
++++ b/drivers/pinctrl/pinctrl-zynqmp.c
+@@ -163,6 +163,8 @@ static const char *zynqmp_pmux_get_function_name(struct pinctrl_dev *pctldev,
   * @num_groups:	Number of function groups.
   *
   * Get function's group count and group names.
