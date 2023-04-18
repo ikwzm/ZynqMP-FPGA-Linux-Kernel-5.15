@@ -1,5 +1,8 @@
+diff --git a/Documentation/devicetree/bindings/display/xlnx/bridge.txt b/Documentation/devicetree/bindings/display/xlnx/bridge.txt
+new file mode 100644
+index 000000000..c5f7c0a1d
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/display/xlnx/bridge.txt	2023-04-14 12:23:48.898503500 +0900
++++ b/Documentation/devicetree/bindings/display/xlnx/bridge.txt
 @@ -0,0 +1,29 @@
 +Xilinx DRM bridge
 +-----------------
@@ -30,8 +33,11 @@
 +       client_node {
 +	       xlnx,bridge = <&provider_node>;
 +       };
+diff --git a/Documentation/devicetree/bindings/display/xlnx/xlnx,dp-tx.yaml b/Documentation/devicetree/bindings/display/xlnx/xlnx,dp-tx.yaml
+new file mode 100644
+index 000000000..ffa36aa6f
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/display/xlnx/xlnx,dp-tx.yaml	2023-04-14 12:23:48.898503500 +0900
++++ b/Documentation/devicetree/bindings/display/xlnx/xlnx,dp-tx.yaml
 @@ -0,0 +1,199 @@
 +# SPDX-License-Identifier: GPL-2.0
 +%YAML 1.2
@@ -232,8 +238,11 @@
 +       };
 +   };
 +...
+diff --git a/Documentation/devicetree/bindings/display/xlnx/xlnx,dsi.txt b/Documentation/devicetree/bindings/display/xlnx/xlnx,dsi.txt
+new file mode 100644
+index 000000000..a545a0d81
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/display/xlnx/xlnx,dsi.txt	2023-04-14 12:23:48.898503500 +0900
++++ b/Documentation/devicetree/bindings/display/xlnx/xlnx,dsi.txt
 @@ -0,0 +1,74 @@
 +Device-Tree bindings for Xilinx MIPI DSI Tx IP core
 +
@@ -309,8 +318,11 @@
 +			reg = <0>;
 +			};
 +		};
+diff --git a/Documentation/devicetree/bindings/display/xlnx/xlnx,mixer.txt b/Documentation/devicetree/bindings/display/xlnx/xlnx,mixer.txt
+new file mode 100644
+index 000000000..ecea7261f
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/display/xlnx/xlnx,mixer.txt	2023-04-14 12:23:48.898503500 +0900
++++ b/Documentation/devicetree/bindings/display/xlnx/xlnx,mixer.txt
 @@ -0,0 +1,211 @@
 +Device-Tree bindings for Xilinx Video Mixer IP core
 +
@@ -523,8 +535,11 @@
 +		/* ... */
 +		memory-region = <&plmem_multimedia>;
 +	}
+diff --git a/Documentation/devicetree/bindings/display/xlnx/xlnx,pl-disp.txt b/Documentation/devicetree/bindings/display/xlnx/xlnx,pl-disp.txt
+new file mode 100644
+index 000000000..c6034bffc
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/display/xlnx/xlnx,pl-disp.txt	2023-04-14 12:23:48.898503500 +0900
++++ b/Documentation/devicetree/bindings/display/xlnx/xlnx,pl-disp.txt
 @@ -0,0 +1,41 @@
 +Xilinx PL Display driver
 +------------------------
@@ -567,8 +582,11 @@
 +			};
 +		};
 +	};
+diff --git a/Documentation/devicetree/bindings/display/xlnx/xlnx,sdi-tx.txt b/Documentation/devicetree/bindings/display/xlnx/xlnx,sdi-tx.txt
+new file mode 100644
+index 000000000..6edc2236c
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/display/xlnx/xlnx,sdi-tx.txt	2023-04-14 12:23:48.898503500 +0900
++++ b/Documentation/devicetree/bindings/display/xlnx/xlnx,sdi-tx.txt
 @@ -0,0 +1,63 @@
 +Device-Tree bindings for Xilinx SDI Tx subsystem
 +
@@ -633,8 +651,11 @@
 +			};
 +		};
 +	};
+diff --git a/Documentation/devicetree/bindings/display/xlnx/xlnx,v-hdmi-txss1.yaml b/Documentation/devicetree/bindings/display/xlnx/xlnx,v-hdmi-txss1.yaml
+new file mode 100644
+index 000000000..707327d21
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/display/xlnx/xlnx,v-hdmi-txss1.yaml	2023-04-14 12:23:48.898503500 +0900
++++ b/Documentation/devicetree/bindings/display/xlnx/xlnx,v-hdmi-txss1.yaml
 @@ -0,0 +1,157 @@
 +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 +%YAML 1.2
@@ -793,8 +814,11 @@
 +        };
 +    };
 +...
+diff --git a/Documentation/devicetree/bindings/display/xlnx/xlnx,vpss-csc.txt b/Documentation/devicetree/bindings/display/xlnx/xlnx,vpss-csc.txt
+new file mode 100644
+index 000000000..cf80d185d
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/display/xlnx/xlnx,vpss-csc.txt	2023-04-14 12:23:48.898503500 +0900
++++ b/Documentation/devicetree/bindings/display/xlnx/xlnx,vpss-csc.txt
 @@ -0,0 +1,35 @@
 +Xllinx VPSS Color Space Converter
 +-----------------------------------------
@@ -831,8 +855,11 @@
 +		xlnx,max-width = <3840>;
 +		xlnx,max-height = <2160>;
 +	}
+diff --git a/Documentation/devicetree/bindings/display/xlnx/xlnx,vpss-scaler.txt b/Documentation/devicetree/bindings/display/xlnx/xlnx,vpss-scaler.txt
+new file mode 100644
+index 000000000..3927b88be
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/display/xlnx/xlnx,vpss-scaler.txt	2023-04-14 12:23:48.898503500 +0900
++++ b/Documentation/devicetree/bindings/display/xlnx/xlnx,vpss-scaler.txt
 @@ -0,0 +1,50 @@
 +Xilinx VPSS Scaler
 +------------------
@@ -884,8 +911,11 @@
 +		xlnx,max-width = <3840>;
 +		xlnx,max-height = <2160>;
 +	}
+diff --git a/Documentation/devicetree/bindings/display/xlnx/xlnx,vtc.txt b/Documentation/devicetree/bindings/display/xlnx/xlnx,vtc.txt
+new file mode 100644
+index 000000000..6a4d5bcc5
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/display/xlnx/xlnx,vtc.txt	2023-04-14 12:23:48.898503500 +0900
++++ b/Documentation/devicetree/bindings/display/xlnx/xlnx,vtc.txt
 @@ -0,0 +1,32 @@
 +Device-Tree bindings for Xilinx Video Timing Controller(VTC)
 +
@@ -919,32 +949,11 @@
 +			clock-names = "s_axi_aclk", "clk";
 +			clocks = <&misc_clk_0>, <&misc_clk_1>;
 +	};
+diff --git a/Documentation/devicetree/bindings/media/xilinx/xlnx,axis-broadcaster.yaml b/Documentation/devicetree/bindings/media/xilinx/xlnx,axis-broadcaster.yaml
+new file mode 100644
+index 000000000..08731ce6c
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/xlnx,ctrl-vpss.txt	2023-04-14 12:23:50.410851600 +0900
-@@ -0,0 +1,21 @@
-+The Xilinx VPSS Scaler is a Video IP that supports up scaling, down scaling and
-+no scaling functionailty along with color space conversion. This supports custom
-+resolution values between 0 to 4096.
-+
-+Required properties:
-+
-+- compatible: Must be "xlnx,ctrl-xvpss-1.0".
-+- reg: Base address and size of the IP core.
-+- reset-gpios: gpio to reset the framebuffer IP
-+- xlnx,vpss-taps: number of taps
-+- xlnx,vpss-ppc: pixels per clock
-+
-+Example:
-+
-+        ctrlvpss: vpss@0xa0200000 {
-+                compatible = "xlnx,ctrl-xvpss-1.0";
-+                reg = <0x0 0xa0200000 0x0 0x30000>;
-+                reset-gpios = <&gpio 80 1>;
-+                xlnx,vpss-taps = <6>;
-+                xlnx,vpss-ppc = <2>;
-+        };
---- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/media/xilinx/xlnx,axis-broadcaster.yaml	2023-04-14 12:23:49.394164700 +0900
++++ b/Documentation/devicetree/bindings/media/xilinx/xlnx,axis-broadcaster.yaml
 @@ -0,0 +1,179 @@
 +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 +%YAML 1.2
@@ -1125,8 +1134,11 @@
 +        };
 +    };
 +...
+diff --git a/Documentation/devicetree/bindings/media/xilinx/xlnx,axis-subsetconv.yaml b/Documentation/devicetree/bindings/media/xilinx/xlnx,axis-subsetconv.yaml
+new file mode 100644
+index 000000000..3373a4626
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/media/xilinx/xlnx,axis-subsetconv.yaml	2023-04-14 12:23:49.394164700 +0900
++++ b/Documentation/devicetree/bindings/media/xilinx/xlnx,axis-subsetconv.yaml
 @@ -0,0 +1,133 @@
 +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 +%YAML 1.2
@@ -1261,9 +1273,11 @@
 +        };
 +    };
 +...
---- linux-5.15.36/Documentation/devicetree/bindings/media/xilinx/xlnx,csi2rxss.yaml	2023-04-14 12:25:42.423895700 +0900
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/media/xilinx/xlnx,csi2rxss.yaml	2023-04-14 12:23:49.394164700 +0900
-@@ -50,6 +50,7 @@
+diff --git a/Documentation/devicetree/bindings/media/xilinx/xlnx,csi2rxss.yaml b/Documentation/devicetree/bindings/media/xilinx/xlnx,csi2rxss.yaml
+index 7d77823db..bad38fd68 100644
+--- a/Documentation/devicetree/bindings/media/xilinx/xlnx,csi2rxss.yaml
++++ b/Documentation/devicetree/bindings/media/xilinx/xlnx,csi2rxss.yaml
+@@ -50,6 +50,7 @@ properties:
        Packets other than this data type (except for RAW8 and
        User defined data types) will be filtered out.
        Possible values are as below -
@@ -1271,7 +1285,7 @@
        0x1e - YUV4228B
        0x1f - YUV42210B
        0x20 - RGB444
-@@ -67,6 +68,7 @@
+@@ -67,6 +68,7 @@ properties:
        0x2f - RAW20
      $ref: /schemas/types.yaml#/definitions/uint32
      oneOf:
@@ -1279,8 +1293,11 @@
        - minimum: 0x1e
          maximum: 0x24
        - minimum: 0x28
+diff --git a/Documentation/devicetree/bindings/media/xilinx/xlnx,mem2mem.txt b/Documentation/devicetree/bindings/media/xilinx/xlnx,mem2mem.txt
+new file mode 100644
+index 000000000..73af77fae
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/media/xilinx/xlnx,mem2mem.txt	2023-04-14 12:23:49.394164700 +0900
++++ b/Documentation/devicetree/bindings/media/xilinx/xlnx,mem2mem.txt
 @@ -0,0 +1,25 @@
 +Xilinx Video IP MEM2MEM Pipeline (XVIM2M)
 +----------------------------------------
@@ -1307,8 +1324,11 @@
 +		dmas = <&dma_1 0>, <&dma_2 0>;
 +		dma-names = "tx", "rx";
 +	};
+diff --git a/Documentation/devicetree/bindings/media/xilinx/xlnx,sdirxss.txt b/Documentation/devicetree/bindings/media/xilinx/xlnx,sdirxss.txt
+new file mode 100644
+index 000000000..0a93f29fd
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/media/xilinx/xlnx,sdirxss.txt	2023-04-14 12:23:49.394164700 +0900
++++ b/Documentation/devicetree/bindings/media/xilinx/xlnx,sdirxss.txt
 @@ -0,0 +1,77 @@
 +
 +Xilinx SDI Receiver Subsystem
@@ -1387,8 +1407,11 @@
 +				};
 +			};
 +		};
+diff --git a/Documentation/devicetree/bindings/media/xilinx/xlnx,v-axi4s-switch.txt b/Documentation/devicetree/bindings/media/xilinx/xlnx,v-axi4s-switch.txt
+new file mode 100644
+index 000000000..fb5ed47d9
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/media/xilinx/xlnx,v-axi4s-switch.txt	2023-04-14 12:23:49.394164700 +0900
++++ b/Documentation/devicetree/bindings/media/xilinx/xlnx,v-axi4s-switch.txt
 @@ -0,0 +1,141 @@
 +Xilinx AXI4-Stream Switch
 +-------------------------------
@@ -1531,8 +1554,11 @@
 +		};
 +
 +	};
+diff --git a/Documentation/devicetree/bindings/media/xilinx/xlnx,v-cfa.txt b/Documentation/devicetree/bindings/media/xilinx/xlnx,v-cfa.txt
+new file mode 100644
+index 000000000..cdb0886cf
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/media/xilinx/xlnx,v-cfa.txt	2023-04-14 12:23:49.394164700 +0900
++++ b/Documentation/devicetree/bindings/media/xilinx/xlnx,v-cfa.txt
 @@ -0,0 +1,58 @@
 +Xilinx Color Filter Array (CFA)
 +-------------------------------
@@ -1592,8 +1618,11 @@
 +			};
 +		};
 +	};
+diff --git a/Documentation/devicetree/bindings/media/xilinx/xlnx,v-cresample.txt b/Documentation/devicetree/bindings/media/xilinx/xlnx,v-cresample.txt
+new file mode 100644
+index 000000000..f404ee301
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/media/xilinx/xlnx,v-cresample.txt	2023-04-14 12:23:49.394164700 +0900
++++ b/Documentation/devicetree/bindings/media/xilinx/xlnx,v-cresample.txt
 @@ -0,0 +1,54 @@
 +Xilinx Chroma Resampler (CRESAMPLE)
 +-----------------------------------
@@ -1649,8 +1678,11 @@
 +			};
 +		};
 +	};
+diff --git a/Documentation/devicetree/bindings/media/xilinx/xlnx,v-demosaic.txt b/Documentation/devicetree/bindings/media/xilinx/xlnx,v-demosaic.txt
+new file mode 100644
+index 000000000..9b3aff413
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/media/xilinx/xlnx,v-demosaic.txt	2023-04-14 12:23:49.394164700 +0900
++++ b/Documentation/devicetree/bindings/media/xilinx/xlnx,v-demosaic.txt
 @@ -0,0 +1,62 @@
 +Xilinx Video Demosaic IP
 +-----------------------------
@@ -1714,8 +1746,11 @@
 +			};
 +		};
 +	};
+diff --git a/Documentation/devicetree/bindings/media/xilinx/xlnx,v-dprxss.yaml b/Documentation/devicetree/bindings/media/xilinx/xlnx,v-dprxss.yaml
+new file mode 100644
+index 000000000..440783916
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/media/xilinx/xlnx,v-dprxss.yaml	2023-04-14 12:23:49.394164700 +0900
++++ b/Documentation/devicetree/bindings/media/xilinx/xlnx,v-dprxss.yaml
 @@ -0,0 +1,188 @@
 +# SPDX-License-Identifier: GPL-2.0
 +%YAML 1.2
@@ -1905,8 +1940,11 @@
 +       reg = <0x0 0xa00c0000 0x0 0x10000>;
 +   };
 +...
+diff --git a/Documentation/devicetree/bindings/media/xilinx/xlnx,v-gamma-lut.txt b/Documentation/devicetree/bindings/media/xilinx/xlnx,v-gamma-lut.txt
+new file mode 100644
+index 000000000..7bd750f00
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/media/xilinx/xlnx,v-gamma-lut.txt	2023-04-14 12:23:49.394164700 +0900
++++ b/Documentation/devicetree/bindings/media/xilinx/xlnx,v-gamma-lut.txt
 @@ -0,0 +1,63 @@
 +Xilinx Video Gamma Correction IP
 +-----------------------------------
@@ -1971,8 +2009,11 @@
 +			};
 +		};
 +	};
+diff --git a/Documentation/devicetree/bindings/media/xilinx/xlnx,v-hdmi-rxss1.yaml b/Documentation/devicetree/bindings/media/xilinx/xlnx,v-hdmi-rxss1.yaml
+new file mode 100644
+index 000000000..9e37b02c9
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/media/xilinx/xlnx,v-hdmi-rxss1.yaml	2023-04-14 12:23:49.394164700 +0900
++++ b/Documentation/devicetree/bindings/media/xilinx/xlnx,v-hdmi-rxss1.yaml
 @@ -0,0 +1,202 @@
 +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 +%YAML 1.2
@@ -2176,8 +2217,11 @@
 +      };
 +    };
 +...
+diff --git a/Documentation/devicetree/bindings/media/xilinx/xlnx,v-hls.txt b/Documentation/devicetree/bindings/media/xilinx/xlnx,v-hls.txt
+new file mode 100644
+index 000000000..a6db30405
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/media/xilinx/xlnx,v-hls.txt	2023-04-14 12:23:49.394164700 +0900
++++ b/Documentation/devicetree/bindings/media/xilinx/xlnx,v-hls.txt
 @@ -0,0 +1,64 @@
 +Xilinx High-Level Synthesis Core (HLS)
 +--------------------------------------
@@ -2243,8 +2287,11 @@
 +			};
 +		};
 +	};
+diff --git a/Documentation/devicetree/bindings/media/xilinx/xlnx,v-multi-scaler.txt b/Documentation/devicetree/bindings/media/xilinx/xlnx,v-multi-scaler.txt
+new file mode 100644
+index 000000000..3aea1f36a
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/media/xilinx/xlnx,v-multi-scaler.txt	2023-04-14 12:23:49.394164700 +0900
++++ b/Documentation/devicetree/bindings/media/xilinx/xlnx,v-multi-scaler.txt
 @@ -0,0 +1,95 @@
 +Xilinx mem2mem Multi Video Scaler (XM2MSC)
 +-----------------------------------------
@@ -2341,8 +2388,11 @@
 +	xlnx,max-height = <2160>;
 +	xlnx,num-taps = <6>;
 +};
+diff --git a/Documentation/devicetree/bindings/media/xilinx/xlnx,v-remapper.txt b/Documentation/devicetree/bindings/media/xilinx/xlnx,v-remapper.txt
+new file mode 100644
+index 000000000..cda02cb97
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/media/xilinx/xlnx,v-remapper.txt	2023-04-14 12:23:49.394164700 +0900
++++ b/Documentation/devicetree/bindings/media/xilinx/xlnx,v-remapper.txt
 @@ -0,0 +1,61 @@
 +Xilinx Video Remapper
 +---------------------
@@ -2405,8 +2455,11 @@
 +			};
 +		};
 +	};
+diff --git a/Documentation/devicetree/bindings/media/xilinx/xlnx,v-rgb2yuv.txt b/Documentation/devicetree/bindings/media/xilinx/xlnx,v-rgb2yuv.txt
+new file mode 100644
+index 000000000..ecd10fb31
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/media/xilinx/xlnx,v-rgb2yuv.txt	2023-04-14 12:23:49.394164700 +0900
++++ b/Documentation/devicetree/bindings/media/xilinx/xlnx,v-rgb2yuv.txt
 @@ -0,0 +1,54 @@
 +Xilinx RGB to YUV (RGB2YUV)
 +---------------------------
@@ -2462,8 +2515,11 @@
 +			};
 +		};
 +	};
+diff --git a/Documentation/devicetree/bindings/media/xilinx/xlnx,v-scaler.txt b/Documentation/devicetree/bindings/media/xilinx/xlnx,v-scaler.txt
+new file mode 100644
+index 000000000..0bb9c405f
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/media/xilinx/xlnx,v-scaler.txt	2023-04-14 12:23:49.394164700 +0900
++++ b/Documentation/devicetree/bindings/media/xilinx/xlnx,v-scaler.txt
 @@ -0,0 +1,75 @@
 +Xilinx Scaler (SCALER)
 +------------------------------------
@@ -2540,8 +2596,11 @@
 +			};
 +		};
 +	};
+diff --git a/Documentation/devicetree/bindings/media/xilinx/xlnx,v-scd.txt b/Documentation/devicetree/bindings/media/xilinx/xlnx,v-scd.txt
+new file mode 100644
+index 000000000..a05e9712c
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/media/xilinx/xlnx,v-scd.txt	2023-04-14 12:23:49.394164700 +0900
++++ b/Documentation/devicetree/bindings/media/xilinx/xlnx,v-scd.txt
 @@ -0,0 +1,164 @@
 +Xilinx Scene Change Detection IP (SCD)
 +--------------------------------------
@@ -2707,8 +2766,11 @@
 +			};
 +		};
 +	};
+diff --git a/Documentation/devicetree/bindings/media/xilinx/xlnx,v-switch.txt b/Documentation/devicetree/bindings/media/xilinx/xlnx,v-switch.txt
+new file mode 100644
+index 000000000..91dc3af4a
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/media/xilinx/xlnx,v-switch.txt	2023-04-14 12:23:49.394164700 +0900
++++ b/Documentation/devicetree/bindings/media/xilinx/xlnx,v-switch.txt
 @@ -0,0 +1,55 @@
 +Xilinx Video Switch
 +-------------------
@@ -2765,9 +2827,11 @@
 +			};
 +		};
 +	};
---- linux-5.15.36/Documentation/devicetree/bindings/media/xilinx/xlnx,v-tpg.txt	2023-04-14 12:25:42.423895700 +0900
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/media/xilinx/xlnx,v-tpg.txt	2023-04-14 12:23:49.394164700 +0900
-@@ -6,7 +6,8 @@
+diff --git a/Documentation/devicetree/bindings/media/xilinx/xlnx,v-tpg.txt b/Documentation/devicetree/bindings/media/xilinx/xlnx,v-tpg.txt
+index 439351ab2..4b2126a78 100644
+--- a/Documentation/devicetree/bindings/media/xilinx/xlnx,v-tpg.txt
++++ b/Documentation/devicetree/bindings/media/xilinx/xlnx,v-tpg.txt
+@@ -6,7 +6,8 @@ Required properties:
  - compatible: Must contain at least one of
  
      "xlnx,v-tpg-5.0" (TPG version 5.0)
@@ -2777,7 +2841,7 @@
  
    TPG versions backward-compatible with previous versions should list all
    compatible versions in the newer to older order.
-@@ -23,6 +24,8 @@
+@@ -23,6 +24,8 @@ Required properties:
  
  Optional properties:
  
@@ -2786,7 +2850,7 @@
  - xlnx,vtc: A phandle referencing the Video Timing Controller that generates
    video timings for the TPG test patterns.
  
-@@ -30,16 +33,26 @@
+@@ -30,16 +33,26 @@ Optional properties:
    input. The GPIO active level corresponds to the selection of VTC-generated
    video timings.
  
@@ -2814,8 +2878,11 @@
  		xlnx,vtc = <&vtc_3>;
  		timing-gpios = <&ps7_gpio_0 55 GPIO_ACTIVE_LOW>;
  
+diff --git a/Documentation/devicetree/bindings/media/xilinx/xlnx,v-vpss-csc.txt b/Documentation/devicetree/bindings/media/xilinx/xlnx,v-vpss-csc.txt
+new file mode 100644
+index 000000000..d2bad8744
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/media/xilinx/xlnx,v-vpss-csc.txt	2023-04-14 12:23:49.394164700 +0900
++++ b/Documentation/devicetree/bindings/media/xilinx/xlnx,v-vpss-csc.txt
 @@ -0,0 +1,67 @@
 +Xilinx VPSS Color Space Converter (CSC)
 +-----------------------------------------
@@ -2884,8 +2951,11 @@
 +			};
 +		};
 +	};
+diff --git a/Documentation/devicetree/bindings/media/xilinx/xlnx,v-vpss-scaler.txt b/Documentation/devicetree/bindings/media/xilinx/xlnx,v-vpss-scaler.txt
+new file mode 100644
+index 000000000..05ca0cb33
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/media/xilinx/xlnx,v-vpss-scaler.txt	2023-04-14 12:23:49.394164700 +0900
++++ b/Documentation/devicetree/bindings/media/xilinx/xlnx,v-vpss-scaler.txt
 @@ -0,0 +1,93 @@
 +  Xilinx VPSS Scaler
 +------------------------
@@ -2980,9 +3050,11 @@
 +		};
 +
 +	};
---- linux-5.15.36/Documentation/devicetree/bindings/media/xilinx/xlnx,video.txt	2023-04-14 12:25:42.423895700 +0900
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/media/xilinx/xlnx,video.txt	2023-04-14 12:23:49.394164700 +0900
-@@ -21,6 +21,18 @@
+diff --git a/Documentation/devicetree/bindings/media/xilinx/xlnx,video.txt b/Documentation/devicetree/bindings/media/xilinx/xlnx,video.txt
+index 5a0227023..8f80b38e1 100644
+--- a/Documentation/devicetree/bindings/media/xilinx/xlnx,video.txt
++++ b/Documentation/devicetree/bindings/media/xilinx/xlnx,video.txt
+@@ -21,6 +21,18 @@ Required properties:
  
  - ports: Video port, using the DT bindings defined in ../video-interfaces.txt.
  
@@ -3001,7 +3073,7 @@
  Required port properties:
  
  - direction: should be either "input" or "output" depending on the direction
-@@ -53,3 +65,46 @@
+@@ -53,3 +65,46 @@ Example:
  			};
  		};
  	};
@@ -3048,290 +3120,37 @@
 +		/* ... */
 +		memory-region = <&plmem_multimedia>;
 +	}
---- linux-5.15.36/usr/include/Makefile	2023-04-14 12:26:18.773287000 +0900
-+++ linux-xlnx-2022.2/usr/include/Makefile	2023-04-14 12:24:26.167842100 +0900
-@@ -48,6 +48,9 @@
- no-header-test += linux/v4l2-subdev.h
- no-header-test += linux/videodev2.h
- no-header-test += linux/vm_sockets.h
-+no-header-test += linux/xilinx-sdirxss.h
-+no-header-test += linux/xilinx-hls.h
-+no-header-test += linux/xilinx-v4l2-events.h
- no-header-test += sound/asequencer.h
- no-header-test += sound/asoc.h
- no-header-test += sound/asound.h
---- linux-5.15.36/include/dt-bindings/media/xilinx-vip.h	2023-04-14 12:26:10.710210800 +0900
-+++ linux-xlnx-2022.2/include/dt-bindings/media/xilinx-vip.h	2023-04-14 12:24:17.959658200 +0900
-@@ -32,5 +32,11 @@
- #define XVIP_VF_CUSTOM2			13
- #define XVIP_VF_CUSTOM3			14
- #define XVIP_VF_CUSTOM4			15
-+#define XVIP_VF_VUY_422			16
-+#define XVIP_VF_BGRX			17
-+#define XVIP_VF_YUVX			18
-+#define XVIP_VF_XBGR			19
-+#define XVIP_VF_Y_GREY			20
-+#define XVIP_VF_XRGB			21
- 
- #endif /* __DT_BINDINGS_MEDIA_XILINX_VIP_H__ */
+diff --git a/Documentation/devicetree/bindings/xlnx,ctrl-vpss.txt b/Documentation/devicetree/bindings/xlnx,ctrl-vpss.txt
+new file mode 100644
+index 000000000..04e6426f4
 --- /dev/null
-+++ linux-xlnx-2022.2/include/uapi/linux/xilinx-hls.h	2023-04-14 12:24:20.229726200 +0900
-@@ -0,0 +1,23 @@
-+/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++++ b/Documentation/devicetree/bindings/xlnx,ctrl-vpss.txt
+@@ -0,0 +1,21 @@
++The Xilinx VPSS Scaler is a Video IP that supports up scaling, down scaling and
++no scaling functionailty along with color space conversion. This supports custom
++resolution values between 0 to 4096.
 +
-+#ifndef __UAPI_XILINX_HLS_H__
-+#define __UAPI_XILINX_HLS_H__
++Required properties:
 +
-+#include <linux/ioctl.h>
-+#include <linux/types.h>
-+#include <linux/videodev2.h>
++- compatible: Must be "xlnx,ctrl-xvpss-1.0".
++- reg: Base address and size of the IP core.
++- reset-gpios: gpio to reset the framebuffer IP
++- xlnx,vpss-taps: number of taps
++- xlnx,vpss-ppc: pixels per clock
 +
-+struct xilinx_axi_hls_register {
-+	__u32 offset;
-+	__u32 value;
-+};
++Example:
 +
-+struct xilinx_axi_hls_registers {
-+	__u32 num_regs;
-+	struct xilinx_axi_hls_register *regs;
-+};
-+
-+#define XILINX_AXI_HLS_READ	_IOWR('V', BASE_VIDIOC_PRIVATE+0, struct xilinx_axi_hls_registers)
-+#define XILINX_AXI_HLS_WRITE	_IOW('V', BASE_VIDIOC_PRIVATE+1, struct xilinx_axi_hls_registers)
-+
-+#endif /* __UAPI_XILINX_HLS_H__ */
---- /dev/null
-+++ linux-xlnx-2022.2/include/uapi/linux/xilinx-sdirxss.h	2023-04-14 12:24:20.229726200 +0900
-@@ -0,0 +1,66 @@
-+/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-+
-+#ifndef __UAPI_XILINX_SDIRXSS_H__
-+#define __UAPI_XILINX_SDIRXSS_H__
-+
-+#include <linux/types.h>
-+#include <linux/videodev2.h>
-+
-+/*
-+ * Events
-+ *
-+ * V4L2_EVENT_XLNXSDIRX_UNDERFLOW: Video in to AXI4 Stream core underflowed
-+ * V4L2_EVENT_XLNXSDIRX_OVERFLOW: Video in to AXI4 Stream core overflowed
-+ */
-+#define V4L2_EVENT_XLNXSDIRX_CLASS	(V4L2_EVENT_PRIVATE_START | 0x200)
-+#define V4L2_EVENT_XLNXSDIRX_UNDERFLOW	(V4L2_EVENT_XLNXSDIRX_CLASS | 0x1)
-+#define V4L2_EVENT_XLNXSDIRX_OVERFLOW	(V4L2_EVENT_XLNXSDIRX_CLASS | 0x2)
-+
-+/*
-+ * This enum is used to prepare the bitmask
-+ * of modes to be detected
-+ */
-+enum {
-+	XSDIRX_MODE_SD_OFFSET = 0,
-+	XSDIRX_MODE_HD_OFFSET,
-+	XSDIRX_MODE_3G_OFFSET,
-+	XSDIRX_MODE_6G_OFFSET,
-+	XSDIRX_MODE_12GI_OFFSET,
-+	XSDIRX_MODE_12GF_OFFSET,
-+	XSDIRX_MODE_NUM_SUPPORTED,
-+};
-+
-+#define XSDIRX_DETECT_ALL_MODES		(BIT(XSDIRX_MODE_SD_OFFSET) | \
-+					BIT(XSDIRX_MODE_HD_OFFSET) | \
-+					BIT(XSDIRX_MODE_3G_OFFSET) | \
-+					BIT(XSDIRX_MODE_6G_OFFSET) | \
-+					BIT(XSDIRX_MODE_12GI_OFFSET) | \
-+					BIT(XSDIRX_MODE_12GF_OFFSET))
-+
-+/*
-+ * EDH Error Types
-+ * ANC - Ancillary Data Packet Errors
-+ * FF - Full Field Errors
-+ * AP - Active Portion Errors
-+ */
-+
-+#define XSDIRX_EDH_ERRCNT_ANC_EDH_ERR	BIT(0)
-+#define XSDIRX_EDH_ERRCNT_ANC_EDA_ERR	BIT(1)
-+#define XSDIRX_EDH_ERRCNT_ANC_IDH_ERR	BIT(2)
-+#define XSDIRX_EDH_ERRCNT_ANC_IDA_ERR	BIT(3)
-+#define XSDIRX_EDH_ERRCNT_ANC_UES_ERR	BIT(4)
-+#define XSDIRX_EDH_ERRCNT_FF_EDH_ERR	BIT(5)
-+#define XSDIRX_EDH_ERRCNT_FF_EDA_ERR	BIT(6)
-+#define XSDIRX_EDH_ERRCNT_FF_IDH_ERR	BIT(7)
-+#define XSDIRX_EDH_ERRCNT_FF_IDA_ERR	BIT(8)
-+#define XSDIRX_EDH_ERRCNT_FF_UES_ERR	BIT(9)
-+#define XSDIRX_EDH_ERRCNT_AP_EDH_ERR	BIT(10)
-+#define XSDIRX_EDH_ERRCNT_AP_EDA_ERR	BIT(11)
-+#define XSDIRX_EDH_ERRCNT_AP_IDH_ERR	BIT(12)
-+#define XSDIRX_EDH_ERRCNT_AP_IDA_ERR	BIT(13)
-+#define XSDIRX_EDH_ERRCNT_AP_UES_ERR	BIT(14)
-+#define XSDIRX_EDH_ERRCNT_PKT_CHKSUM_ERR	BIT(15)
-+
-+#define XSDIRX_EDH_ALLERR_MASK		0xFFFF
-+
-+#endif /* __UAPI_XILINX_SDIRXSS_H__ */
---- /dev/null
-+++ linux-xlnx-2022.2/include/uapi/linux/xilinx-v4l2-events.h	2023-04-14 12:24:20.229726200 +0900
-@@ -0,0 +1,25 @@
-+/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-+
-+/*
-+ * Xilinx V4L2 SCD Driver
-+ *
-+ * Copyright (C) 2017-2018 Xilinx, Inc.
-+ *
-+ * Contacts: Hyun Kwon <hyun.kwon@xilinx.com>
-+ *
-+ */
-+
-+#ifndef __UAPI_XILINX_V4L2_EVENTS_H__
-+#define __UAPI_XILINX_V4L2_EVENTS_H__
-+
-+#include <linux/videodev2.h>
-+
-+/*
-+ * Events
-+ *
-+ * V4L2_EVENT_XLNXSCD: Scene Change Detection
-+ */
-+#define V4L2_EVENT_XLNXSCD_CLASS	(V4L2_EVENT_PRIVATE_START | 0x300)
-+#define V4L2_EVENT_XLNXSCD		(V4L2_EVENT_XLNXSCD_CLASS | 0x1)
-+
-+#endif /* __UAPI_XILINX_V4L2_EVENTS_H__ */
---- /dev/null
-+++ linux-xlnx-2022.2/include/uapi/linux/xilinx-dprxss.h	2023-04-14 12:24:20.229726200 +0900
-@@ -0,0 +1,22 @@
-+/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-+
-+#ifndef __XILINX_DPRXSS_H__
-+#define __XILINX_DPRXSS_H__
-+
-+#include <linux/types.h>
-+
-+/**
-+ * struct xdprxss_hdcp1x_keys_ioctl - Hdcp1x Keys structure
-+ * @size: size of the keys
-+ * @keys: Pointer to the keys buffer
-+ */
-+struct xdprxss_hdcp1x_keys_ioctl {
-+	__u32 size;
-+	void const *keys;
-+};
-+
-+/* This ioctl is used to set the hdcp1x keys into IP */
-+#define XILINX_DPRXSS_HDCP_KEY_WRITE \
-+	_IOW('X', BASE_VIDIOC_PRIVATE + 0, struct xdprxss_hdcp1x_keys_ioctl)
-+
-+#endif
---- /dev/null
-+++ linux-xlnx-2022.2/include/linux/xilinx-hdcp1x-cipher.h	2023-04-14 12:24:19.290775800 +0900
-@@ -0,0 +1,105 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Xilinx HDCP1X Cipher driver
-+ *
-+ * Copyright (C) 2022 Xilinx, Inc.
-+ *
-+ * Author: Jagadeesh Banisetti <jagadeesh.banisetti@xilinx.com>
-+ */
-+
-+#ifndef __XILINX_HDCP1X_CIPHER_H__
-+#define __XILINX_HDCP1X_CIPHER_H__
-+
-+#include <linux/device.h>
-+#include <linux/io.h>
-+#include <linux/types.h>
-+
-+#if IS_ENABLED(CONFIG_XLNX_HDCP1X_CIPHER)
-+void *xhdcp1x_cipher_init(struct device *dev, void __iomem *hdcp1x_base);
-+int xhdcp1x_cipher_reset(void *ref);
-+int xhdcp1x_cipher_enable(void *ref);
-+int xhdcp1x_cipher_disable(void *ref);
-+int xhdcp1x_cipher_set_num_lanes(void *ref, u8 num_lanes);
-+int xhdcp1x_cipher_set_keyselect(void *ref, u8 keyselect);
-+int xhdcp1x_cipher_load_bksv(void *ref, u8 *buf);
-+int xhdcp1x_cipher_set_remoteksv(void *ref, u64 ksv);
-+int xhdcp1x_cipher_get_ro(void *ref, u16 *ro);
-+int xhdcp1x_cipher_set_b(void *ref, u64 an, bool is_repeater);
-+int xhdcp1x_cipher_is_request_complete(void *ref);
-+int xhdcp1x_cipher_set_link_state_check(void *ref, bool is_enabled);
-+int xhdcp1x_cipher_get_interrupts(void *ref, u32 *interrupts);
-+int xhdcp1x_cipher_is_linkintegrity_failed(void *ref);
-+#else
-+static inline void *xhdcp1x_cipher_init(struct device *dev,
-+					void __iomem *hdcp1x_base)
-+{
-+	return NULL;
-+}
-+
-+static inline int xhdcp1x_cipher_reset(void *ref)
-+{
-+	return -EINVAL;
-+}
-+
-+static inline int xhdcp1x_cipher_enable(void *ref)
-+{
-+	return -EINVAL;
-+}
-+
-+static inline int xhdcp1x_cipher_disable(void *ref)
-+{
-+	return -EINVAL;
-+}
-+
-+static inline int xhdcp1x_cipher_set_num_lanes(void *ref, u8 num_lanes)
-+{
-+	return -EINVAL;
-+}
-+
-+static inline int xhdcp1x_cipher_set_keyselect(void *ref, u8 keyselect)
-+{
-+	return -EINVAL;
-+}
-+
-+static inline int xhdcp1x_cipher_load_bksv(void *ref, u8 *buf)
-+{
-+	return -EINVAL;
-+}
-+
-+static inline int xhdcp1x_cipher_set_remoteksv(void *ref, u64 ksv)
-+{
-+	return -EINVAL;
-+}
-+
-+static inline int xhdcp1x_cipher_get_ro(void *ref, u16 *ro)
-+{
-+	return -EINVAL;
-+}
-+
-+static inline int xhdcp1x_cipher_set_b(void *ref, u64 value, bool is_repeater)
-+{
-+	return -EINVAL;
-+}
-+
-+static inline int xhdcp1x_cipher_is_request_complete(void *ref)
-+{
-+	return -EINVAL;
-+}
-+
-+static inline int xhdcp1x_cipher_set_link_state_check(void *ref, u8 is_enabled)
-+{
-+	return -EINVAL;
-+}
-+
-+static inline int xhdcp1x_cipher_get_interrupts(void *ref, u32 *interrupts)
-+{
-+	return -EINVAL;
-+}
-+
-+static inline int xhdcp1x_cipher_is_linkintegrity_failed(void *ref)
-+{
-+	return -EINVAL;
-+}
-+#endif /* CONFIG_XLNX_HDCP1X_CIPHER */
-+
-+#endif /* __XILINX_HDCP1X_CIPHER_H__ */
---- linux-5.15.36/drivers/media/platform/xilinx/Kconfig	2023-04-14 12:26:00.422557000 +0900
-+++ linux-xlnx-2022.2/drivers/media/platform/xilinx/Kconfig	2023-04-14 12:24:07.474773900 +0900
++        ctrlvpss: vpss@0xa0200000 {
++                compatible = "xlnx,ctrl-xvpss-1.0";
++                reg = <0x0 0xa0200000 0x0 0x30000>;
++                reset-gpios = <&gpio 80 1>;
++                xlnx,vpss-taps = <6>;
++                xlnx,vpss-ppc = <2>;
++        };
+diff --git a/drivers/media/platform/xilinx/Kconfig b/drivers/media/platform/xilinx/Kconfig
+index 44587dcca..ce62b7f25 100644
+--- a/drivers/media/platform/xilinx/Kconfig
++++ b/drivers/media/platform/xilinx/Kconfig
 @@ -3,9 +3,11 @@
  config VIDEO_XILINX
  	tristate "Xilinx Video IP (EXPERIMENTAL)"
@@ -3344,7 +3163,7 @@
  	select V4L2_FWNODE
  	help
  	  Driver for Xilinx Video IP Pipelines
-@@ -19,17 +21,189 @@
+@@ -19,17 +21,189 @@ config VIDEO_XILINX_CSI2RXSS
  	  based driver that takes input from CSI-2 Tx source and converts
  	  it into an AXI4-Stream.
  
@@ -3536,8 +3355,10 @@
 +	  If unsure, choose N
  
  endif #VIDEO_XILINX
---- linux-5.15.36/drivers/media/platform/xilinx/Makefile	2023-04-14 12:26:00.422557000 +0900
-+++ linux-xlnx-2022.2/drivers/media/platform/xilinx/Makefile	2023-04-14 12:24:07.474773900 +0900
+diff --git a/drivers/media/platform/xilinx/Makefile b/drivers/media/platform/xilinx/Makefile
+index 6119a34f3..1d96d7d56 100644
+--- a/drivers/media/platform/xilinx/Makefile
++++ b/drivers/media/platform/xilinx/Makefile
 @@ -1,8 +1,31 @@
  # SPDX-License-Identifier: GPL-2.0
  
@@ -3570,8 +3391,11 @@
 +obj-$(CONFIG_VIDEO_XILINX_VPSS_CSC) += xilinx-vpss-csc.o
 +obj-$(CONFIG_VIDEO_XILINX_VPSS_SCALER) += xilinx-vpss-scaler.o
  obj-$(CONFIG_VIDEO_XILINX_VTC) += xilinx-vtc.o
+diff --git a/drivers/media/platform/xilinx/xilinx-axis-broadcaster.c b/drivers/media/platform/xilinx/xilinx-axis-broadcaster.c
+new file mode 100644
+index 000000000..4ad9bd213
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/media/platform/xilinx/xilinx-axis-broadcaster.c	2023-04-14 12:24:07.474773900 +0900
++++ b/drivers/media/platform/xilinx/xilinx-axis-broadcaster.c
 @@ -0,0 +1,288 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
@@ -3861,8 +3685,11 @@
 +MODULE_AUTHOR("Ronak Shah <ronak.shah@xilinx.com>");
 +MODULE_DESCRIPTION("Xilinx AXI4-Stream Broadcaster Driver");
 +MODULE_LICENSE("GPL v2");
+diff --git a/drivers/media/platform/xilinx/xilinx-axis-subsetconv.c b/drivers/media/platform/xilinx/xilinx-axis-subsetconv.c
+new file mode 100644
+index 000000000..c0f42505b
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/media/platform/xilinx/xilinx-axis-subsetconv.c	2023-04-14 12:24:07.474773900 +0900
++++ b/drivers/media/platform/xilinx/xilinx-axis-subsetconv.c
 @@ -0,0 +1,355 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
@@ -4219,8 +4046,11 @@
 +MODULE_AUTHOR("Karthikeyan T <karthikeyan.thangavel@xilinx.com>");
 +MODULE_DESCRIPTION("Xilinx AXI4-Stream Subset Converter Driver");
 +MODULE_LICENSE("GPL v2");
+diff --git a/drivers/media/platform/xilinx/xilinx-axis-switch.c b/drivers/media/platform/xilinx/xilinx-axis-switch.c
+new file mode 100644
+index 000000000..15ab79c25
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/media/platform/xilinx/xilinx-axis-switch.c	2023-04-14 12:24:07.474773900 +0900
++++ b/drivers/media/platform/xilinx/xilinx-axis-switch.c
 @@ -0,0 +1,630 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
@@ -4852,8 +4682,11 @@
 +MODULE_AUTHOR("Vishal Sagar <vishal.sagar@xilinx.com>");
 +MODULE_DESCRIPTION("Xilinx AXI4-Stream Switch Driver");
 +MODULE_LICENSE("GPL v2");
+diff --git a/drivers/media/platform/xilinx/xilinx-cfa.c b/drivers/media/platform/xilinx/xilinx-cfa.c
+new file mode 100644
+index 000000000..0ae19bb50
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/media/platform/xilinx/xilinx-cfa.c	2023-04-14 12:24:07.490394800 +0900
++++ b/drivers/media/platform/xilinx/xilinx-cfa.c
 @@ -0,0 +1,410 @@
 +/*
 + * Xilinx Color Filter Array
@@ -5265,8 +5098,11 @@
 +
 +MODULE_DESCRIPTION("Xilinx Color Filter Array Driver");
 +MODULE_LICENSE("GPL v2");
+diff --git a/drivers/media/platform/xilinx/xilinx-cresample.c b/drivers/media/platform/xilinx/xilinx-cresample.c
+new file mode 100644
+index 000000000..5204b5e5c
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/media/platform/xilinx/xilinx-cresample.c	2023-04-14 12:24:07.490394800 +0900
++++ b/drivers/media/platform/xilinx/xilinx-cresample.c
 @@ -0,0 +1,461 @@
 +/*
 + * Xilinx Chroma Resampler
@@ -5729,8 +5565,10 @@
 +
 +MODULE_DESCRIPTION("Xilinx Chroma Resampler Driver");
 +MODULE_LICENSE("GPL v2");
---- linux-5.15.36/drivers/media/platform/xilinx/xilinx-csi2rxss.c	2023-04-14 12:26:00.422557000 +0900
-+++ linux-xlnx-2022.2/drivers/media/platform/xilinx/xilinx-csi2rxss.c	2023-04-14 12:24:07.490394800 +0900
+diff --git a/drivers/media/platform/xilinx/xilinx-csi2rxss.c b/drivers/media/platform/xilinx/xilinx-csi2rxss.c
+index b1baf9d7b..5424cbd6a 100644
+--- a/drivers/media/platform/xilinx/xilinx-csi2rxss.c
++++ b/drivers/media/platform/xilinx/xilinx-csi2rxss.c
 @@ -48,6 +48,7 @@
  
  #define XCSI_ISR_FR		BIT(31)
@@ -5756,7 +5594,7 @@
  #define XCSI_DT_YUV4228B	0x1e
  #define XCSI_DT_YUV42210B	0x1f
  #define XCSI_DT_RGB444		0x20
-@@ -154,6 +156,7 @@
+@@ -154,6 +156,7 @@ struct xcsi2rxss_event {
  static const struct xcsi2rxss_event xcsi2rxss_events[] = {
  	{ XCSI_ISR_FR, "Frame Received" },
  	{ XCSI_ISR_VCXFE, "VCX Frame Errors" },
@@ -5764,7 +5602,7 @@
  	{ XCSI_ISR_WCC, "Word Count Errors" },
  	{ XCSI_ISR_ILC, "Invalid Lane Count Error" },
  	{ XCSI_ISR_SPFIFOF, "Short Packet FIFO OverFlow Error" },
-@@ -183,6 +186,7 @@
+@@ -183,6 +186,7 @@ static const struct xcsi2rxss_event xcsi2rxss_events[] = {
   * and media bus formats
   */
  static const u32 xcsi2dt_mbus_lut[][2] = {
@@ -5772,7 +5610,7 @@
  	{ XCSI_DT_YUV4228B, MEDIA_BUS_FMT_UYVY8_1X16 },
  	{ XCSI_DT_YUV42210B, MEDIA_BUS_FMT_UYVY10_1X20 },
  	{ XCSI_DT_RGB444, 0 },
-@@ -489,12 +493,15 @@
+@@ -489,12 +493,15 @@ static int xcsi2rxss_log_status(struct v4l2_subdev *sd)
  static struct v4l2_subdev *xcsi2rxss_get_remote_subdev(struct media_pad *local)
  {
  	struct media_pad *remote;
@@ -5790,7 +5628,7 @@
  }
  
  static int xcsi2rxss_start_stream(struct xcsi2rxss_state *state)
-@@ -520,7 +527,14 @@
+@@ -520,7 +527,14 @@ static int xcsi2rxss_start_stream(struct xcsi2rxss_state *state)
  	state->rsubdev =
  		xcsi2rxss_get_remote_subdev(&state->pads[XVIP_PAD_SINK]);
  
@@ -5805,7 +5643,7 @@
  	if (ret) {
  		/* disable interrupts */
  		xcsi2rxss_clr(state, XCSI_IER_OFFSET, XCSI_IER_INTR_MASK);
-@@ -595,8 +609,11 @@
+@@ -595,8 +609,11 @@ static irqreturn_t xcsi2rxss_irq_handler(int irq, void *data)
  	 * Stream line buffer full
  	 * This means there is a backpressure from downstream IP
  	 */
@@ -5819,7 +5657,7 @@
  
  		/* disable interrupts */
  		xcsi2rxss_clr(state, XCSI_IER_OFFSET, XCSI_IER_INTR_MASK);
-@@ -684,21 +701,28 @@
+@@ -684,21 +701,28 @@ __xcsi2rxss_get_pad_format(struct xcsi2rxss_state *xcsi2rxss,
  			   struct v4l2_subdev_state *sd_state,
  			   unsigned int pad, u32 which)
  {
@@ -5853,7 +5691,7 @@
   *
   * This function is used to initialize the pad format with the default
   * values.
-@@ -725,7 +749,7 @@
+@@ -725,7 +749,7 @@ static int xcsi2rxss_init_cfg(struct v4l2_subdev *sd,
  /**
   * xcsi2rxss_get_format - Get the pad format
   * @sd: Pointer to V4L2 Sub device structure
@@ -5862,7 +5700,7 @@
   * @fmt: Pointer to pad level media bus format
   *
   * This function is used to get the pad format information.
-@@ -737,20 +761,30 @@
+@@ -737,20 +761,30 @@ static int xcsi2rxss_get_format(struct v4l2_subdev *sd,
  				struct v4l2_subdev_format *fmt)
  {
  	struct xcsi2rxss_state *xcsi2rxss = to_xcsi2rxssstate(sd);
@@ -5898,7 +5736,7 @@
   * @fmt: Pointer to pad level media bus format
   *
   * This function is used to set the pad format. Since the pad format is fixed
-@@ -767,6 +801,7 @@
+@@ -767,6 +801,7 @@ static int xcsi2rxss_set_format(struct v4l2_subdev *sd,
  	struct xcsi2rxss_state *xcsi2rxss = to_xcsi2rxssstate(sd);
  	struct v4l2_mbus_framefmt *__format;
  	u32 dt;
@@ -5906,7 +5744,7 @@
  
  	mutex_lock(&xcsi2rxss->lock);
  
-@@ -777,12 +812,15 @@
+@@ -777,12 +812,15 @@ static int xcsi2rxss_set_format(struct v4l2_subdev *sd,
  	 */
  	__format = __xcsi2rxss_get_pad_format(xcsi2rxss, sd_state,
  					      fmt->pad, fmt->which);
@@ -5924,7 +5762,7 @@
  	}
  
  	/*
-@@ -799,9 +837,11 @@
+@@ -799,9 +837,11 @@ static int xcsi2rxss_set_format(struct v4l2_subdev *sd,
  	}
  
  	*__format = fmt->format;
@@ -5937,7 +5775,7 @@
  }
  
  /*
-@@ -895,6 +935,7 @@
+@@ -895,6 +935,7 @@ static int xcsi2rxss_parse_of(struct xcsi2rxss_state *xcsi2rxss)
  	}
  
  	switch (xcsi2rxss->datatype) {
@@ -5945,8 +5783,11 @@
  	case XCSI_DT_YUV4228B:
  	case XCSI_DT_RGB444:
  	case XCSI_DT_RGB555:
+diff --git a/drivers/media/platform/xilinx/xilinx-demosaic.c b/drivers/media/platform/xilinx/xilinx-demosaic.c
+new file mode 100644
+index 000000000..33b461294
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/media/platform/xilinx/xilinx-demosaic.c	2023-04-14 12:24:07.490394800 +0900
++++ b/drivers/media/platform/xilinx/xilinx-demosaic.c
 @@ -0,0 +1,436 @@
 +/*
 + * Xilinx Video Demosaic IP
@@ -6384,8 +6225,10 @@
 +module_platform_driver(xdmsc_driver);
 +MODULE_DESCRIPTION("Xilinx Demosaic IP Driver");
 +MODULE_LICENSE("GPL v2");
---- linux-5.15.36/drivers/media/platform/xilinx/xilinx-dma.c	2023-04-14 12:26:00.422557000 +0900
-+++ linux-xlnx-2022.2/drivers/media/platform/xilinx/xilinx-dma.c	2023-04-14 12:24:07.490394800 +0900
+diff --git a/drivers/media/platform/xilinx/xilinx-dma.c b/drivers/media/platform/xilinx/xilinx-dma.c
+index 338c3661d..403d41ece 100644
+--- a/drivers/media/platform/xilinx/xilinx-dma.c
++++ b/drivers/media/platform/xilinx/xilinx-dma.c
 @@ -10,11 +10,13 @@
   */
  
@@ -6412,7 +6255,7 @@
  /* Minimum and maximum widths are expressed in bytes */
  #define XVIP_DMA_MIN_WIDTH		1U
  #define XVIP_DMA_MAX_WIDTH		65535U
-@@ -61,7 +64,7 @@
+@@ -61,7 +64,7 @@ static int xvip_dma_verify_format(struct xvip_dma *dma)
  	int ret;
  
  	subdev = xvip_dma_remote_subdev(&dma->pad, &fmt.pad);
@@ -6421,7 +6264,7 @@
  		return -EPIPE;
  
  	fmt.which = V4L2_SUBDEV_FORMAT_ACTIVE;
-@@ -69,10 +72,15 @@
+@@ -69,10 +72,15 @@ static int xvip_dma_verify_format(struct xvip_dma *dma)
  	if (ret < 0)
  		return ret == -ENOIOCTLCMD ? -EINVAL : ret;
  
@@ -6441,10 +6284,11 @@
  		return -EINVAL;
  
  	return 0;
-@@ -83,46 +91,6 @@
+@@ -82,46 +90,6 @@ static int xvip_dma_verify_format(struct xvip_dma *dma)
+  * Pipeline Stream Management
   */
  
- /**
+-/**
 - * xvip_pipeline_start_stop - Start ot stop streaming on a pipeline
 - * @pipe: The pipeline
 - * @start: Start (when true) or stop (when false) the pipeline
@@ -6484,11 +6328,10 @@
 -	return 0;
 -}
 -
--/**
+ /**
   * xvip_pipeline_set_stream - Enable/disable streaming on a pipeline
   * @pipe: The pipeline
-  * @on: Turn the stream on when true or off when false
-@@ -132,7 +100,8 @@
+@@ -132,7 +100,8 @@ static int xvip_pipeline_start_stop(struct xvip_pipeline *pipe, bool start)
   * independently, pipelines have a shared stream state that enable or disable
   * all entities in the pipeline. For this reason the pipeline uses a streaming
   * counter that tracks the number of DMA engines that have requested the stream
@@ -6498,7 +6341,7 @@
   *
   * When called with the @on argument set to true, this function will increment
   * the pipeline streaming count. If the streaming count reaches the number of
-@@ -149,20 +118,22 @@
+@@ -149,20 +118,22 @@ static int xvip_pipeline_start_stop(struct xvip_pipeline *pipe, bool start)
   */
  static int xvip_pipeline_set_stream(struct xvip_pipeline *pipe, bool on)
  {
@@ -6524,7 +6367,7 @@
  	}
  
  done:
-@@ -199,23 +170,22 @@
+@@ -199,23 +170,22 @@ static int xvip_pipeline_validate(struct xvip_pipeline *pipe,
  
  		dma = to_xvip_dma(media_entity_to_video_device(entity));
  
@@ -6553,7 +6396,7 @@
  
  	return 0;
  }
-@@ -223,7 +193,6 @@
+@@ -223,7 +193,6 @@ static int xvip_pipeline_validate(struct xvip_pipeline *pipe,
  static void __xvip_pipeline_cleanup(struct xvip_pipeline *pipe)
  {
  	pipe->num_dmas = 0;
@@ -6561,7 +6404,7 @@
  }
  
  /**
-@@ -286,11 +255,13 @@
+@@ -286,11 +255,13 @@ static int xvip_pipeline_prepare(struct xvip_pipeline *pipe,
   * @buf: vb2 buffer base object
   * @queue: buffer list entry in the DMA engine queued buffers list
   * @dma: DMA channel that uses the buffer
@@ -6575,7 +6418,7 @@
  };
  
  #define to_xvip_dma_buffer(vb)	container_of(vb, struct xvip_dma_buffer, buf)
-@@ -299,6 +270,9 @@
+@@ -299,6 +270,9 @@ static void xvip_dma_complete(void *param)
  {
  	struct xvip_dma_buffer *buf = param;
  	struct xvip_dma *dma = buf->dma;
@@ -6585,7 +6428,7 @@
  
  	spin_lock(&dma->queued_lock);
  	list_del(&buf->queue);
-@@ -307,7 +281,38 @@
+@@ -307,7 +281,38 @@ static void xvip_dma_complete(void *param)
  	buf->buf.field = V4L2_FIELD_NONE;
  	buf->buf.sequence = dma->sequence++;
  	buf->buf.vb2_buf.timestamp = ktime_get_ns();
@@ -6625,7 +6468,7 @@
  	vb2_buffer_done(&buf->buf.vb2_buf, VB2_BUF_STATE_DONE);
  }
  
-@@ -317,13 +322,39 @@
+@@ -317,13 +322,39 @@ xvip_dma_queue_setup(struct vb2_queue *vq,
  		     unsigned int sizes[], struct device *alloc_devs[])
  {
  	struct xvip_dma *dma = vb2_get_drv_priv(vq);
@@ -6669,18 +6512,19 @@
  
  	return 0;
  }
-@@ -346,15 +377,21 @@
+@@ -346,15 +377,21 @@ static void xvip_dma_buffer_queue(struct vb2_buffer *vb)
  	struct xvip_dma_buffer *buf = to_xvip_dma_buffer(vbuf);
  	struct dma_async_tx_descriptor *desc;
  	dma_addr_t addr = vb2_dma_contig_plane_dma_addr(vb, 0);
 -	u32 flags;
+-
+-	if (dma->queue.type == V4L2_BUF_TYPE_VIDEO_CAPTURE) {
 +	u32 flags = 0;
 +	u32 luma_size;
 +	u32 padding_factor_nume, padding_factor_deno, bpl_nume, bpl_deno;
 +	u32 fid = ~0;
 +	u32 bpl;
- 
--	if (dma->queue.type == V4L2_BUF_TYPE_VIDEO_CAPTURE) {
++
 +	if (dma->queue.type == V4L2_BUF_TYPE_VIDEO_CAPTURE ||
 +	    dma->queue.type == V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE) {
  		flags = DMA_PREP_INTERRUPT | DMA_CTRL_ACK;
@@ -6694,7 +6538,7 @@
  		flags = DMA_PREP_INTERRUPT | DMA_CTRL_ACK;
  		dma->xt.dir = DMA_MEM_TO_DEV;
  		dma->xt.src_sgl = true;
-@@ -362,10 +399,89 @@
+@@ -362,10 +399,89 @@ static void xvip_dma_buffer_queue(struct vb2_buffer *vb)
  		dma->xt.src_start = addr;
  	}
  
@@ -6788,7 +6632,7 @@
  
  	desc = dmaengine_prep_interleaved_dma(dma->dma, &dma->xt, flags);
  	if (!desc) {
-@@ -375,11 +491,28 @@
+@@ -375,11 +491,28 @@ static void xvip_dma_buffer_queue(struct vb2_buffer *vb)
  	}
  	desc->callback = xvip_dma_complete;
  	desc->callback_param = buf;
@@ -6817,7 +6661,7 @@
  	dmaengine_submit(desc);
  
  	if (vb2_is_streaming(&dma->queue))
-@@ -394,6 +527,7 @@
+@@ -394,6 +527,7 @@ static int xvip_dma_start_streaming(struct vb2_queue *vq, unsigned int count)
  	int ret;
  
  	dma->sequence = 0;
@@ -6825,7 +6669,7 @@
  
  	/*
  	 * Start streaming on the pipeline. No link touching an entity in the
-@@ -402,10 +536,12 @@
+@@ -402,10 +536,12 @@ static int xvip_dma_start_streaming(struct vb2_queue *vq, unsigned int count)
  	 * Use the pipeline object embedded in the first DMA object that starts
  	 * streaming.
  	 */
@@ -6838,7 +6682,7 @@
  	if (ret < 0)
  		goto error;
  
-@@ -422,11 +558,25 @@
+@@ -422,11 +558,25 @@ static int xvip_dma_start_streaming(struct vb2_queue *vq, unsigned int count)
  
  	/* Start the DMA engine. This must be done before starting the blocks
  	 * in the pipeline to avoid DMA synchronization issues.
@@ -6867,7 +6711,7 @@
  
  	return 0;
  
-@@ -434,6 +584,7 @@
+@@ -434,6 +584,7 @@ static int xvip_dma_start_streaming(struct vb2_queue *vq, unsigned int count)
  	media_pipeline_stop(&dma->video.entity);
  
  error:
@@ -6875,7 +6719,7 @@
  	/* Give back all queued buffers to videobuf2. */
  	spin_lock_irq(&dma->queued_lock);
  	list_for_each_entry_safe(buf, nbuf, &dma->queued_bufs, queue) {
-@@ -493,10 +644,104 @@
+@@ -493,10 +644,104 @@ xvip_dma_querycap(struct file *file, void *fh, struct v4l2_capability *cap)
  	cap->capabilities = dma->xdev->v4l2_caps | V4L2_CAP_STREAMING |
  			    V4L2_CAP_DEVICE_CAPS;
  
@@ -6984,7 +6828,7 @@
  
  	return 0;
  }
-@@ -511,11 +756,43 @@
+@@ -511,11 +756,43 @@ xvip_dma_enum_format(struct file *file, void *fh, struct v4l2_fmtdesc *f)
  {
  	struct v4l2_fh *vfh = file->private_data;
  	struct xvip_dma *dma = to_xvip_dma(vfh->vdev);
@@ -6992,12 +6836,12 @@
 +	struct v4l2_subdev_format v4l_fmt;
 +	const struct xvip_video_format *fmt;
 +	int err, ret;
-+
+ 
 +	/* Establish media pad format */
 +	subdev = xvip_dma_remote_subdev(&dma->pad, &v4l_fmt.pad);
 +	if (!subdev)
 +		return -EPIPE;
- 
++
 +	v4l_fmt.which = V4L2_SUBDEV_FORMAT_ACTIVE;
 +	ret = v4l2_subdev_call(subdev, pad, get_fmt, NULL, &v4l_fmt);
 +	if (ret < 0)
@@ -7029,7 +6873,7 @@
  
  	return 0;
  }
-@@ -526,13 +803,17 @@
+@@ -526,13 +803,17 @@ xvip_dma_get_format(struct file *file, void *fh, struct v4l2_format *format)
  	struct v4l2_fh *vfh = file->private_data;
  	struct xvip_dma *dma = to_xvip_dma(vfh->vdev);
  
@@ -7049,7 +6893,7 @@
  		      const struct xvip_video_format **fmtinfo)
  {
  	const struct xvip_video_format *info;
-@@ -541,40 +822,146 @@
+@@ -541,40 +822,146 @@ __xvip_dma_try_format(struct xvip_dma *dma, struct v4l2_pix_format *pix,
  	unsigned int min_bpl;
  	unsigned int max_bpl;
  	unsigned int width;
@@ -7092,11 +6936,11 @@
 +		fourcc = format->fmt.pix_mp.pixelformat;
 +	else
 +		fourcc = format->fmt.pix.pixelformat;
-+
-+	info = xvip_get_format_by_fourcc(fourcc);
  
 -	pix->pixelformat = info->fourcc;
 -	pix->field = V4L2_FIELD_NONE;
++	info = xvip_get_format_by_fourcc(fourcc);
++
 +	if (IS_ERR(info))
 +		info = xvip_get_format_by_fourcc(XVIP_DMA_DEF_FORMAT);
 +
@@ -7124,11 +6968,12 @@
 -	min_bpl = pix->width * info->bpp;
 -	max_bpl = rounddown(XVIP_DMA_MAX_WIDTH, dma->align);
 -	bpl = rounddown(pix->bytesperline, dma->align);
-+	min_width = roundup(XVIP_DMA_MIN_WIDTH, dma->width_align);
-+	max_width = rounddown(XVIP_DMA_MAX_WIDTH, dma->width_align);
- 
+-
 -	pix->bytesperline = clamp(bpl, min_bpl, max_bpl);
 -	pix->sizeimage = pix->bytesperline * pix->height;
++	min_width = roundup(XVIP_DMA_MIN_WIDTH, dma->width_align);
++	max_width = rounddown(XVIP_DMA_MAX_WIDTH, dma->width_align);
++
 +	if (V4L2_TYPE_IS_MULTIPLANAR(dma->format.type)) {
 +		struct v4l2_pix_format_mplane *pix_mp;
 +		struct v4l2_plane_pix_format *plane_fmt;
@@ -7218,7 +7063,7 @@
  
  	if (fmtinfo)
  		*fmtinfo = info;
-@@ -586,7 +973,7 @@
+@@ -586,7 +973,7 @@ xvip_dma_try_format(struct file *file, void *fh, struct v4l2_format *format)
  	struct v4l2_fh *vfh = file->private_data;
  	struct xvip_dma *dma = to_xvip_dma(vfh->vdev);
  
@@ -7227,7 +7072,7 @@
  	return 0;
  }
  
-@@ -595,28 +982,151 @@
+@@ -595,28 +982,151 @@ xvip_dma_set_format(struct file *file, void *fh, struct v4l2_format *format)
  {
  	struct v4l2_fh *vfh = file->private_data;
  	struct xvip_dma *dma = to_xvip_dma(vfh->vdev);
@@ -7382,7 +7227,7 @@
  	.vidioc_reqbufs			= vb2_ioctl_reqbufs,
  	.vidioc_querybuf		= vb2_ioctl_querybuf,
  	.vidioc_qbuf			= vb2_ioctl_qbuf,
-@@ -625,6 +1135,121 @@
+@@ -625,6 +1135,121 @@ static const struct v4l2_ioctl_ops xvip_dma_ioctl_ops = {
  	.vidioc_expbuf			= vb2_ioctl_expbuf,
  	.vidioc_streamon		= vb2_ioctl_streamon,
  	.vidioc_streamoff		= vb2_ioctl_streamoff,
@@ -7504,7 +7349,7 @@
  };
  
  /* -----------------------------------------------------------------------------
-@@ -634,7 +1259,7 @@
+@@ -634,7 +1259,7 @@ static const struct v4l2_ioctl_ops xvip_dma_ioctl_ops = {
  static const struct v4l2_file_operations xvip_dma_fops = {
  	.owner		= THIS_MODULE,
  	.unlocked_ioctl	= video_ioctl2,
@@ -7513,7 +7358,7 @@
  	.release	= vb2_fop_release,
  	.poll		= vb2_fop_poll,
  	.mmap		= vb2_fop_mmap,
-@@ -649,6 +1274,7 @@
+@@ -649,6 +1274,7 @@ int xvip_dma_init(struct xvip_composite_device *xdev, struct xvip_dma *dma,
  {
  	char name[16];
  	int ret;
@@ -7521,7 +7366,7 @@
  
  	dma->xdev = xdev;
  	dma->port = port;
-@@ -657,42 +1283,132 @@
+@@ -657,42 +1283,132 @@ int xvip_dma_init(struct xvip_composite_device *xdev, struct xvip_dma *dma,
  	INIT_LIST_HEAD(&dma->queued_bufs);
  	spin_lock_init(&dma->queued_lock);
  
@@ -7669,7 +7514,7 @@
  
  	video_set_drvdata(&dma->video, dma);
  
-@@ -730,6 +1446,13 @@
+@@ -730,6 +1446,13 @@ int xvip_dma_init(struct xvip_composite_device *xdev, struct xvip_dma *dma,
  		goto error;
  	}
  
@@ -7683,7 +7528,7 @@
  	dma->align = 1 << dma->dma->device->copy_align;
  
  	ret = video_register_device(&dma->video, VFL_TYPE_VIDEO, -1);
-@@ -753,6 +1476,7 @@
+@@ -753,6 +1476,7 @@ void xvip_dma_cleanup(struct xvip_dma *dma)
  	if (!IS_ERR_OR_NULL(dma->dma))
  		dma_release_channel(dma->dma);
  
@@ -7691,8 +7536,10 @@
  	media_entity_cleanup(&dma->video.entity);
  
  	mutex_destroy(&dma->lock);
---- linux-5.15.36/drivers/media/platform/xilinx/xilinx-dma.h	2023-04-14 12:26:00.422557000 +0900
-+++ linux-xlnx-2022.2/drivers/media/platform/xilinx/xilinx-dma.h	2023-04-14 12:24:07.490394800 +0900
+diff --git a/drivers/media/platform/xilinx/xilinx-dma.h b/drivers/media/platform/xilinx/xilinx-dma.h
+index 2378bdae5..dba39b8f6 100644
+--- a/drivers/media/platform/xilinx/xilinx-dma.h
++++ b/drivers/media/platform/xilinx/xilinx-dma.h
 @@ -18,6 +18,7 @@
  #include <linux/videodev2.h>
  
@@ -7701,7 +7548,7 @@
  #include <media/v4l2-dev.h>
  #include <media/videobuf2-v4l2.h>
  
-@@ -32,7 +33,7 @@
+@@ -32,7 +33,7 @@ struct xvip_video_format;
   * @use_count: number of DMA engines using the pipeline
   * @stream_count: number of DMA engines currently streaming
   * @num_dmas: number of DMA engines in the pipeline
@@ -7710,7 +7557,7 @@
   */
  struct xvip_pipeline {
  	struct media_pipeline pipe;
-@@ -42,7 +43,7 @@
+@@ -42,7 +43,7 @@ struct xvip_pipeline {
  	unsigned int stream_count;
  
  	unsigned int num_dmas;
@@ -7719,7 +7566,7 @@
  };
  
  static inline struct xvip_pipeline *to_xvip_pipeline(struct media_entity *e)
-@@ -55,33 +56,47 @@
+@@ -55,33 +56,47 @@ static inline struct xvip_pipeline *to_xvip_pipeline(struct media_entity *e)
   * @list: list entry in a composite device dmas list
   * @video: V4L2 video device associated with the DMA channel
   * @pad: media pad for the video device entity
@@ -7768,7 +7615,7 @@
  
  	struct vb2_queue queue;
  	unsigned int sequence;
-@@ -91,8 +106,12 @@
+@@ -91,8 +106,12 @@ struct xvip_dma {
  
  	struct dma_chan *dma;
  	unsigned int align;
@@ -7781,8 +7628,11 @@
  };
  
  #define to_xvip_dma(vdev)	container_of(vdev, struct xvip_dma, video)
+diff --git a/drivers/media/platform/xilinx/xilinx-dprxss.c b/drivers/media/platform/xilinx/xilinx-dprxss.c
+new file mode 100644
+index 000000000..d8fd7a376
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/media/platform/xilinx/xilinx-dprxss.c	2023-04-14 12:24:07.490394800 +0900
++++ b/drivers/media/platform/xilinx/xilinx-dprxss.c
 @@ -0,0 +1,2820 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
@@ -10604,8 +10454,11 @@
 +MODULE_AUTHOR("Rajesh Gugulothu <gugulothu.rajesh@xilinx.com");
 +MODULE_DESCRIPTION("Xilinx DP Rx Subsystem Driver");
 +MODULE_LICENSE("GPL v2");
+diff --git a/drivers/media/platform/xilinx/xilinx-gamma-coeff.h b/drivers/media/platform/xilinx/xilinx-gamma-coeff.h
+new file mode 100644
+index 000000000..344260008
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/media/platform/xilinx/xilinx-gamma-coeff.h	2023-04-14 12:24:07.490394800 +0900
++++ b/drivers/media/platform/xilinx/xilinx-gamma-coeff.h
 @@ -0,0 +1,5385 @@
 +/*
 + * Xilinx Gamma Correction IP
@@ -15992,8 +15845,11 @@
 +	&xgamma10_40[0],
 +};
 +#endif /* __XILINX_GAMMA_COEFF_H__ */
+diff --git a/drivers/media/platform/xilinx/xilinx-gamma.c b/drivers/media/platform/xilinx/xilinx-gamma.c
+new file mode 100644
+index 000000000..6ee17892e
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/media/platform/xilinx/xilinx-gamma.c	2023-04-14 12:24:07.490394800 +0900
++++ b/drivers/media/platform/xilinx/xilinx-gamma.c
 @@ -0,0 +1,565 @@
 +/*
 + * Xilinx Gamma Correction IP
@@ -16560,8 +16416,11 @@
 +module_platform_driver(xg_driver);
 +MODULE_DESCRIPTION("Xilinx Video Gamma Correction LUT Driver");
 +MODULE_LICENSE("GPL v2");
+diff --git a/drivers/media/platform/xilinx/xilinx-hdcp1x-rx.c b/drivers/media/platform/xilinx/xilinx-hdcp1x-rx.c
+new file mode 100644
+index 000000000..1d1df54f0
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/media/platform/xilinx/xilinx-hdcp1x-rx.c	2023-04-14 12:24:07.490394800 +0900
++++ b/drivers/media/platform/xilinx/xilinx-hdcp1x-rx.c
 @@ -0,0 +1,659 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
@@ -17222,8 +17081,11 @@
 +				    XHDCP1X_PORT_OFFSET_BSTATUS,
 +				    &val, XHDCP1X_PORT_SIZE_BSTATUS);
 +}
+diff --git a/drivers/media/platform/xilinx/xilinx-hdcp1x-rx.h b/drivers/media/platform/xilinx/xilinx-hdcp1x-rx.h
+new file mode 100644
+index 000000000..ede93ebf3
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/media/platform/xilinx/xilinx-hdcp1x-rx.h	2023-04-14 12:24:07.490394800 +0900
++++ b/drivers/media/platform/xilinx/xilinx-hdcp1x-rx.h
 @@ -0,0 +1,95 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
 +/*
@@ -17320,8 +17182,11 @@
 +}
 +#endif /* CONFIG_VIDEO_XILINX_HDCP1X_RX */
 +#endif /* __XILINX_HDCP1X_RX_H__ */
+diff --git a/drivers/media/platform/xilinx/xilinx-hdmirx-hw.h b/drivers/media/platform/xilinx/xilinx-hdmirx-hw.h
+new file mode 100644
+index 000000000..4cc4ed4a9
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/media/platform/xilinx/xilinx-hdmirx-hw.h	2023-04-14 12:24:07.490394800 +0900
++++ b/drivers/media/platform/xilinx/xilinx-hdmirx-hw.h
 @@ -0,0 +1,729 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
 +/*
@@ -18052,8 +17917,11 @@
 +#define HDMIRX_PIO_ID		0x2200
 +
 +#endif /* __XILINX_HDMIRX_HW_H__ */
+diff --git a/drivers/media/platform/xilinx/xilinx-hdmirxss.c b/drivers/media/platform/xilinx/xilinx-hdmirxss.c
+new file mode 100644
+index 000000000..0f0b7a297
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/media/platform/xilinx/xilinx-hdmirxss.c	2023-04-14 12:24:07.490394800 +0900
++++ b/drivers/media/platform/xilinx/xilinx-hdmirxss.c
 @@ -0,0 +1,3775 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
@@ -21830,8 +21698,11 @@
 +MODULE_AUTHOR("Vishal Sagar <vishal.sagar@xilinx.com>");
 +MODULE_DESCRIPTION("Xilinx HDMI 2.1 Rx Subsystem Driver");
 +MODULE_LICENSE("GPL v2");
+diff --git a/drivers/media/platform/xilinx/xilinx-hls-common.h b/drivers/media/platform/xilinx/xilinx-hls-common.h
+new file mode 100644
+index 000000000..8ecc3cfb8
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/media/platform/xilinx/xilinx-hls-common.h	2023-04-14 12:24:07.490394800 +0900
++++ b/drivers/media/platform/xilinx/xilinx-hls-common.h
 @@ -0,0 +1,36 @@
 +/*
 + * Xilinx HLS common header
@@ -21869,8 +21740,11 @@
 +#define XHLS_REG_COLS                           0x18
 +
 +#endif /* __XILINX_HLS_COMMON_H__ */
+diff --git a/drivers/media/platform/xilinx/xilinx-hls.c b/drivers/media/platform/xilinx/xilinx-hls.c
+new file mode 100644
+index 000000000..2ac96fd76
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/media/platform/xilinx/xilinx-hls.c	2023-04-14 12:24:07.490394800 +0900
++++ b/drivers/media/platform/xilinx/xilinx-hls.c
 @@ -0,0 +1,505 @@
 +/*
 + * Xilinx HLS Core
@@ -22377,8 +22251,11 @@
 +MODULE_AUTHOR("Laurent Pinchart <laurent.pinchart@ideasonboard.com>");
 +MODULE_DESCRIPTION("Xilinx HLS Core Driver");
 +MODULE_LICENSE("GPL v2");
+diff --git a/drivers/media/platform/xilinx/xilinx-m2m.c b/drivers/media/platform/xilinx/xilinx-m2m.c
+new file mode 100644
+index 000000000..631621f0d
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/media/platform/xilinx/xilinx-m2m.c	2023-04-14 12:24:07.490394800 +0900
++++ b/drivers/media/platform/xilinx/xilinx-m2m.c
 @@ -0,0 +1,2219 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
@@ -24599,8 +24476,11 @@
 +MODULE_AUTHOR("Xilinx Inc.");
 +MODULE_DESCRIPTION("Xilinx V4L2 mem2mem driver");
 +MODULE_LICENSE("GPL v2");
+diff --git a/drivers/media/platform/xilinx/xilinx-multi-scaler-coeff.h b/drivers/media/platform/xilinx/xilinx-multi-scaler-coeff.h
+new file mode 100644
+index 000000000..65a3482aa
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/media/platform/xilinx/xilinx-multi-scaler-coeff.h	2023-04-14 12:24:07.490394800 +0900
++++ b/drivers/media/platform/xilinx/xilinx-multi-scaler-coeff.h
 @@ -0,0 +1,574 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
 +/*
@@ -25176,8 +25056,11 @@
 +	{18, 50, 147, 313, 510, 670, 730, 665, 501, 304, 141, 47, },
 +	{18, 49, 145, 310, 507, 669, 730, 667, 504, 307, 143, 48, },
 +};
+diff --git a/drivers/media/platform/xilinx/xilinx-multi-scaler.c b/drivers/media/platform/xilinx/xilinx-multi-scaler.c
+new file mode 100644
+index 000000000..5bfdab85b
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/media/platform/xilinx/xilinx-multi-scaler.c	2023-04-14 12:24:07.490394800 +0900
++++ b/drivers/media/platform/xilinx/xilinx-multi-scaler.c
 @@ -0,0 +1,2490 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
@@ -27669,8 +27552,11 @@
 +MODULE_DESCRIPTION("Xilinx M2M Multi-Scaler Driver");
 +MODULE_LICENSE("GPL v2");
 +MODULE_ALIAS("xlnx_m2m_multiscaler_dev");
+diff --git a/drivers/media/platform/xilinx/xilinx-remapper.c b/drivers/media/platform/xilinx/xilinx-remapper.c
+new file mode 100644
+index 000000000..00c61650d
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/media/platform/xilinx/xilinx-remapper.c	2023-04-14 12:24:07.490394800 +0900
++++ b/drivers/media/platform/xilinx/xilinx-remapper.c
 @@ -0,0 +1,566 @@
 +/*
 + * Xilinx Video Remapper
@@ -28238,8 +28124,11 @@
 +MODULE_AUTHOR("Laurent Pinchart <laurent.pinchart@ideasonboard.com>");
 +MODULE_DESCRIPTION("Xilinx Video Remapper Driver");
 +MODULE_LICENSE("GPL v2");
+diff --git a/drivers/media/platform/xilinx/xilinx-rgb2yuv.c b/drivers/media/platform/xilinx/xilinx-rgb2yuv.c
+new file mode 100644
+index 000000000..a9e1fe7d9
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/media/platform/xilinx/xilinx-rgb2yuv.c	2023-04-14 12:24:07.490394800 +0900
++++ b/drivers/media/platform/xilinx/xilinx-rgb2yuv.c
 @@ -0,0 +1,581 @@
 +/*
 + * Xilinx RGB to YUV Convertor
@@ -28822,8 +28711,11 @@
 +
 +MODULE_DESCRIPTION("Xilinx RGB to YUV Converter Driver");
 +MODULE_LICENSE("GPL v2");
+diff --git a/drivers/media/platform/xilinx/xilinx-scaler.c b/drivers/media/platform/xilinx/xilinx-scaler.c
+new file mode 100644
+index 000000000..29f57a51d
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/media/platform/xilinx/xilinx-scaler.c	2023-04-14 12:24:07.490394800 +0900
++++ b/drivers/media/platform/xilinx/xilinx-scaler.c
 @@ -0,0 +1,751 @@
 +/*
 + * Xilinx Scaler
@@ -29576,8 +29468,11 @@
 +
 +MODULE_DESCRIPTION("Xilinx Scaler Driver");
 +MODULE_LICENSE("GPL v2");
+diff --git a/drivers/media/platform/xilinx/xilinx-scenechange-channel.c b/drivers/media/platform/xilinx/xilinx-scenechange-channel.c
+new file mode 100644
+index 000000000..f664a1fc5
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/media/platform/xilinx/xilinx-scenechange-channel.c	2023-04-14 12:24:07.490394800 +0900
++++ b/drivers/media/platform/xilinx/xilinx-scenechange-channel.c
 @@ -0,0 +1,464 @@
 +//SPDX-License-Identifier: GPL-2.0
 +/*
@@ -30043,8 +29938,11 @@
 +	media_entity_cleanup(&subdev->entity);
 +	mutex_destroy(&chan->lock);
 +}
+diff --git a/drivers/media/platform/xilinx/xilinx-scenechange-dma.c b/drivers/media/platform/xilinx/xilinx-scenechange-dma.c
+new file mode 100644
+index 000000000..58437a769
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/media/platform/xilinx/xilinx-scenechange-dma.c	2023-04-14 12:24:07.490394800 +0900
++++ b/drivers/media/platform/xilinx/xilinx-scenechange-dma.c
 @@ -0,0 +1,554 @@
 +//SPDX-License-Identifier: GPL-2.0
 +/*
@@ -30600,8 +30498,11 @@
 +	dma_async_device_unregister(&xscd->dma_device);
 +	of_dma_controller_free(xscd->dev->of_node);
 +}
+diff --git a/drivers/media/platform/xilinx/xilinx-scenechange.c b/drivers/media/platform/xilinx/xilinx-scenechange.c
+new file mode 100644
+index 000000000..38db9c7d3
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/media/platform/xilinx/xilinx-scenechange.c	2023-04-14 12:24:07.490394800 +0900
++++ b/drivers/media/platform/xilinx/xilinx-scenechange.c
 @@ -0,0 +1,195 @@
 +//SPDX-License-Identifier: GPL-2.0
 +/*
@@ -30798,8 +30699,11 @@
 +MODULE_AUTHOR("Xilinx Inc.");
 +MODULE_DESCRIPTION("Xilinx Scene Change Detection");
 +MODULE_LICENSE("GPL v2");
+diff --git a/drivers/media/platform/xilinx/xilinx-scenechange.h b/drivers/media/platform/xilinx/xilinx-scenechange.h
+new file mode 100644
+index 000000000..5cc9ce54b
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/media/platform/xilinx/xilinx-scenechange.h	2023-04-14 12:24:07.490394800 +0900
++++ b/drivers/media/platform/xilinx/xilinx-scenechange.h
 @@ -0,0 +1,245 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
 +/*
@@ -31046,8 +30950,11 @@
 +void xscd_chan_cleanup(struct xscd_device *xscd, unsigned int chan_id,
 +		       struct device_node *node);
 +#endif
+diff --git a/drivers/media/platform/xilinx/xilinx-sdirxss.c b/drivers/media/platform/xilinx/xilinx-sdirxss.c
+new file mode 100644
+index 000000000..9315659c7
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/media/platform/xilinx/xilinx-sdirxss.c	2023-04-14 12:24:07.490394800 +0900
++++ b/drivers/media/platform/xilinx/xilinx-sdirxss.c
 @@ -0,0 +1,2758 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
@@ -33807,8 +33714,11 @@
 +MODULE_AUTHOR("Vishal Sagar <vsagar@xilinx.com>");
 +MODULE_DESCRIPTION("Xilinx SDI Rx Subsystem Driver");
 +MODULE_LICENSE("GPL v2");
+diff --git a/drivers/media/platform/xilinx/xilinx-switch.c b/drivers/media/platform/xilinx/xilinx-switch.c
+new file mode 100644
+index 000000000..b63ffda45
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/media/platform/xilinx/xilinx-switch.c	2023-04-14 12:24:07.490394800 +0900
++++ b/drivers/media/platform/xilinx/xilinx-switch.c
 @@ -0,0 +1,476 @@
 +/*
 + * Xilinx Video Switch
@@ -34286,8 +34196,10 @@
 +MODULE_AUTHOR("Laurent Pinchart <laurent.pinchart@ideasonboard.com>");
 +MODULE_DESCRIPTION("Xilinx Video Switch Driver");
 +MODULE_LICENSE("GPL v2");
---- linux-5.15.36/drivers/media/platform/xilinx/xilinx-tpg.c	2023-04-14 12:26:00.422557000 +0900
-+++ linux-xlnx-2022.2/drivers/media/platform/xilinx/xilinx-tpg.c	2023-04-14 12:24:07.490394800 +0900
+diff --git a/drivers/media/platform/xilinx/xilinx-tpg.c b/drivers/media/platform/xilinx/xilinx-tpg.c
+index 0f2d5a0ed..cfac264a8 100644
+--- a/drivers/media/platform/xilinx/xilinx-tpg.c
++++ b/drivers/media/platform/xilinx/xilinx-tpg.c
 @@ -20,6 +20,7 @@
  #include <media/v4l2-ctrls.h>
  #include <media/v4l2-subdev.h>
@@ -34365,7 +34277,7 @@
   */
  struct xtpg_device {
  	struct xvip_device xvip;
-@@ -102,9 +149,17 @@
+@@ -102,9 +149,17 @@ struct xtpg_device {
  	struct v4l2_ctrl *vblank;
  	struct v4l2_ctrl *pattern;
  	bool streaming;
@@ -34383,7 +34295,7 @@
  };
  
  static inline struct xtpg_device *to_tpg(struct v4l2_subdev *subdev)
-@@ -128,6 +183,32 @@
+@@ -128,6 +183,32 @@ static u32 xtpg_get_bayer_phase(unsigned int code)
  	}
  }
  
@@ -34416,7 +34328,7 @@
  static void __xtpg_update_pattern_control(struct xtpg_device *xtpg,
  					  bool passthrough, bool pattern)
  {
-@@ -164,6 +245,33 @@
+@@ -164,6 +245,33 @@ static void xtpg_update_pattern_control(struct xtpg_device *xtpg,
   * V4L2 Subdevice Video Operations
   */
  
@@ -34450,7 +34362,7 @@
  static int xtpg_s_stream(struct v4l2_subdev *subdev, int enable)
  {
  	struct xtpg_device *xtpg = to_tpg(subdev);
-@@ -173,7 +281,27 @@
+@@ -173,7 +281,27 @@ static int xtpg_s_stream(struct v4l2_subdev *subdev, int enable)
  	u32 bayer_phase;
  
  	if (!enable) {
@@ -34479,14 +34391,12 @@
  		if (xtpg->vtc)
  			xvtc_generator_stop(xtpg->vtc);
  
-@@ -182,31 +310,36 @@
+@@ -182,31 +310,36 @@ static int xtpg_s_stream(struct v4l2_subdev *subdev, int enable)
  		return 0;
  	}
  
 -	xvip_set_frame_size(&xtpg->xvip, &xtpg->formats[0]);
-+	if (xtpg->is_hls) {
-+		u32 fmt = 0;
- 
+-
 -	if (xtpg->vtc) {
 -		struct xvtc_config config = {
 -			.hblank_start = width,
@@ -34508,6 +34418,9 @@
 -		config.vsize = vtotal;
 -
 -		xvtc_generator_start(xtpg->vtc, &config);
++	if (xtpg->is_hls) {
++		u32 fmt = 0;
++
 +		switch (xtpg->formats[0].code) {
 +		case MEDIA_BUS_FMT_VYYUYY8_1X24:
 +		case MEDIA_BUS_FMT_VYYUYY10_4X20:
@@ -34538,7 +34451,7 @@
  	/*
  	 * Configure the bayer phase and video timing mux based on the
  	 * operation mode (passthrough or test pattern generation). The test
-@@ -215,7 +348,11 @@
+@@ -215,7 +348,11 @@ static int xtpg_s_stream(struct v4l2_subdev *subdev, int enable)
  	 */
  	mutex_lock(xtpg->ctrl_handler.lock);
  
@@ -34551,7 +34464,7 @@
  			 XTPG_PATTERN_MASK, xtpg->pattern->cur.val);
  
  	/*
-@@ -229,18 +366,26 @@
+@@ -229,18 +366,26 @@ static int xtpg_s_stream(struct v4l2_subdev *subdev, int enable)
  
  	mutex_unlock(xtpg->ctrl_handler.lock);
  
@@ -34587,7 +34500,7 @@
  
  	return 0;
  }
-@@ -254,15 +399,23 @@
+@@ -254,15 +399,23 @@ __xtpg_get_pad_format(struct xtpg_device *xtpg,
  		      struct v4l2_subdev_state *sd_state,
  		      unsigned int pad, u32 which)
  {
@@ -34615,7 +34528,7 @@
  }
  
  static int xtpg_get_format(struct v4l2_subdev *subdev,
-@@ -270,9 +423,13 @@
+@@ -270,9 +423,13 @@ static int xtpg_get_format(struct v4l2_subdev *subdev,
  			   struct v4l2_subdev_format *fmt)
  {
  	struct xtpg_device *xtpg = to_tpg(subdev);
@@ -34631,7 +34544,7 @@
  
  	return 0;
  }
-@@ -286,6 +443,8 @@
+@@ -286,6 +443,8 @@ static int xtpg_set_format(struct v4l2_subdev *subdev,
  	u32 bayer_phase;
  
  	__format = __xtpg_get_pad_format(xtpg, sd_state, fmt->pad, fmt->which);
@@ -34640,7 +34553,7 @@
  
  	/* In two pads mode the source pad format is always identical to the
  	 * sink pad format.
-@@ -302,7 +461,27 @@
+@@ -302,7 +461,27 @@ static int xtpg_set_format(struct v4l2_subdev *subdev,
  			__format->code = fmt->format.code;
  	}
  
@@ -34669,7 +34582,7 @@
  
  	fmt->format = *__format;
  
-@@ -310,6 +489,8 @@
+@@ -310,6 +489,8 @@ static int xtpg_set_format(struct v4l2_subdev *subdev,
  	if (xtpg->npads == 2) {
  		__format = __xtpg_get_pad_format(xtpg, sd_state, 1,
  						 fmt->which);
@@ -34678,7 +34591,7 @@
  		*__format = fmt->format;
  	}
  
-@@ -325,6 +506,7 @@
+@@ -325,6 +506,7 @@ static int xtpg_enum_frame_size(struct v4l2_subdev *subdev,
  				struct v4l2_subdev_frame_size_enum *fse)
  {
  	struct v4l2_mbus_framefmt *format;
@@ -34686,7 +34599,7 @@
  
  	format = v4l2_subdev_get_try_format(subdev, sd_state, fse->pad);
  
-@@ -333,12 +515,13 @@
+@@ -333,12 +515,13 @@ static int xtpg_enum_frame_size(struct v4l2_subdev *subdev,
  
  	/* Min / max values for pad 0 is always fixed in both one and two pads
  	 * modes. In two pads mode, the source pad(= 1) size is identical to
@@ -34705,7 +34618,7 @@
  	} else {
  		fse->min_width = format->width;
  		fse->max_width = format->width;
-@@ -377,8 +560,12 @@
+@@ -377,8 +560,12 @@ static int xtpg_s_ctrl(struct v4l2_ctrl *ctrl)
  						ctrl_handler);
  	switch (ctrl->id) {
  	case V4L2_CID_TEST_PATTERN:
@@ -34720,7 +34633,7 @@
  		return 0;
  	case V4L2_CID_XILINX_TPG_CROSS_HAIRS:
  		xvip_clr_or_set(&xtpg->xvip, XTPG_PATTERN_CONTROL,
-@@ -389,10 +576,13 @@
+@@ -389,10 +576,13 @@ static int xtpg_s_ctrl(struct v4l2_ctrl *ctrl)
  				XTPG_PATTERN_CONTROL_MOVING_BOX, ctrl->val);
  		return 0;
  	case V4L2_CID_XILINX_TPG_COLOR_MASK:
@@ -34738,7 +34651,7 @@
  		return 0;
  	case V4L2_CID_XILINX_TPG_STUCK_PIXEL:
  		xvip_clr_or_set(&xtpg->xvip, XTPG_PATTERN_CONTROL,
-@@ -407,43 +597,85 @@
+@@ -407,43 +597,85 @@ static int xtpg_s_ctrl(struct v4l2_ctrl *ctrl)
  				XTPG_PATTERN_CONTROL_MOTION, ctrl->val);
  		return 0;
  	case V4L2_CID_XILINX_TPG_MOTION_SPEED:
@@ -34845,7 +34758,7 @@
  		return 0;
  	case V4L2_CID_XILINX_TPG_STUCK_PIXEL_THRESH:
  		xvip_write(&xtpg->xvip, XTPG_STUCK_PIXEL_THRESH, ctrl->val);
-@@ -451,6 +683,9 @@
+@@ -451,6 +683,9 @@ static int xtpg_s_ctrl(struct v4l2_ctrl *ctrl)
  	case V4L2_CID_XILINX_TPG_NOISE_GAIN:
  		xvip_write(&xtpg->xvip, XTPG_NOISE_GAIN, ctrl->val);
  		return 0;
@@ -34855,7 +34768,7 @@
  	}
  
  	return 0;
-@@ -464,6 +699,8 @@
+@@ -464,6 +699,8 @@ static const struct v4l2_subdev_core_ops xtpg_core_ops = {
  };
  
  static const struct v4l2_subdev_video_ops xtpg_video_ops = {
@@ -34864,7 +34777,7 @@
  	.s_stream = xtpg_s_stream,
  };
  
-@@ -508,60 +745,51 @@
+@@ -508,60 +745,51 @@ static const char *const xtpg_pattern_strings[] = {
  	"Black/White Checker Board",
  };
  
@@ -34969,7 +34882,7 @@
  	}, {
  		.ops	= &xtpg_ctrl_ops,
  		.id	= V4L2_CID_XILINX_TPG_MOTION_SPEED,
-@@ -645,12 +873,61 @@
+@@ -645,12 +873,61 @@ static struct v4l2_ctrl_config xtpg_ctrls[] = {
  	}, {
  		.ops	= &xtpg_ctrl_ops,
  		.id	= V4L2_CID_XILINX_TPG_BOX_COLOR,
@@ -35032,7 +34945,7 @@
  	}, {
  		.ops	= &xtpg_ctrl_ops,
  		.id	= V4L2_CID_XILINX_TPG_STUCK_PIXEL_THRESH,
-@@ -716,6 +993,49 @@
+@@ -716,6 +993,49 @@ static int xtpg_parse_of(struct xtpg_device *xtpg)
  	struct device_node *port;
  	unsigned int nports = 0;
  	bool has_endpoint = false;
@@ -35082,7 +34995,7 @@
  
  	ports = of_get_child_by_name(node, "ports");
  	if (ports == NULL)
-@@ -772,6 +1092,7 @@
+@@ -772,6 +1092,7 @@ static int xtpg_probe(struct platform_device *pdev)
  	struct v4l2_subdev *subdev;
  	struct xtpg_device *xtpg;
  	u32 i, bayer_phase;
@@ -35090,7 +35003,7 @@
  	int ret;
  
  	xtpg = devm_kzalloc(&pdev->dev, sizeof(*xtpg), GFP_KERNEL);
-@@ -795,14 +1116,29 @@
+@@ -795,14 +1116,29 @@ static int xtpg_probe(struct platform_device *pdev)
  		goto error_resource;
  	}
  
@@ -35122,7 +35035,7 @@
  
  	/* Initialize V4L2 subdevice and media entity. Pad numbers depend on the
  	 * number of pads.
-@@ -818,11 +1154,23 @@
+@@ -818,11 +1154,23 @@ static int xtpg_probe(struct platform_device *pdev)
  	xtpg->default_format.code = xtpg->vip_format->code;
  	xtpg->default_format.field = V4L2_FIELD_NONE;
  	xtpg->default_format.colorspace = V4L2_COLORSPACE_SRGB;
@@ -35150,7 +35063,7 @@
  
  	xtpg->formats[0] = xtpg->default_format;
  	if (xtpg->npads == 2)
-@@ -842,7 +1190,13 @@
+@@ -842,7 +1190,13 @@ static int xtpg_probe(struct platform_device *pdev)
  	if (ret < 0)
  		goto error;
  
@@ -35165,7 +35078,7 @@
  
  	xtpg->vblank = v4l2_ctrl_new_std(&xtpg->ctrl_handler, &xtpg_ctrl_ops,
  					 V4L2_CID_VBLANK, XTPG_MIN_VBLANK,
-@@ -850,19 +1204,41 @@
+@@ -850,19 +1204,41 @@ static int xtpg_probe(struct platform_device *pdev)
  	xtpg->hblank = v4l2_ctrl_new_std(&xtpg->ctrl_handler, &xtpg_ctrl_ops,
  					 V4L2_CID_HBLANK, XTPG_MIN_HBLANK,
  					 XTPG_MAX_HBLANK, 1, 100);
@@ -35213,7 +35126,7 @@
  	subdev->ctrl_handler = &xtpg->ctrl_handler;
  
  	xtpg_update_pattern_control(xtpg, true, true);
-@@ -875,7 +1251,12 @@
+@@ -875,7 +1251,12 @@ static int xtpg_probe(struct platform_device *pdev)
  
  	platform_set_drvdata(pdev, xtpg);
  
@@ -35227,7 +35140,7 @@
  
  	ret = v4l2_async_register_subdev(subdev);
  	if (ret < 0) {
-@@ -912,6 +1293,8 @@
+@@ -912,6 +1293,8 @@ static SIMPLE_DEV_PM_OPS(xtpg_pm_ops, xtpg_pm_suspend, xtpg_pm_resume);
  
  static const struct of_device_id xtpg_of_id_table[] = {
  	{ .compatible = "xlnx,v-tpg-5.0" },
@@ -35236,8 +35149,10 @@
  	{ }
  };
  MODULE_DEVICE_TABLE(of, xtpg_of_id_table);
---- linux-5.15.36/drivers/media/platform/xilinx/xilinx-vip.c	2023-04-14 12:26:00.422557000 +0900
-+++ linux-xlnx-2022.2/drivers/media/platform/xilinx/xilinx-vip.c	2023-04-14 12:24:07.490394800 +0900
+diff --git a/drivers/media/platform/xilinx/xilinx-vip.c b/drivers/media/platform/xilinx/xilinx-vip.c
+index 425a32dd5..42a6fc89b 100644
+--- a/drivers/media/platform/xilinx/xilinx-vip.c
++++ b/drivers/media/platform/xilinx/xilinx-vip.c
 @@ -24,22 +24,116 @@
   */
  
@@ -35363,10 +35278,11 @@
  };
  
  /**
-@@ -89,6 +183,89 @@
+@@ -88,6 +182,89 @@ const struct xvip_video_format *xvip_get_format_by_fourcc(u32 fourcc)
+ }
  EXPORT_SYMBOL_GPL(xvip_get_format_by_fourcc);
  
- /**
++/**
 + * xvip_bpl_scaling_factor - Retrieve bpl scaling factor for a 4CC
 + * @fourcc: the format 4CC
 + * @numerator: returning numerator of scaling factor
@@ -35449,11 +35365,10 @@
 +}
 +EXPORT_SYMBOL_GPL(xvip_width_padding_factor);
 +
-+/**
+ /**
   * xvip_of_get_format - Parse a device tree node and return format information
   * @node: the device tree node
-  *
-@@ -102,9 +279,9 @@
+@@ -102,9 +279,9 @@ EXPORT_SYMBOL_GPL(xvip_get_format_by_fourcc);
  const struct xvip_video_format *xvip_of_get_format(struct device_node *node)
  {
  	const char *pattern = "mono";
@@ -35465,7 +35380,7 @@
  	int ret;
  
  	ret = of_property_read_u32(node, "xlnx,video-format", &vf_code);
-@@ -115,8 +292,13 @@
+@@ -115,8 +292,13 @@ const struct xvip_video_format *xvip_of_get_format(struct device_node *node)
  	if (ret < 0)
  		return ERR_PTR(ret);
  
@@ -35481,7 +35396,7 @@
  
  	for (i = 0; i < ARRAY_SIZE(xvip_video_formats); ++i) {
  		const struct xvip_video_format *format = &xvip_video_formats[i];
-@@ -150,7 +332,7 @@
+@@ -150,7 +332,7 @@ void xvip_set_format_size(struct v4l2_mbus_framefmt *format,
  	format->width = clamp_t(unsigned int, fmt->format.width,
  				XVIP_MIN_WIDTH, XVIP_MAX_WIDTH);
  	format->height = clamp_t(unsigned int, fmt->format.height,
@@ -35490,7 +35405,7 @@
  }
  EXPORT_SYMBOL_GPL(xvip_set_format_size);
  
-@@ -216,8 +398,7 @@
+@@ -216,8 +398,7 @@ int xvip_init_resources(struct xvip_device *xvip)
  	if (IS_ERR(xvip->clk))
  		return PTR_ERR(xvip->clk);
  
@@ -35500,9 +35415,11 @@
  }
  EXPORT_SYMBOL_GPL(xvip_init_resources);
  
---- linux-5.15.36/drivers/media/platform/xilinx/xilinx-vip.h	2023-04-14 12:26:00.422557000 +0900
-+++ linux-xlnx-2022.2/drivers/media/platform/xilinx/xilinx-vip.h	2023-04-14 12:24:07.506016300 +0900
-@@ -107,21 +107,33 @@
+diff --git a/drivers/media/platform/xilinx/xilinx-vip.h b/drivers/media/platform/xilinx/xilinx-vip.h
+index d0b0e0600..8c1d6fd3b 100644
+--- a/drivers/media/platform/xilinx/xilinx-vip.h
++++ b/drivers/media/platform/xilinx/xilinx-vip.h
+@@ -107,21 +107,33 @@ struct xvip_device {
   * @width: AXI4 format width in bits per component
   * @pattern: CFA pattern for Mono/Sensor formats
   * @code: media bus format code
@@ -35537,8 +35454,10 @@
  void xvip_set_format_size(struct v4l2_mbus_framefmt *format,
  			  const struct v4l2_subdev_format *fmt);
  int xvip_enum_mbus_code(struct v4l2_subdev *subdev,
---- linux-5.15.36/drivers/media/platform/xilinx/xilinx-vipp.c	2023-04-14 12:26:00.422557000 +0900
-+++ linux-xlnx-2022.2/drivers/media/platform/xilinx/xilinx-vipp.c	2023-04-14 12:24:07.506016300 +0900
+diff --git a/drivers/media/platform/xilinx/xilinx-vipp.c b/drivers/media/platform/xilinx/xilinx-vipp.c
+index 5896a662d..80a715d9a 100644
+--- a/drivers/media/platform/xilinx/xilinx-vipp.c
++++ b/drivers/media/platform/xilinx/xilinx-vipp.c
 @@ -15,6 +15,7 @@
  #include <linux/of_graph.h>
  #include <linux/platform_device.h>
@@ -35575,7 +35494,7 @@
  };
  
  static inline struct xvip_graph_entity *
-@@ -65,6 +77,22 @@
+@@ -65,6 +77,22 @@ xvip_graph_find_entity(struct xvip_composite_device *xdev,
  	return NULL;
  }
  
@@ -35598,7 +35517,7 @@
  static int xvip_graph_build_one(struct xvip_composite_device *xdev,
  				struct xvip_graph_entity *entity)
  {
-@@ -165,7 +193,6 @@
+@@ -165,7 +193,6 @@ static int xvip_graph_build_one(struct xvip_composite_device *xdev,
  		}
  	}
  
@@ -35606,7 +35525,7 @@
  	return ret;
  }
  
-@@ -182,6 +209,190 @@
+@@ -182,6 +209,190 @@ xvip_graph_find_dma(struct xvip_composite_device *xdev, unsigned int port)
  	return NULL;
  }
  
@@ -35797,7 +35716,7 @@
  static int xvip_graph_build_dma(struct xvip_composite_device *xdev)
  {
  	u32 link_flags = MEDIA_LNK_FL_ENABLED;
-@@ -276,7 +487,6 @@
+@@ -276,7 +487,6 @@ static int xvip_graph_build_dma(struct xvip_composite_device *xdev)
  		}
  	}
  
@@ -35805,7 +35724,7 @@
  	return ret;
  }
  
-@@ -442,9 +652,11 @@
+@@ -442,9 +652,11 @@ static int xvip_graph_dma_init_one(struct xvip_composite_device *xdev,
  		return ret;
  
  	if (strcmp(direction, "input") == 0)
@@ -35819,7 +35738,7 @@
  	else
  		return -EINVAL;
  
-@@ -462,8 +674,14 @@
+@@ -462,8 +674,14 @@ static int xvip_graph_dma_init_one(struct xvip_composite_device *xdev,
  
  	list_add_tail(&dma->list, &xdev->dmas);
  
@@ -35836,7 +35755,7 @@
  
  	return 0;
  }
-@@ -595,6 +813,7 @@
+@@ -596,6 +814,7 @@ static int xvip_composite_probe(struct platform_device *pdev)
  		return -ENOMEM;
  
  	xdev->dev = &pdev->dev;
@@ -35844,7 +35763,7 @@
  	INIT_LIST_HEAD(&xdev->dmas);
  	v4l2_async_notifier_init(&xdev->notifier);
  
-@@ -606,6 +825,18 @@
+@@ -607,6 +826,18 @@ static int xvip_composite_probe(struct platform_device *pdev)
  	if (ret < 0)
  		goto error;
  
@@ -35863,7 +35782,7 @@
  	platform_set_drvdata(pdev, xdev);
  
  	dev_info(xdev->dev, "device registered\n");
-@@ -621,6 +852,7 @@
+@@ -622,6 +853,7 @@ static int xvip_composite_remove(struct platform_device *pdev)
  {
  	struct xvip_composite_device *xdev = platform_get_drvdata(pdev);
  
@@ -35871,8 +35790,10 @@
  	xvip_graph_cleanup(xdev);
  	xvip_composite_v4l2_cleanup(xdev);
  
---- linux-5.15.36/drivers/media/platform/xilinx/xilinx-vipp.h	2023-04-14 12:26:00.422557000 +0900
-+++ linux-xlnx-2022.2/drivers/media/platform/xilinx/xilinx-vipp.h	2023-04-14 12:24:07.506016300 +0900
+diff --git a/drivers/media/platform/xilinx/xilinx-vipp.h b/drivers/media/platform/xilinx/xilinx-vipp.h
+index cc52c1854..58e8406f4 100644
+--- a/drivers/media/platform/xilinx/xilinx-vipp.h
++++ b/drivers/media/platform/xilinx/xilinx-vipp.h
 @@ -27,6 +27,9 @@
   * @notifier: V4L2 asynchronous subdevs notifier
   * @dmas: list of DMA channels at the pipeline output and input
@@ -35883,7 +35804,7 @@
   */
  struct xvip_composite_device {
  	struct v4l2_device v4l2_dev;
-@@ -37,6 +40,11 @@
+@@ -37,6 +40,11 @@ struct xvip_composite_device {
  
  	struct list_head dmas;
  	u32 v4l2_caps;
@@ -35895,8 +35816,11 @@
 +				   struct xvip_pipeline *pipe, bool on);
 +
  #endif /* __XILINX_VIPP_H__ */
+diff --git a/drivers/media/platform/xilinx/xilinx-vpss-csc.c b/drivers/media/platform/xilinx/xilinx-vpss-csc.c
+new file mode 100644
+index 000000000..9eeca08e1
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/media/platform/xilinx/xilinx-vpss-csc.c	2023-04-14 12:24:07.506016300 +0900
++++ b/drivers/media/platform/xilinx/xilinx-vpss-csc.c
 @@ -0,0 +1,1205 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
@@ -37103,8 +37027,11 @@
 +module_platform_driver(xcsc_driver);
 +MODULE_DESCRIPTION("Xilinx VPSS CSC Driver");
 +MODULE_LICENSE("GPL v2");
+diff --git a/drivers/media/platform/xilinx/xilinx-vpss-scaler.c b/drivers/media/platform/xilinx/xilinx-vpss-scaler.c
+new file mode 100644
+index 000000000..bb23a2448
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/media/platform/xilinx/xilinx-vpss-scaler.c	2023-04-14 12:24:07.506016300 +0900
++++ b/drivers/media/platform/xilinx/xilinx-vpss-scaler.c
 @@ -0,0 +1,2125 @@
 +/*
 + * Xilinx VPSS Scaler
@@ -39231,8 +39158,10 @@
 +module_platform_driver(xscaler_driver);
 +MODULE_DESCRIPTION("Xilinx Scaler VPSS Driver");
 +MODULE_LICENSE("GPL v2");
---- linux-5.15.36/drivers/media/platform/xilinx/xilinx-vtc.c	2023-04-14 12:26:00.422557000 +0900
-+++ linux-xlnx-2022.2/drivers/media/platform/xilinx/xilinx-vtc.c	2023-04-14 12:24:07.506016300 +0900
+diff --git a/drivers/media/platform/xilinx/xilinx-vtc.c b/drivers/media/platform/xilinx/xilinx-vtc.c
+index 0ae0208d7..f71db1c34 100644
+--- a/drivers/media/platform/xilinx/xilinx-vtc.c
++++ b/drivers/media/platform/xilinx/xilinx-vtc.c
 @@ -141,6 +141,9 @@
  
  #define XVTC_GENERATOR_GLOBAL_DELAY		0x0104
@@ -39243,7 +39172,7 @@
  /**
   * struct xvtc_device - Xilinx Video Timing Controller device structure
   * @xvip: Xilinx Video IP device
-@@ -175,10 +178,25 @@
+@@ -175,10 +178,25 @@ int xvtc_generator_start(struct xvtc_device *xvtc,
  			 const struct xvtc_config *config)
  {
  	int ret;
@@ -39269,9 +39198,11 @@
  	ret = clk_prepare_enable(xvtc->xvip.clk);
  	if (ret < 0)
  		return ret;
---- linux-5.15.36/drivers/media/platform/xilinx/xilinx-vtc.h	2023-04-14 12:26:00.422557000 +0900
-+++ linux-xlnx-2022.2/drivers/media/platform/xilinx/xilinx-vtc.h	2023-04-14 12:24:07.506016300 +0900
-@@ -27,6 +27,7 @@
+diff --git a/drivers/media/platform/xilinx/xilinx-vtc.h b/drivers/media/platform/xilinx/xilinx-vtc.h
+index 855845911..0f360ed55 100644
+--- a/drivers/media/platform/xilinx/xilinx-vtc.h
++++ b/drivers/media/platform/xilinx/xilinx-vtc.h
+@@ -27,6 +27,7 @@ struct xvtc_config {
  	unsigned int vsync_start;
  	unsigned int vsync_end;
  	unsigned int vsize;
@@ -39279,3 +39210,304 @@
  };
  
  struct xvtc_device *xvtc_of_get(struct device_node *np);
+diff --git a/include/dt-bindings/media/xilinx-vip.h b/include/dt-bindings/media/xilinx-vip.h
+index 94ed3edfc..beb50a748 100644
+--- a/include/dt-bindings/media/xilinx-vip.h
++++ b/include/dt-bindings/media/xilinx-vip.h
+@@ -32,5 +32,11 @@
+ #define XVIP_VF_CUSTOM2			13
+ #define XVIP_VF_CUSTOM3			14
+ #define XVIP_VF_CUSTOM4			15
++#define XVIP_VF_VUY_422			16
++#define XVIP_VF_BGRX			17
++#define XVIP_VF_YUVX			18
++#define XVIP_VF_XBGR			19
++#define XVIP_VF_Y_GREY			20
++#define XVIP_VF_XRGB			21
+ 
+ #endif /* __DT_BINDINGS_MEDIA_XILINX_VIP_H__ */
+diff --git a/include/linux/xilinx-hdcp1x-cipher.h b/include/linux/xilinx-hdcp1x-cipher.h
+new file mode 100644
+index 000000000..a1d59e1f3
+--- /dev/null
++++ b/include/linux/xilinx-hdcp1x-cipher.h
+@@ -0,0 +1,105 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Xilinx HDCP1X Cipher driver
++ *
++ * Copyright (C) 2022 Xilinx, Inc.
++ *
++ * Author: Jagadeesh Banisetti <jagadeesh.banisetti@xilinx.com>
++ */
++
++#ifndef __XILINX_HDCP1X_CIPHER_H__
++#define __XILINX_HDCP1X_CIPHER_H__
++
++#include <linux/device.h>
++#include <linux/io.h>
++#include <linux/types.h>
++
++#if IS_ENABLED(CONFIG_XLNX_HDCP1X_CIPHER)
++void *xhdcp1x_cipher_init(struct device *dev, void __iomem *hdcp1x_base);
++int xhdcp1x_cipher_reset(void *ref);
++int xhdcp1x_cipher_enable(void *ref);
++int xhdcp1x_cipher_disable(void *ref);
++int xhdcp1x_cipher_set_num_lanes(void *ref, u8 num_lanes);
++int xhdcp1x_cipher_set_keyselect(void *ref, u8 keyselect);
++int xhdcp1x_cipher_load_bksv(void *ref, u8 *buf);
++int xhdcp1x_cipher_set_remoteksv(void *ref, u64 ksv);
++int xhdcp1x_cipher_get_ro(void *ref, u16 *ro);
++int xhdcp1x_cipher_set_b(void *ref, u64 an, bool is_repeater);
++int xhdcp1x_cipher_is_request_complete(void *ref);
++int xhdcp1x_cipher_set_link_state_check(void *ref, bool is_enabled);
++int xhdcp1x_cipher_get_interrupts(void *ref, u32 *interrupts);
++int xhdcp1x_cipher_is_linkintegrity_failed(void *ref);
++#else
++static inline void *xhdcp1x_cipher_init(struct device *dev,
++					void __iomem *hdcp1x_base)
++{
++	return NULL;
++}
++
++static inline int xhdcp1x_cipher_reset(void *ref)
++{
++	return -EINVAL;
++}
++
++static inline int xhdcp1x_cipher_enable(void *ref)
++{
++	return -EINVAL;
++}
++
++static inline int xhdcp1x_cipher_disable(void *ref)
++{
++	return -EINVAL;
++}
++
++static inline int xhdcp1x_cipher_set_num_lanes(void *ref, u8 num_lanes)
++{
++	return -EINVAL;
++}
++
++static inline int xhdcp1x_cipher_set_keyselect(void *ref, u8 keyselect)
++{
++	return -EINVAL;
++}
++
++static inline int xhdcp1x_cipher_load_bksv(void *ref, u8 *buf)
++{
++	return -EINVAL;
++}
++
++static inline int xhdcp1x_cipher_set_remoteksv(void *ref, u64 ksv)
++{
++	return -EINVAL;
++}
++
++static inline int xhdcp1x_cipher_get_ro(void *ref, u16 *ro)
++{
++	return -EINVAL;
++}
++
++static inline int xhdcp1x_cipher_set_b(void *ref, u64 value, bool is_repeater)
++{
++	return -EINVAL;
++}
++
++static inline int xhdcp1x_cipher_is_request_complete(void *ref)
++{
++	return -EINVAL;
++}
++
++static inline int xhdcp1x_cipher_set_link_state_check(void *ref, u8 is_enabled)
++{
++	return -EINVAL;
++}
++
++static inline int xhdcp1x_cipher_get_interrupts(void *ref, u32 *interrupts)
++{
++	return -EINVAL;
++}
++
++static inline int xhdcp1x_cipher_is_linkintegrity_failed(void *ref)
++{
++	return -EINVAL;
++}
++#endif /* CONFIG_XLNX_HDCP1X_CIPHER */
++
++#endif /* __XILINX_HDCP1X_CIPHER_H__ */
+diff --git a/include/uapi/linux/xilinx-dprxss.h b/include/uapi/linux/xilinx-dprxss.h
+new file mode 100644
+index 000000000..70ab386c7
+--- /dev/null
++++ b/include/uapi/linux/xilinx-dprxss.h
+@@ -0,0 +1,22 @@
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++
++#ifndef __XILINX_DPRXSS_H__
++#define __XILINX_DPRXSS_H__
++
++#include <linux/types.h>
++
++/**
++ * struct xdprxss_hdcp1x_keys_ioctl - Hdcp1x Keys structure
++ * @size: size of the keys
++ * @keys: Pointer to the keys buffer
++ */
++struct xdprxss_hdcp1x_keys_ioctl {
++	__u32 size;
++	void const *keys;
++};
++
++/* This ioctl is used to set the hdcp1x keys into IP */
++#define XILINX_DPRXSS_HDCP_KEY_WRITE \
++	_IOW('X', BASE_VIDIOC_PRIVATE + 0, struct xdprxss_hdcp1x_keys_ioctl)
++
++#endif
+diff --git a/include/uapi/linux/xilinx-hls.h b/include/uapi/linux/xilinx-hls.h
+new file mode 100644
+index 000000000..2b9666226
+--- /dev/null
++++ b/include/uapi/linux/xilinx-hls.h
+@@ -0,0 +1,23 @@
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++
++#ifndef __UAPI_XILINX_HLS_H__
++#define __UAPI_XILINX_HLS_H__
++
++#include <linux/ioctl.h>
++#include <linux/types.h>
++#include <linux/videodev2.h>
++
++struct xilinx_axi_hls_register {
++	__u32 offset;
++	__u32 value;
++};
++
++struct xilinx_axi_hls_registers {
++	__u32 num_regs;
++	struct xilinx_axi_hls_register *regs;
++};
++
++#define XILINX_AXI_HLS_READ	_IOWR('V', BASE_VIDIOC_PRIVATE+0, struct xilinx_axi_hls_registers)
++#define XILINX_AXI_HLS_WRITE	_IOW('V', BASE_VIDIOC_PRIVATE+1, struct xilinx_axi_hls_registers)
++
++#endif /* __UAPI_XILINX_HLS_H__ */
+diff --git a/include/uapi/linux/xilinx-sdirxss.h b/include/uapi/linux/xilinx-sdirxss.h
+new file mode 100644
+index 000000000..ab3a2242f
+--- /dev/null
++++ b/include/uapi/linux/xilinx-sdirxss.h
+@@ -0,0 +1,66 @@
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++
++#ifndef __UAPI_XILINX_SDIRXSS_H__
++#define __UAPI_XILINX_SDIRXSS_H__
++
++#include <linux/types.h>
++#include <linux/videodev2.h>
++
++/*
++ * Events
++ *
++ * V4L2_EVENT_XLNXSDIRX_UNDERFLOW: Video in to AXI4 Stream core underflowed
++ * V4L2_EVENT_XLNXSDIRX_OVERFLOW: Video in to AXI4 Stream core overflowed
++ */
++#define V4L2_EVENT_XLNXSDIRX_CLASS	(V4L2_EVENT_PRIVATE_START | 0x200)
++#define V4L2_EVENT_XLNXSDIRX_UNDERFLOW	(V4L2_EVENT_XLNXSDIRX_CLASS | 0x1)
++#define V4L2_EVENT_XLNXSDIRX_OVERFLOW	(V4L2_EVENT_XLNXSDIRX_CLASS | 0x2)
++
++/*
++ * This enum is used to prepare the bitmask
++ * of modes to be detected
++ */
++enum {
++	XSDIRX_MODE_SD_OFFSET = 0,
++	XSDIRX_MODE_HD_OFFSET,
++	XSDIRX_MODE_3G_OFFSET,
++	XSDIRX_MODE_6G_OFFSET,
++	XSDIRX_MODE_12GI_OFFSET,
++	XSDIRX_MODE_12GF_OFFSET,
++	XSDIRX_MODE_NUM_SUPPORTED,
++};
++
++#define XSDIRX_DETECT_ALL_MODES		(BIT(XSDIRX_MODE_SD_OFFSET) | \
++					BIT(XSDIRX_MODE_HD_OFFSET) | \
++					BIT(XSDIRX_MODE_3G_OFFSET) | \
++					BIT(XSDIRX_MODE_6G_OFFSET) | \
++					BIT(XSDIRX_MODE_12GI_OFFSET) | \
++					BIT(XSDIRX_MODE_12GF_OFFSET))
++
++/*
++ * EDH Error Types
++ * ANC - Ancillary Data Packet Errors
++ * FF - Full Field Errors
++ * AP - Active Portion Errors
++ */
++
++#define XSDIRX_EDH_ERRCNT_ANC_EDH_ERR	BIT(0)
++#define XSDIRX_EDH_ERRCNT_ANC_EDA_ERR	BIT(1)
++#define XSDIRX_EDH_ERRCNT_ANC_IDH_ERR	BIT(2)
++#define XSDIRX_EDH_ERRCNT_ANC_IDA_ERR	BIT(3)
++#define XSDIRX_EDH_ERRCNT_ANC_UES_ERR	BIT(4)
++#define XSDIRX_EDH_ERRCNT_FF_EDH_ERR	BIT(5)
++#define XSDIRX_EDH_ERRCNT_FF_EDA_ERR	BIT(6)
++#define XSDIRX_EDH_ERRCNT_FF_IDH_ERR	BIT(7)
++#define XSDIRX_EDH_ERRCNT_FF_IDA_ERR	BIT(8)
++#define XSDIRX_EDH_ERRCNT_FF_UES_ERR	BIT(9)
++#define XSDIRX_EDH_ERRCNT_AP_EDH_ERR	BIT(10)
++#define XSDIRX_EDH_ERRCNT_AP_EDA_ERR	BIT(11)
++#define XSDIRX_EDH_ERRCNT_AP_IDH_ERR	BIT(12)
++#define XSDIRX_EDH_ERRCNT_AP_IDA_ERR	BIT(13)
++#define XSDIRX_EDH_ERRCNT_AP_UES_ERR	BIT(14)
++#define XSDIRX_EDH_ERRCNT_PKT_CHKSUM_ERR	BIT(15)
++
++#define XSDIRX_EDH_ALLERR_MASK		0xFFFF
++
++#endif /* __UAPI_XILINX_SDIRXSS_H__ */
+diff --git a/include/uapi/linux/xilinx-v4l2-events.h b/include/uapi/linux/xilinx-v4l2-events.h
+new file mode 100644
+index 000000000..80f99681d
+--- /dev/null
++++ b/include/uapi/linux/xilinx-v4l2-events.h
+@@ -0,0 +1,25 @@
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++
++/*
++ * Xilinx V4L2 SCD Driver
++ *
++ * Copyright (C) 2017-2018 Xilinx, Inc.
++ *
++ * Contacts: Hyun Kwon <hyun.kwon@xilinx.com>
++ *
++ */
++
++#ifndef __UAPI_XILINX_V4L2_EVENTS_H__
++#define __UAPI_XILINX_V4L2_EVENTS_H__
++
++#include <linux/videodev2.h>
++
++/*
++ * Events
++ *
++ * V4L2_EVENT_XLNXSCD: Scene Change Detection
++ */
++#define V4L2_EVENT_XLNXSCD_CLASS	(V4L2_EVENT_PRIVATE_START | 0x300)
++#define V4L2_EVENT_XLNXSCD		(V4L2_EVENT_XLNXSCD_CLASS | 0x1)
++
++#endif /* __UAPI_XILINX_V4L2_EVENTS_H__ */
+diff --git a/usr/include/Makefile b/usr/include/Makefile
+index adc6cb258..9cfd82166 100644
+--- a/usr/include/Makefile
++++ b/usr/include/Makefile
+@@ -48,6 +48,9 @@ no-header-test += linux/v4l2-mediabus.h
+ no-header-test += linux/v4l2-subdev.h
+ no-header-test += linux/videodev2.h
+ no-header-test += linux/vm_sockets.h
++no-header-test += linux/xilinx-sdirxss.h
++no-header-test += linux/xilinx-hls.h
++no-header-test += linux/xilinx-v4l2-events.h
+ no-header-test += sound/asequencer.h
+ no-header-test += sound/asoc.h
+ no-header-test += sound/asound.h
