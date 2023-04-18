@@ -1,5 +1,7 @@
---- linux-5.15.36/drivers/mmc/host/sdhci-of-arasan.c	2023-04-14 12:26:01.453408400 +0900
-+++ linux-xlnx-2022.2/drivers/mmc/host/sdhci-of-arasan.c	2023-04-14 12:24:08.437064300 +0900
+diff --git a/drivers/mmc/host/sdhci-of-arasan.c b/drivers/mmc/host/sdhci-of-arasan.c
+index bede148db..63a3cce50 100644
+--- a/drivers/mmc/host/sdhci-of-arasan.c
++++ b/drivers/mmc/host/sdhci-of-arasan.c
 @@ -21,6 +21,7 @@
  #include <linux/of_device.h>
  #include <linux/phy/phy.h>
@@ -8,7 +10,7 @@
  #include <linux/of.h>
  #include <linux/firmware/xlnx-zynqmp.h>
  
-@@ -1495,6 +1496,66 @@
+@@ -1496,6 +1497,66 @@ static int sdhci_arasan_register_sdclk(struct sdhci_arasan_data *sdhci_arasan,
  	return 0;
  }
  
@@ -75,7 +77,7 @@
  static int sdhci_arasan_add_host(struct sdhci_arasan_data *sdhci_arasan)
  {
  	struct sdhci_host *host = sdhci_arasan->host;
-@@ -1551,6 +1612,9 @@
+@@ -1552,6 +1613,9 @@ static int sdhci_arasan_probe(struct platform_device *pdev)
  	const struct sdhci_arasan_of_data *data;
  
  	data = of_device_get_match_data(dev);
@@ -85,7 +87,7 @@
  	host = sdhci_pltfm_init(pdev, data->pdata, sizeof(*sdhci_arasan));
  
  	if (IS_ERR(host))
-@@ -1655,6 +1719,15 @@
+@@ -1656,6 +1720,15 @@ static int sdhci_arasan_probe(struct platform_device *pdev)
  		goto unreg_clk;
  	}
  
