@@ -1,6 +1,8 @@
---- linux-5.15.36/drivers/media/mc/mc-entity.c	2023-04-14 12:25:59.979617900 +0900
-+++ linux-xlnx-2022.2/drivers/media/mc/mc-entity.c	2023-04-14 12:24:06.989619100 +0900
-@@ -264,7 +264,36 @@
+diff --git a/drivers/media/mc/mc-entity.c b/drivers/media/mc/mc-entity.c
+index f40f41977..13ae964f2 100644
+--- a/drivers/media/mc/mc-entity.c
++++ b/drivers/media/mc/mc-entity.c
+@@ -264,7 +264,36 @@ static struct media_entity *stack_pop(struct media_graph *graph)
  #define stack_top(en)	((en)->stack[(en)->top].entity)
  
  /**
