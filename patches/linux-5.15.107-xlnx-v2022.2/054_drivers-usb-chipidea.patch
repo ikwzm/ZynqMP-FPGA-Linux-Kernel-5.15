@@ -1,16 +1,8 @@
---- linux-5.15.36/include/linux/usb/chipidea.h	2023-04-14 12:26:11.984957600 +0900
-+++ linux-xlnx-2022.2/include/linux/usb/chipidea.h	2023-04-14 12:24:19.228290500 +0900
-@@ -62,6 +62,7 @@
- #define CI_HDRC_REQUIRES_ALIGNED_DMA	BIT(13)
- #define CI_HDRC_IMX_IS_HSIC		BIT(14)
- #define CI_HDRC_PMQOS			BIT(15)
-+#define CI_HDRC_PHY_VBUS_CONTROL	BIT(16)
- 	enum usb_dr_mode	dr_mode;
- #define CI_HDRC_CONTROLLER_RESET_EVENT		0
- #define CI_HDRC_CONTROLLER_STOPPED_EVENT	1
---- linux-5.15.36/drivers/usb/chipidea/ci_hdrc_usb2.c	2023-04-14 12:26:08.312283300 +0900
-+++ linux-xlnx-2022.2/drivers/usb/chipidea/ci_hdrc_usb2.c	2023-04-14 12:24:15.402281400 +0900
-@@ -30,6 +30,7 @@
+diff --git a/drivers/usb/chipidea/ci_hdrc_usb2.c b/drivers/usb/chipidea/ci_hdrc_usb2.c
+index 89e1d82d7..abab2e1ca 100644
+--- a/drivers/usb/chipidea/ci_hdrc_usb2.c
++++ b/drivers/usb/chipidea/ci_hdrc_usb2.c
+@@ -30,6 +30,7 @@ static const struct ci_hdrc_platform_data ci_default_pdata = {
  
  static const struct ci_hdrc_platform_data ci_zynq_pdata = {
  	.capoffset	= DEF_CAPOFFSET,
@@ -18,7 +10,7 @@
  };
  
  static const struct ci_hdrc_platform_data ci_zevio_pdata = {
-@@ -64,6 +65,10 @@
+@@ -64,6 +65,10 @@ static int ci_hdrc_usb2_probe(struct platform_device *pdev)
  	if (match && match->data) {
  		/* struct copy */
  		*ci_pdata = *(struct ci_hdrc_platform_data *)match->data;
@@ -29,9 +21,11 @@
  	}
  
  	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
---- linux-5.15.36/drivers/usb/chipidea/core.c	2023-04-14 12:26:08.312283300 +0900
-+++ linux-xlnx-2022.2/drivers/usb/chipidea/core.c	2023-04-14 12:24:15.402281400 +0900
-@@ -324,7 +324,8 @@
+diff --git a/drivers/usb/chipidea/core.c b/drivers/usb/chipidea/core.c
+index a9869975c..a069cee5b 100644
+--- a/drivers/usb/chipidea/core.c
++++ b/drivers/usb/chipidea/core.c
+@@ -324,7 +324,8 @@ static int _ci_usb_phy_init(struct ci_hdrc *ci)
  
  		ret = phy_power_on(ci->phy);
  		if (ret) {
@@ -41,7 +35,7 @@
  			return ret;
  		}
  	} else {
-@@ -341,12 +342,20 @@
+@@ -341,12 +342,20 @@ static int _ci_usb_phy_init(struct ci_hdrc *ci)
   */
  static void ci_usb_phy_exit(struct ci_hdrc *ci)
  {
@@ -64,7 +58,7 @@
  	} else {
  		usb_phy_shutdown(ci->usb_phy);
  	}
-@@ -709,13 +718,16 @@
+@@ -709,13 +718,16 @@ static int ci_get_platdata(struct device *dev,
  	if (usb_get_maximum_speed(dev) == USB_SPEED_FULL)
  		platdata->flags |= CI_HDRC_FORCE_FULLSPEED;
  
@@ -85,9 +79,11 @@
  
  	ret = of_property_read_u32(dev->of_node, "ahb-burst-config",
  				&platdata->ahb_burst_config);
---- linux-5.15.36/drivers/usb/chipidea/host.c	2023-04-14 12:26:08.312283300 +0900
-+++ linux-xlnx-2022.2/drivers/usb/chipidea/host.c	2023-04-14 12:24:15.402281400 +0900
-@@ -63,6 +63,14 @@
+diff --git a/drivers/usb/chipidea/host.c b/drivers/usb/chipidea/host.c
+index bdc3885c0..20eeb25d9 100644
+--- a/drivers/usb/chipidea/host.c
++++ b/drivers/usb/chipidea/host.c
+@@ -63,6 +63,14 @@ static int ehci_ci_portpower(struct usb_hcd *hcd, int portnum, bool enable)
  		priv->enabled = enable;
  	}
  
@@ -102,7 +98,7 @@
  	if (enable && (ci->platdata->phy_mode == USBPHY_INTERFACE_MODE_HSIC)) {
  		/*
  		 * Marvell 28nm HSIC PHY requires forcing the port to HS mode.
-@@ -71,6 +79,7 @@
+@@ -71,6 +79,7 @@ static int ehci_ci_portpower(struct usb_hcd *hcd, int portnum, bool enable)
  		hw_port_test_set(ci, 5);
  		hw_port_test_set(ci, 0);
  	}
@@ -110,17 +106,19 @@
  	return 0;
  };
  
---- linux-5.15.36/drivers/usb/chipidea/otg.c	2023-04-14 12:26:08.312283300 +0900
-+++ linux-xlnx-2022.2/drivers/usb/chipidea/otg.c	2023-04-14 12:24:15.402281400 +0900
-@@ -168,6 +168,7 @@
+diff --git a/drivers/usb/chipidea/otg.c b/drivers/usb/chipidea/otg.c
+index 2d9d694eb..9ac77d0d5 100644
+--- a/drivers/usb/chipidea/otg.c
++++ b/drivers/usb/chipidea/otg.c
+@@ -168,6 +168,7 @@ static int hw_wait_vbus_lower_bsv(struct ci_hdrc *ci)
  static void ci_handle_id_switch(struct ci_hdrc *ci)
  {
- 	enum ci_role role = ci_otg_role(ci);
+ 	enum ci_role role;
 +	int ret;
  
- 	if (role != ci->role) {
- 		dev_dbg(ci->dev, "switching from %s to %s\n",
-@@ -193,7 +194,10 @@
+ 	mutex_lock(&ci->mutex);
+ 	role = ci_otg_role(ci);
+@@ -195,7 +196,10 @@ static void ci_handle_id_switch(struct ci_hdrc *ci)
  			 */
  			hw_wait_vbus_lower_bsv(ci);
  
@@ -132,9 +130,11 @@
  		/* vbus change may have already occurred */
  		if (role == CI_ROLE_GADGET)
  			ci_handle_vbus_change(ci);
---- linux-5.15.36/drivers/usb/chipidea/otg_fsm.c	2023-04-14 12:26:08.312283300 +0900
-+++ linux-xlnx-2022.2/drivers/usb/chipidea/otg_fsm.c	2023-04-14 12:24:15.402281400 +0900
-@@ -471,6 +471,11 @@
+diff --git a/drivers/usb/chipidea/otg_fsm.c b/drivers/usb/chipidea/otg_fsm.c
+index 7a2a95596..b26c1a0c6 100644
+--- a/drivers/usb/chipidea/otg_fsm.c
++++ b/drivers/usb/chipidea/otg_fsm.c
+@@ -473,6 +473,11 @@ static void ci_otg_drv_vbus(struct otg_fsm *fsm, int on)
  				return;
  			}
  		}
@@ -146,7 +146,7 @@
  		/* Disable data pulse irq */
  		hw_write_otgsc(ci, OTGSC_DPIE, 0);
  
-@@ -480,6 +485,10 @@
+@@ -482,6 +487,10 @@ static void ci_otg_drv_vbus(struct otg_fsm *fsm, int on)
  		if (ci->platdata->reg_vbus)
  			regulator_disable(ci->platdata->reg_vbus);
  
@@ -157,9 +157,11 @@
  		fsm->a_bus_drop = 1;
  		fsm->a_bus_req = 0;
  	}
---- linux-5.15.36/drivers/usb/chipidea/udc.c	2023-04-14 12:26:08.312283300 +0900
-+++ linux-xlnx-2022.2/drivers/usb/chipidea/udc.c	2023-04-14 12:24:15.402281400 +0900
-@@ -49,6 +49,8 @@
+diff --git a/drivers/usb/chipidea/udc.c b/drivers/usb/chipidea/udc.c
+index aacc37736..164f01bb4 100644
+--- a/drivers/usb/chipidea/udc.c
++++ b/drivers/usb/chipidea/udc.c
+@@ -49,6 +49,8 @@ ctrl_endpt_in_desc = {
  	.wMaxPacketSize  = cpu_to_le16(CTRL_PAYLOAD_MAX),
  };
  
@@ -168,7 +170,7 @@
  /**
   * hw_ep_bit: calculates the bit number
   * @num: endpoint number
-@@ -599,6 +601,12 @@
+@@ -599,6 +601,12 @@ static int _hardware_enqueue(struct ci_hw_ep *hwep, struct ci_hw_req *hwreq)
  
  		prevlastnode->ptr->next = cpu_to_le32(next);
  		wmb();
@@ -181,7 +183,7 @@
  		if (hw_read(ci, OP_ENDPTPRIME, BIT(n)))
  			goto done;
  		do {
-@@ -680,7 +688,8 @@
+@@ -680,7 +688,8 @@ static int _hardware_dequeue(struct ci_hw_ep *hwep, struct ci_hw_req *hwreq)
  		if ((TD_STATUS_ACTIVE & tmptoken) != 0) {
  			int n = hw_ep_bit(hwep->num, hwep->dir);
  
@@ -191,3 +193,15 @@
  				if (!hw_read(ci, OP_ENDPTSTAT, BIT(n)))
  					reprime_dtd(ci, hwep, node);
  			hwreq->req.status = -EALREADY;
+diff --git a/include/linux/usb/chipidea.h b/include/linux/usb/chipidea.h
+index edf334250..ee38835ed 100644
+--- a/include/linux/usb/chipidea.h
++++ b/include/linux/usb/chipidea.h
+@@ -62,6 +62,7 @@ struct ci_hdrc_platform_data {
+ #define CI_HDRC_REQUIRES_ALIGNED_DMA	BIT(13)
+ #define CI_HDRC_IMX_IS_HSIC		BIT(14)
+ #define CI_HDRC_PMQOS			BIT(15)
++#define CI_HDRC_PHY_VBUS_CONTROL	BIT(16)
+ 	enum usb_dr_mode	dr_mode;
+ #define CI_HDRC_CONTROLLER_RESET_EVENT		0
+ #define CI_HDRC_CONTROLLER_STOPPED_EVENT	1
