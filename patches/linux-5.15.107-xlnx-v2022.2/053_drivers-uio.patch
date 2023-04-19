@@ -1,74 +1,7 @@
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/include/uapi/linux/uio/uio.h
---- /dev/null
-+++ linux-xlnx-2022.2/include/uapi/linux/uio/uio.h	2023-04-14 12:24:20.182977300 +0900
-@@ -0,0 +1,65 @@
-+/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-+/*
-+ * The header for UIO driver
-+ *
-+ * Copyright (C) 2019 Xilinx, Inc.
-+ *
-+ * Author: Hyun Woo Kwon <hyun.kwon@xilinx.com>
-+ */
-+
-+#ifndef _UAPI_UIO_UIO_H_
-+#define _UAPI_UIO_UIO_H_
-+
-+#include <linux/ioctl.h>
-+#include <linux/types.h>
-+
-+/**
-+ * enum uio_dmabuf_dir - list of dma directions for mapping management
-+ * @UIO_DMABUF_DIR_BIDIR: Bidirectional DMA. To and from device
-+ * @UIO_DMABUF_DIR_TO_DEV: DMA to device
-+ * @UIO_DMABUF_DIR_FROM_DEV: DMA from device
-+ * @UIO_DMABUF_DIR_NONE: Direction not specified
-+ */
-+enum uio_dmabuf_dir {
-+	UIO_DMABUF_DIR_BIDIR	= 1,
-+	UIO_DMABUF_DIR_TO_DEV	= 2,
-+	UIO_DMABUF_DIR_FROM_DEV	= 3,
-+	UIO_DMABUF_DIR_NONE	= 4,
-+};
-+
-+/**
-+ * struct uio_dmabuf_args - arguments from userspace to map / unmap dmabuf
-+ * @dbuf_fd: The fd or dma buf
-+ * @dma_addr: The dma address of dmabuf @dbuf_fd
-+ * @size: The size of dmabuf @dbuf_fd
-+ * @dir: direction of dma transfer of dmabuf @dbuf_fd
-+ */
-+struct uio_dmabuf_args {
-+	__s32	dbuf_fd;
-+	__u64	dma_addr;
-+	__u64	size;
-+	__u8	dir;
-+};
-+
-+#define UIO_IOC_BASE		'U'
-+
-+/**
-+ * DOC: UIO_IOC_MAP_DMABUF - Map the dma buf to userspace uio application
-+ *
-+ * This takes uio_dmabuf_args, and maps the given dmabuf @dbuf_fd and returns
-+ * information to userspace.
-+ * FIXME: This is experimental and may change at any time. Don't consider this
-+ * as stable ABI.
-+ */
-+#define	UIO_IOC_MAP_DMABUF	_IOWR(UIO_IOC_BASE, 0x1, struct uio_dmabuf_args)
-+
-+/**
-+ * DOC: UIO_IOC_UNMAP_DMABUF - Unmap the dma buf
-+ *
-+ * This takes uio_dmabuf_args, and unmaps the previous mapped dmabuf @dbuf_fd.
-+ * FIXME: This is experimental and may change at any time. Don't consider this
-+ * as stable ABI.
-+ */
-+#define	UIO_IOC_UNMAP_DMABUF	_IOWR(UIO_IOC_BASE, 0x2, struct uio_dmabuf_args)
-+
-+#endif
---- linux-5.15.36/drivers/uio/Kconfig	2023-04-14 12:26:08.265394600 +0900
-+++ linux-xlnx-2022.2/drivers/uio/Kconfig	2023-04-14 12:24:15.355417200 +0900
+diff --git a/drivers/uio/Kconfig b/drivers/uio/Kconfig
+index 2e16c5338..9f87046f6 100644
+--- a/drivers/uio/Kconfig
++++ b/drivers/uio/Kconfig
 @@ -2,6 +2,7 @@
  menuconfig UIO
  	tristate "Userspace I/O drivers"
@@ -77,7 +10,7 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/include/uapi/linux/uio
  	help
  	  Enable this to allow the userspace driver core code to be
  	  built.  This code allows userspace programs easy access to
-@@ -166,6 +167,28 @@
+@@ -166,6 +167,28 @@ config UIO_HV_GENERIC
  
  	  If you compile this as a module, it will be called uio_hv_generic.
  
@@ -106,8 +39,10 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/include/uapi/linux/uio
  config UIO_DFL
  	tristate "Generic driver for DFL (Device Feature List) bus"
  	depends on FPGA_DFL
---- linux-5.15.36/drivers/uio/Makefile	2023-04-14 12:26:08.281015800 +0900
-+++ linux-xlnx-2022.2/drivers/uio/Makefile	2023-04-14 12:24:15.355417200 +0900
+diff --git a/drivers/uio/Makefile b/drivers/uio/Makefile
+index f2f416a14..af82e514b 100644
+--- a/drivers/uio/Makefile
++++ b/drivers/uio/Makefile
 @@ -1,4 +1,6 @@
  # SPDX-License-Identifier: GPL-2.0
 +uio-y := uio_core.o uio_dmabuf.o
@@ -115,7 +50,7 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/include/uapi/linux/uio
  obj-$(CONFIG_UIO)	+= uio.o
  obj-$(CONFIG_UIO_CIF)	+= uio_cif.o
  obj-$(CONFIG_UIO_PDRV_GENIRQ)	+= uio_pdrv_genirq.o
-@@ -9,6 +11,8 @@
+@@ -9,6 +11,8 @@ obj-$(CONFIG_UIO_PCI_GENERIC)	+= uio_pci_generic.o
  obj-$(CONFIG_UIO_NETX)	+= uio_netx.o
  obj-$(CONFIG_UIO_PRUSS)         += uio_pruss.o
  obj-$(CONFIG_UIO_MF624)         += uio_mf624.o
@@ -124,8 +59,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/include/uapi/linux/uio
  obj-$(CONFIG_UIO_HV_GENERIC)	+= uio_hv_generic.o
 +obj-$(CONFIG_UIO_XILINX_AI_ENGINE) += uio_xilinx_ai_engine.o
  obj-$(CONFIG_UIO_DFL)	+= uio_dfl.o
+diff --git a/drivers/uio/uio_core.c b/drivers/uio/uio_core.c
+new file mode 100644
+index 000000000..bdaf30121
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/uio/uio_core.c	2023-04-14 12:24:15.371038500 +0900
++++ b/drivers/uio/uio_core.c
 @@ -0,0 +1,1129 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
@@ -1256,8 +1194,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/include/uapi/linux/uio
 +module_init(uio_init)
 +module_exit(uio_exit)
 +MODULE_LICENSE("GPL v2");
+diff --git a/drivers/uio/uio_dmabuf.c b/drivers/uio/uio_dmabuf.c
+new file mode 100644
+index 000000000..b18f1469f
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/uio/uio_dmabuf.c	2023-04-14 12:24:15.371038500 +0900
++++ b/drivers/uio/uio_dmabuf.c
 @@ -0,0 +1,210 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
@@ -1469,8 +1410,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/include/uapi/linux/uio
 +
 +	return 0;
 +}
+diff --git a/drivers/uio/uio_dmabuf.h b/drivers/uio/uio_dmabuf.h
+new file mode 100644
+index 000000000..30200306d
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/uio/uio_dmabuf.h	2023-04-14 12:24:15.371038500 +0900
++++ b/drivers/uio/uio_dmabuf.h
 @@ -0,0 +1,26 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
@@ -1498,8 +1442,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/include/uapi/linux/uio
 +		       struct mutex *dbufs_lock);
 +
 +#endif
+diff --git a/drivers/uio/uio_xilinx_ai_engine.c b/drivers/uio/uio_xilinx_ai_engine.c
+new file mode 100644
+index 000000000..0a37fbc69
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/uio/uio_xilinx_ai_engine.c	2023-04-14 12:24:15.371038500 +0900
++++ b/drivers/uio/uio_xilinx_ai_engine.c
 @@ -0,0 +1,298 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
@@ -1799,8 +1746,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/include/uapi/linux/uio
 +
 +MODULE_AUTHOR("Xilinx, Inc.");
 +MODULE_LICENSE("GPL v2");
+diff --git a/drivers/uio/uio_xilinx_apm.c b/drivers/uio/uio_xilinx_apm.c
+new file mode 100644
+index 000000000..e8d289fd2
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/uio/uio_xilinx_apm.c	2023-04-14 12:24:15.371038500 +0900
++++ b/drivers/uio/uio_xilinx_apm.c
 @@ -0,0 +1,358 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
@@ -2160,3 +2110,74 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/include/uapi/linux/uio
 +MODULE_AUTHOR("Xilinx Inc.");
 +MODULE_DESCRIPTION("Xilinx AXI Performance Monitor driver");
 +MODULE_LICENSE("GPL v2");
+diff --git a/include/uapi/linux/uio/uio.h b/include/uapi/linux/uio/uio.h
+new file mode 100644
+index 000000000..db92d311c
+--- /dev/null
++++ b/include/uapi/linux/uio/uio.h
+@@ -0,0 +1,65 @@
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++/*
++ * The header for UIO driver
++ *
++ * Copyright (C) 2019 Xilinx, Inc.
++ *
++ * Author: Hyun Woo Kwon <hyun.kwon@xilinx.com>
++ */
++
++#ifndef _UAPI_UIO_UIO_H_
++#define _UAPI_UIO_UIO_H_
++
++#include <linux/ioctl.h>
++#include <linux/types.h>
++
++/**
++ * enum uio_dmabuf_dir - list of dma directions for mapping management
++ * @UIO_DMABUF_DIR_BIDIR: Bidirectional DMA. To and from device
++ * @UIO_DMABUF_DIR_TO_DEV: DMA to device
++ * @UIO_DMABUF_DIR_FROM_DEV: DMA from device
++ * @UIO_DMABUF_DIR_NONE: Direction not specified
++ */
++enum uio_dmabuf_dir {
++	UIO_DMABUF_DIR_BIDIR	= 1,
++	UIO_DMABUF_DIR_TO_DEV	= 2,
++	UIO_DMABUF_DIR_FROM_DEV	= 3,
++	UIO_DMABUF_DIR_NONE	= 4,
++};
++
++/**
++ * struct uio_dmabuf_args - arguments from userspace to map / unmap dmabuf
++ * @dbuf_fd: The fd or dma buf
++ * @dma_addr: The dma address of dmabuf @dbuf_fd
++ * @size: The size of dmabuf @dbuf_fd
++ * @dir: direction of dma transfer of dmabuf @dbuf_fd
++ */
++struct uio_dmabuf_args {
++	__s32	dbuf_fd;
++	__u64	dma_addr;
++	__u64	size;
++	__u8	dir;
++};
++
++#define UIO_IOC_BASE		'U'
++
++/**
++ * DOC: UIO_IOC_MAP_DMABUF - Map the dma buf to userspace uio application
++ *
++ * This takes uio_dmabuf_args, and maps the given dmabuf @dbuf_fd and returns
++ * information to userspace.
++ * FIXME: This is experimental and may change at any time. Don't consider this
++ * as stable ABI.
++ */
++#define	UIO_IOC_MAP_DMABUF	_IOWR(UIO_IOC_BASE, 0x1, struct uio_dmabuf_args)
++
++/**
++ * DOC: UIO_IOC_UNMAP_DMABUF - Unmap the dma buf
++ *
++ * This takes uio_dmabuf_args, and unmaps the previous mapped dmabuf @dbuf_fd.
++ * FIXME: This is experimental and may change at any time. Don't consider this
++ * as stable ABI.
++ */
++#define	UIO_IOC_UNMAP_DMABUF	_IOWR(UIO_IOC_BASE, 0x2, struct uio_dmabuf_args)
++
++#endif
