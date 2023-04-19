@@ -1,6 +1,26 @@
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/Documentation/devicetree/bindings/staging/net/xilinx-tsn-ethernet.txt
+diff --git a/Documentation/devicetree/bindings/misc/xlnx,fclk.txt b/Documentation/devicetree/bindings/misc/xlnx,fclk.txt
+new file mode 100644
+index 000000000..e1a1acc6c
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/staging/net/xilinx-tsn-ethernet.txt	2023-04-14 12:23:50.285878900 +0900
++++ b/Documentation/devicetree/bindings/misc/xlnx,fclk.txt
+@@ -0,0 +1,12 @@
++* Xilinx fclk clock enable
++Temporary solution for enabling the PS_PL clocks.
++
++Required properties:
++- compatible: "xlnx,fclk"
++
++Example:
++++++++++
++fclk0: fclk0 {
++	compatible = "xlnx,fclk";
++	clocks = <&clkc 71>;
++};
+diff --git a/Documentation/devicetree/bindings/staging/net/xilinx-tsn-ethernet.txt b/Documentation/devicetree/bindings/staging/net/xilinx-tsn-ethernet.txt
+new file mode 100644
+index 000000000..e66b64bc1
+--- /dev/null
++++ b/Documentation/devicetree/bindings/staging/net/xilinx-tsn-ethernet.txt
 @@ -0,0 +1,54 @@
 +Xilinx TSN (time sensitive networking) TEMAC axi ethernet driver (xilinx_axienet)
 +-----------------------------------------------------------------------
@@ -56,9 +76,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/Documentation/devicetr
 +		xlnx,txsum = <0>;
 +		xlnx,rxsum = <0>;
 +	};
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/Documentation/devicetree/bindings/staging/net/xilinx_tsn.txt
+diff --git a/Documentation/devicetree/bindings/staging/net/xilinx_tsn.txt b/Documentation/devicetree/bindings/staging/net/xilinx_tsn.txt
+new file mode 100644
+index 000000000..b715d7c1c
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/staging/net/xilinx_tsn.txt	2023-04-14 12:23:50.285878900 +0900
++++ b/Documentation/devicetree/bindings/staging/net/xilinx_tsn.txt
 @@ -0,0 +1,17 @@
 +Xilinx TSN (time sensitive networking) IP driver (xilinx_tsn_ip)
 +-----------------------------------------------------------------------
@@ -77,9 +99,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/Documentation/devicetr
 +		reg = <0x0 0x80040000 0x0 0x40000>;
 +		ranges;
 +	};
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/Documentation/devicetree/bindings/staging/net/xilinx_tsn_ep.txt
+diff --git a/Documentation/devicetree/bindings/staging/net/xilinx_tsn_ep.txt b/Documentation/devicetree/bindings/staging/net/xilinx_tsn_ep.txt
+new file mode 100644
+index 000000000..7c934ecce
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/staging/net/xilinx_tsn_ep.txt	2023-04-14 12:23:50.301502300 +0900
++++ b/Documentation/devicetree/bindings/staging/net/xilinx_tsn_ep.txt
 @@ -0,0 +1,55 @@
 +Xilinx TSN (time sensitive networking) EndPoint Driver (xilinx_tsn_ep)
 +-------------------------------------------------------------------------------
@@ -136,9 +160,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/Documentation/devicetr
 +		xlnx,channel-ids = "1","2","3","4","5";
 +		xlnx,eth-hasnobuf ;
 +	};
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/Documentation/devicetree/bindings/staging/net/xilinx_tsn_ep_ex.txt
+diff --git a/Documentation/devicetree/bindings/staging/net/xilinx_tsn_ep_ex.txt b/Documentation/devicetree/bindings/staging/net/xilinx_tsn_ep_ex.txt
+new file mode 100644
+index 000000000..f995e7fa9
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/staging/net/xilinx_tsn_ep_ex.txt	2023-04-14 12:23:50.301502300 +0900
++++ b/Documentation/devicetree/bindings/staging/net/xilinx_tsn_ep_ex.txt
 @@ -0,0 +1,26 @@
 +Xilinx TSN (time sensitive networking) Extended EndPoint Driver (xilinx_tsn_ep_ex)
 +-------------------------------------------------------------------------------
@@ -166,9 +192,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/Documentation/devicetr
 +		local-mac-address = [00 0A 35 00 01 20];
 +		tsn,endpoint = <&tsn_ep>;
 +	};
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/Documentation/devicetree/bindings/staging/net/xilinx_tsn_switch.txt
+diff --git a/Documentation/devicetree/bindings/staging/net/xilinx_tsn_switch.txt b/Documentation/devicetree/bindings/staging/net/xilinx_tsn_switch.txt
+new file mode 100644
+index 000000000..7b3572dd0
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/staging/net/xilinx_tsn_switch.txt	2023-04-14 12:23:50.301502300 +0900
++++ b/Documentation/devicetree/bindings/staging/net/xilinx_tsn_switch.txt
 @@ -0,0 +1,26 @@
 +Xilinx TSN (time sensitive networking) Switch Driver (xilinx_tsn_switch)
 +-----------------------------------------------------------------------------
@@ -196,462 +224,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/Documentation/devicetr
 +		xlnx,has-hwaddr-learning ;
 +		xlnx,has-inband-mgmt-tag ;
 +	};
---- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/misc/xlnx,fclk.txt	2023-04-14 12:23:49.503513600 +0900
-@@ -0,0 +1,12 @@
-+* Xilinx fclk clock enable
-+Temporary solution for enabling the PS_PL clocks.
-+
-+Required properties:
-+- compatible: "xlnx,fclk"
-+
-+Example:
-+++++++++
-+fclk0: fclk0 {
-+	compatible = "xlnx,fclk";
-+	clocks = <&clkc 71>;
-+};
---- /dev/null
-+++ linux-xlnx-2022.2/include/uapi/linux/xlnxsync.h	2023-04-14 12:24:20.229726200 +0900
-@@ -0,0 +1,179 @@
-+/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-+
-+#ifndef __XLNXSYNC_H__
-+#define __XLNXSYNC_H__
-+
-+#include <linux/types.h>
-+
-+#define XLNXSYNC_IOCTL_HDR_VER		0x10004
-+
-+/*
-+ * This is set in the fb_id of struct xlnxsync_chan_config when
-+ * configuring the channel. This makes the driver auto search for
-+ * a free framebuffer slot.
-+ */
-+#define XLNXSYNC_AUTO_SEARCH		0xFF
-+
-+#define XLNXSYNC_MAX_ENC_CHAN		4
-+#define XLNXSYNC_MAX_DEC_CHAN		2
-+#define XLNXSYNC_BUF_PER_CHAN		3
-+
-+#define XLNXSYNC_PROD			0
-+#define XLNXSYNC_CONS			1
-+#define XLNXSYNC_IO			2
-+
-+#define XLNXSYNC_MAX_CORES		4
-+
-+/**
-+ * struct xlnxsync_err_intr - Channel error interrupt types
-+ * @prod_sync: Producer synchronization error interrupt
-+ * @prod_wdg: Producer watchdog interrupt
-+ * @cons_sync: Consumer synchronization error interrupt
-+ * @cons_wdg: Consumer watchdog interrupt
-+ * @ldiff: Luma buffer difference interrupt
-+ * @cdiff: Chroma buffer difference interrupt
-+ */
-+struct xlnxsync_err_intr {
-+	__u8 prod_sync : 1;
-+	__u8 prod_wdg : 1;
-+	__u8 cons_sync : 1;
-+	__u8 cons_wdg : 1;
-+	__u8 ldiff : 1;
-+	__u8 cdiff : 1;
-+};
-+
-+/**
-+ * struct xlnxsync_intr - Channel Interrupt types
-+ * @hdr_ver: IOCTL header version
-+ * @err: Structure for error interrupts
-+ * @prod_lfbdone: Producer luma frame buffer done interrupt
-+ * @prod_cfbdone: Producer chroma frame buffer done interrupt
-+ * @cons_lfbdone: Consumer luma frame buffer done interrupt
-+ * @cons_cfbdone: Consumer chroma frame buffer done interrupt
-+ */
-+struct xlnxsync_intr {
-+	__u64 hdr_ver;
-+	struct xlnxsync_err_intr err;
-+	__u8 prod_lfbdone : 1;
-+	__u8 prod_cfbdone : 1;
-+	__u8 cons_lfbdone : 1;
-+	__u8 cons_cfbdone : 1;
-+};
-+
-+/**
-+ * struct xlnxsync_chan_config - Synchronizer channel configuration struct
-+ * @hdr_ver: IOCTL header version
-+ * @luma_start_offset: Start offset of Luma buffer
-+ * @chroma_start_offset: Start offset of Chroma buffer
-+ * @luma_end_offset: End offset of Luma buffer
-+ * @chroma_end_offset: End offset of Chroma buffer
-+ * @luma_margin: Margin for Luma buffer
-+ * @chroma_margin: Margin for Chroma buffer
-+ * @luma_core_offset: Array of 4 offsets for luma
-+ * @chroma_core_offset: Array of 4 offsets for chroma
-+ * @dma_fd: File descriptor of dma
-+ * @fb_id: Framebuffer index. Valid values 0/1/2/XLNXSYNC_AUTO_SEARCH
-+ * @ismono: Flag to indicate if buffer is Luma only.
-+ * Valid 0..3 & XLNXSYNC_AUTO_SEARCH
-+ *
-+ * This structure contains the configuration for monitoring a particular
-+ * framebuffer on a particular channel.
-+ */
-+struct xlnxsync_chan_config {
-+	__u64 hdr_ver;
-+	__u64 luma_start_offset[XLNXSYNC_IO];
-+	__u64 chroma_start_offset[XLNXSYNC_IO];
-+	__u64 luma_end_offset[XLNXSYNC_IO];
-+	__u64 chroma_end_offset[XLNXSYNC_IO];
-+	__u32 luma_margin;
-+	__u32 chroma_margin;
-+	__u32 luma_core_offset[XLNXSYNC_MAX_CORES];
-+	__u32 chroma_core_offset[XLNXSYNC_MAX_CORES];
-+	__u32 dma_fd;
-+	__u8 fb_id[XLNXSYNC_IO];
-+	__u8 ismono[XLNXSYNC_IO];
-+};
-+
-+/**
-+ * struct xlnxsync_clr_err - Clear channel error
-+ * @hdr_ver: IOCTL header version
-+ * @err: Structure for error interrupts
-+ */
-+struct xlnxsync_clr_err {
-+	__u64 hdr_ver;
-+	struct xlnxsync_err_intr err;
-+};
-+
-+/**
-+ * struct xlnxsync_fbdone - Framebuffer Done
-+ * @hdr_ver: IOCTL header version
-+ * @status: Framebuffer Done status
-+ */
-+struct xlnxsync_fbdone {
-+	__u64 hdr_ver;
-+	__u8 status[XLNXSYNC_BUF_PER_CHAN][XLNXSYNC_IO];
-+};
-+
-+/**
-+ * struct xlnxsync_config - Synchronizer IP configuration
-+ * @hdr_ver: IOCTL header version
-+ * @encode: true if encoder type, false for decoder type
-+ * @max_channels: Maximum channels this IP supports
-+ * @active_channels: Number of active IP channels
-+ * @reserved_id: Reserved channel ID for instance
-+ */
-+struct xlnxsync_config {
-+	__u64	hdr_ver;
-+	__u8	encode;
-+	__u8	max_channels;
-+	__u8	active_channels;
-+	__u8	reserved_id;
-+	__u32	reserved[10];
-+};
-+
-+/**
-+ * struct xlnxsync_stat - Sync IP channel status
-+ * @hdr_ver: IOCTL header version
-+ * @fbdone: for every pair of luma/chroma buffer for every producer/consumer
-+ * @enable: channel enable
-+ * @err: Structure for error interrupts
-+ */
-+struct xlnxsync_stat {
-+	__u64 hdr_ver;
-+	__u8 fbdone[XLNXSYNC_BUF_PER_CHAN][XLNXSYNC_IO];
-+	__u8 enable;
-+	struct xlnxsync_err_intr err;
-+};
-+
-+#define XLNXSYNC_MAGIC			'X'
-+
-+/*
-+ * This ioctl is used to get the IP config (i.e. encode / decode)
-+ * and max number of channels
-+ */
-+#define XLNXSYNC_GET_CFG		_IOR(XLNXSYNC_MAGIC, 1,\
-+					     struct xlnxsync_config *)
-+/* This ioctl is used to get the channel status */
-+#define XLNXSYNC_CHAN_GET_STATUS	_IOR(XLNXSYNC_MAGIC, 2, __u32 *)
-+/* This is used to set the framebuffer address for a channel */
-+#define XLNXSYNC_CHAN_SET_CONFIG	_IOW(XLNXSYNC_MAGIC, 3,\
-+					     struct xlnxsync_chan_config *)
-+/* Enable a channel. */
-+#define XLNXSYNC_CHAN_ENABLE		_IO(XLNXSYNC_MAGIC, 4)
-+/* Disable a channel. */
-+#define XLNXSYNC_CHAN_DISABLE		_IO(XLNXSYNC_MAGIC, 5)
-+/* This is used to clear the Sync and Watchdog errors  for a channel */
-+#define XLNXSYNC_CHAN_CLR_ERR		_IOW(XLNXSYNC_MAGIC, 6,\
-+					     struct xlnxsync_clr_err *)
-+/* This is used to get the framebuffer done status for a channel */
-+#define XLNXSYNC_CHAN_GET_FBDONE_STAT	_IOR(XLNXSYNC_MAGIC, 7,\
-+					     struct xlnxsync_fbdone *)
-+/* This is used to clear the framebuffer done status for a channel */
-+#define XLNXSYNC_CHAN_CLR_FBDONE_STAT	_IOW(XLNXSYNC_MAGIC, 8,\
-+					     struct xlnxsync_fbdone *)
-+/* This is used to set interrupt mask */
-+#define XLNXSYNC_CHAN_SET_INTR_MASK	_IOW(XLNXSYNC_MAGIC, 9,\
-+					     struct xlnxsync_intr *)
-+/* This is used to reset the last programmed slot */
-+#define XLNXSYNC_RESET_SLOT		_IO(XLNXSYNC_MAGIC, 10)
-+#endif
---- /dev/null
-+++ linux-xlnx-2022.2/include/uapi/linux/xlnx_mpg2tsmux_interface.h	2023-04-14 12:24:20.229726200 +0900
-@@ -0,0 +1,253 @@
-+/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-+
-+/*
-+ * Xilinx mpeg2 transport stream muxer ioctl calls
-+ *
-+ * Copyright (C) 2019 Xilinx, Inc.
-+ *
-+ * Author:	Venkateshwar Rao G <venkateshwar.rao.gannava@xilinx.com>
-+ */
-+
-+#ifndef __XLNX_MPG2TSMUX_INTERFACE_H__
-+#define __XLNX_MPG2TSMUX_INTERFACE_H__
-+
-+#include <linux/types.h>
-+#include <linux/ioctl.h>
-+
-+/**
-+ * enum ts_mux_command - command for stream context
-+ * @CREATE_TS_MISC: create misc
-+ * @CREATE_TS_VIDEO_KEYFRAME: create video key frame
-+ * @CREATE_TS_VIDEO_NON_KEYFRAME: create non key frame
-+ * @CREATE_TS_AUDIO: create audio
-+ * @WRITE_PAT: write pat
-+ * @WRITE_PMT: write pmt
-+ * @WRITE_SI: write si
-+ * @INVALID: invalid
-+ */
-+enum ts_mux_command {
-+	CREATE_TS_MISC = 0,
-+	CREATE_TS_VIDEO_KEYFRAME,
-+	CREATE_TS_VIDEO_NON_KEYFRAME,
-+	CREATE_TS_AUDIO,
-+	WRITE_PAT,
-+	WRITE_PMT,
-+	WRITE_SI,
-+	INVALID
-+};
-+
-+/**
-+ * struct stream_context_in - struct to enqueue a stream context descriptor
-+ * @command: stream context type
-+ * @stream_id: stream identification number
-+ * @extended_stream_id: extended stream id
-+ * @is_pcr_stream: flag for pcr stream
-+ * @is_valid_pts: flag for valid pts
-+ * @is_valid_dts: flag for valid dts
-+ * @is_dmabuf: flag to set if external src buffer is DMA allocated
-+ * @pid: packet id number
-+ * @size_data_in: size in bytes of input buffer
-+ * @pts: presentation time stamp
-+ * @dts: display time stamp
-+ * @srcbuf_id: source buffer id after mmap
-+ * @insert_pcr: flag for inserting pcr in stream context
-+ * @pcr_extension: pcr extension number
-+ * @pcr_base: pcr base number
-+ */
-+struct stream_context_in {
-+	enum ts_mux_command command;
-+	__u8 stream_id;
-+	__u8 extended_stream_id;
-+	int is_pcr_stream;
-+	int is_valid_pts;
-+	int is_valid_dts;
-+	int is_dmabuf;
-+	__u16 pid;
-+	__u64 size_data_in;
-+	__u64 pts;
-+	__u64 dts;
-+	__u32 srcbuf_id;
-+	int insert_pcr;
-+	__u16 pcr_extension;
-+	__u64 pcr_base;
-+};
-+
-+/**
-+ * struct mux_context_in - struct to enqueue a mux context descriptor
-+ * @is_dmabuf: flag to set if external src buffer is DMA allocated
-+ * @dstbuf_id: destination buffer id after mmap
-+ * @dmabuf_size: size in bytes of output buffer
-+ */
-+struct muxer_context_in {
-+	int is_dmabuf;
-+	__u32 dstbuf_id;
-+	__u32 dmabuf_size;
-+};
-+
-+/**
-+ * enum xlnx_tsmux_status - ip status
-+ * @MPG2MUX_BUSY: device busy
-+ * @MPG2MUX_READY: device ready
-+ * @MPG2MUX_ERROR: error state
-+ */
-+enum xlnx_tsmux_status {
-+	MPG2MUX_BUSY = 0,
-+	MPG2MUX_READY,
-+	MPG2MUX_ERROR
-+};
-+
-+/**
-+ * struct strc_bufs_info - struct to specify bufs requirement
-+ * @num_buf: number of buffers
-+ * @buf_size: size of each buffer
-+ */
-+struct strc_bufs_info {
-+	__u32 num_buf;
-+	__u32 buf_size;
-+};
-+
-+/**
-+ * struct strc_out_buf - struct to get output buffer info
-+ * @buf_id: buf id into which output is written
-+ * @buf_write: output bytes written in buf
-+ */
-+struct out_buffer {
-+	__u32 buf_id;
-+	__u32 buf_write;
-+};
-+
-+/**
-+ * enum strmtbl_cnxt - streamid table operation
-+ * @NO_UPDATE: no table update
-+ * @ADD_TO_TBL: add the entry to table
-+ * @DEL_FR_TBL: delete the entry from table
-+ */
-+enum strmtbl_cnxt {
-+	NO_UPDATE = 0,
-+	ADD_TO_TBL,
-+	DEL_FR_TBL,
-+};
-+
-+/**
-+ * struct strm_tbl_info - struct to enqueue/dequeue streamid in table
-+ * @strmtbl_ctxt: enqueue/dequeue stream id
-+ * @pid: stream id
-+ */
-+struct strc_strminfo {
-+	enum strmtbl_cnxt strmtbl_ctxt;
-+	__u16 pid;
-+};
-+
-+/**
-+ * enum xlnx_tsmux_dma_dir - dma direction
-+ * @DMA_TO_MPG2MUX: memory to device
-+ * @DMA_FROM_MPG2MUX: device to memory
-+ */
-+enum xlnx_tsmux_dma_dir {
-+	DMA_TO_MPG2MUX = 1,
-+	DMA_FROM_MPG2MUX,
-+};
-+
-+/**
-+ * enum xlnx_tsmux_dmabuf_flags - dma buffer handling
-+ * @DMABUF_ERROR: buffer error
-+ * @DMABUF_CONTIG: contig buffer
-+ * @DMABUF_NON_CONTIG: non contigs buffer
-+ * @DMABUF_ATTACHED: buffer attached
-+ */
-+enum xlnx_tsmux_dmabuf_flags {
-+	DMABUF_ERROR = 1,
-+	DMABUF_CONTIG = 2,
-+	DMABUF_NON_CONTIG = 4,
-+	DMABUF_ATTACHED = 8,
-+};
-+
-+/**
-+ * struct xlnx_tsmux_dmabuf_info - struct to verify dma buf before enque
-+ * @buf_fd: file descriptor
-+ * @dir: direction of the dma buffer
-+ * @flags: flags returned by the driver
-+ */
-+struct xlnx_tsmux_dmabuf_info {
-+	int buf_fd;
-+	enum xlnx_tsmux_dma_dir dir;
-+	enum xlnx_tsmux_dmabuf_flags flags;
-+};
-+
-+/* MPG2MUX IOCTL CALL LIST */
-+
-+#define MPG2MUX_MAGIC 'M'
-+
-+/**
-+ * MPG2MUX_INBUFALLOC - src buffer allocation
-+ */
-+#define MPG2MUX_INBUFALLOC _IOWR(MPG2MUX_MAGIC, 1, struct strc_bufs_info *)
-+
-+/**
-+ * MPG2MUX_INBUFDEALLOC - deallocates the all src buffers
-+ */
-+#define MPG2MUX_INBUFDEALLOC _IO(MPG2MUX_MAGIC, 2)
-+
-+/**
-+ * MPG2MUX_OUTBUFALLOC - allocates DMA able memory for dst
-+ */
-+#define MPG2MUX_OUTBUFALLOC _IOWR(MPG2MUX_MAGIC, 3, struct strc_bufs_info *)
-+
-+/**
-+ * MPG2MUX_OUTBUFDEALLOC - deallocates the all dst buffers allocated
-+ */
-+#define MPG2MUX_OUTBUFDEALLOC _IO(MPG2MUX_MAGIC, 4)
-+
-+/**
-+ * MPG2MUX_STBLALLOC - allocates DMA able memory for streamid table
-+ */
-+#define MPG2MUX_STBLALLOC _IOW(MPG2MUX_MAGIC, 5, unsigned short *)
-+
-+/**
-+ * MPG2MUX_STBLDEALLOC - deallocates streamid table memory
-+ */
-+#define MPG2MUX_STBLDEALLOC _IO(MPG2MUX_MAGIC, 6)
-+
-+/**
-+ * MPG2MUX_TBLUPDATE - enqueue or dequeue in streamid table
-+ */
-+#define MPG2MUX_TBLUPDATE _IOW(MPG2MUX_MAGIC, 7, struct strc_strminfo *)
-+
-+/**
-+ * MPG2MUX_SETSTRM - enqueue a stream descriptor in stream context
-+ *		linked list along with src buf address
-+ */
-+#define MPG2MUX_SETSTRM _IOW(MPG2MUX_MAGIC, 8, struct stream_context_in *)
-+
-+/**
-+ * MPG2MUX_START - starts muxer IP after configuring stream
-+ *		and mux context registers
-+ */
-+#define MPG2MUX_START _IO(MPG2MUX_MAGIC, 9)
-+
-+/**
-+ * MPG2MUX_STOP - stops the muxer IP
-+ */
-+#define MPG2MUX_STOP _IO(MPG2MUX_MAGIC, 10)
-+
-+/**
-+ * MPG2MUX_STATUS - command to get the status of IP
-+ */
-+#define MPG2MUX_STATUS _IOR(MPG2MUX_MAGIC, 11, unsigned short *)
-+
-+/**
-+ * MPG2MUX_GETOUTBUF - get the output buffer id with size of output data
-+ */
-+#define MPG2MUX_GETOUTBUF _IOW(MPG2MUX_MAGIC, 12, struct out_buffer *)
-+
-+/**
-+ * MPG2MUX_SETMUX - enqueue a mux descriptor with dst buf address
-+ */
-+#define MPG2MUX_SETMUX _IOW(MPG2MUX_MAGIC, 13, struct muxer_context_in *)
-+
-+/**
-+ * MPG2MUX_VRFY_DMABUF - status of a given dma buffer fd
-+ */
-+#define MPG2MUX_VDBUF _IOWR(MPG2MUX_MAGIC, 14, struct xlnx_tsmux_dmabuf_info *)
-+
-+#endif
---- linux-5.15.36/drivers/staging/Kconfig	2023-04-14 12:26:06.837654100 +0900
-+++ linux-xlnx-2022.2/drivers/staging/Kconfig	2023-04-14 12:24:13.899253000 +0900
-@@ -72,7 +72,7 @@
+diff --git a/drivers/staging/Kconfig b/drivers/staging/Kconfig
+index e03627ad4..d29faa091 100644
+--- a/drivers/staging/Kconfig
++++ b/drivers/staging/Kconfig
+@@ -72,7 +72,7 @@ source "drivers/staging/gs_fpgaboot/Kconfig"
  
  source "drivers/staging/unisys/Kconfig"
  
@@ -660,7 +237,7 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/Documentation/devicetr
  
  source "drivers/staging/fbtft/Kconfig"
  
-@@ -102,4 +102,20 @@
+@@ -102,4 +102,20 @@ source "drivers/staging/qlge/Kconfig"
  
  source "drivers/staging/wfx/Kconfig"
  
@@ -681,9 +258,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/Documentation/devicetr
 +source "drivers/staging/xlnx_hdcp1x/Kconfig"
 +
  endif # STAGING
---- linux-5.15.36/drivers/staging/Makefile	2023-04-14 12:26:06.837654100 +0900
-+++ linux-xlnx-2022.2/drivers/staging/Makefile	2023-04-14 12:24:13.899253000 +0900
-@@ -26,7 +26,7 @@
+diff --git a/drivers/staging/Makefile b/drivers/staging/Makefile
+index c7f8d8d8d..2e4bfd0f7 100644
+--- a/drivers/staging/Makefile
++++ b/drivers/staging/Makefile
+@@ -26,7 +26,7 @@ obj-$(CONFIG_LTE_GDM724X)	+= gdm724x/
  obj-$(CONFIG_FIREWIRE_SERIAL)	+= fwserial/
  obj-$(CONFIG_GS_FPGABOOT)	+= gs_fpgaboot/
  obj-$(CONFIG_UNISYSSPAR)	+= unisys/
@@ -692,7 +271,7 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/Documentation/devicetr
  obj-$(CONFIG_FB_TFT)		+= fbtft/
  obj-$(CONFIG_MOST)		+= most/
  obj-$(CONFIG_KS7010)		+= ks7010/
-@@ -41,3 +41,10 @@
+@@ -41,3 +41,10 @@ obj-$(CONFIG_XIL_AXIS_FIFO)	+= axis-fifo/
  obj-$(CONFIG_FIELDBUS_DEV)     += fieldbus/
  obj-$(CONFIG_QLGE)		+= qlge/
  obj-$(CONFIG_WFX)		+= wfx/
@@ -703,9 +282,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/Documentation/devicetr
 +obj-$(CONFIG_XROE_FRAMER)	+= xroeframer/
 +obj-$(CONFIG_SERIAL_UARTLITE_RS485)	+= uartlite-rs485/
 +obj-$(CONFIG_XILINX_TSN)	+= xilinx-tsn/
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/apf/Kconfig
+diff --git a/drivers/staging/apf/Kconfig b/drivers/staging/apf/Kconfig
+new file mode 100644
+index 000000000..33cf32d43
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/apf/Kconfig	2023-04-14 12:24:13.899253000 +0900
++++ b/drivers/staging/apf/Kconfig
 @@ -0,0 +1,20 @@
 +#
 +# APF driver configuration
@@ -727,9 +308,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/apf/Kc
 +	select DMADEVICES
 +	help
 +	  Enable support for the Xilinx APF DMA controllers.
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/apf/Makefile
+diff --git a/drivers/staging/apf/Makefile b/drivers/staging/apf/Makefile
+new file mode 100644
+index 000000000..bf281a2c1
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/apf/Makefile	2023-04-14 12:24:13.899253000 +0900
++++ b/drivers/staging/apf/Makefile
 @@ -0,0 +1,9 @@
 +# gpio support: dedicated expander chips, etc
 +
@@ -740,9 +323,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/apf/Ma
 +obj-$(CONFIG_XILINX_APF) += xlnk-eng.o
 +obj-$(CONFIG_XILINX_DMA_APF) += xilinx-dma-apf.o
 +
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/apf/dt-binding.txt
+diff --git a/drivers/staging/apf/dt-binding.txt b/drivers/staging/apf/dt-binding.txt
+new file mode 100644
+index 000000000..fd73725fa
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/apf/dt-binding.txt	2023-04-14 12:24:13.899253000 +0900
++++ b/drivers/staging/apf/dt-binding.txt
 @@ -0,0 +1,17 @@
 +* Xilinx APF xlnk driver
 +
@@ -761,9 +346,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/apf/dt
 +		clock-names = "clk166", "clk150", "clk100", "clk200";
 +		clocks = <&clkc 15>, <&clkc 16>, <&clkc 17>, <&clkc 18>;
 +	};
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/apf/xilinx-dma-apf.c
+diff --git a/drivers/staging/apf/xilinx-dma-apf.c b/drivers/staging/apf/xilinx-dma-apf.c
+new file mode 100644
+index 000000000..9f55c997e
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/apf/xilinx-dma-apf.c	2023-04-14 12:24:13.899253000 +0900
++++ b/drivers/staging/apf/xilinx-dma-apf.c
 @@ -0,0 +1,1220 @@
 +// SPDX-License-Identifier: GPL-2.0+
 +/*
@@ -1985,9 +1572,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/apf/xi
 +
 +MODULE_DESCRIPTION("Xilinx DMA driver");
 +MODULE_LICENSE("GPL");
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/apf/xilinx-dma-apf.h
+diff --git a/drivers/staging/apf/xilinx-dma-apf.h b/drivers/staging/apf/xilinx-dma-apf.h
+new file mode 100644
+index 000000000..ddccf5f3f
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/apf/xilinx-dma-apf.h	2023-04-14 12:24:13.899253000 +0900
++++ b/drivers/staging/apf/xilinx-dma-apf.h
 @@ -0,0 +1,229 @@
 +/* SPDX-License-Identifier: GPL-2.0+ */
 +/*
@@ -2218,9 +1807,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/apf/xi
 +unsigned int xlate_irq(unsigned int hwirq);
 +
 +#endif
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/apf/xlnk-eng.c
+diff --git a/drivers/staging/apf/xlnk-eng.c b/drivers/staging/apf/xlnk-eng.c
+new file mode 100644
+index 000000000..399838300
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/apf/xlnk-eng.c	2023-04-14 12:24:13.899253000 +0900
++++ b/drivers/staging/apf/xlnk-eng.c
 @@ -0,0 +1,241 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
@@ -2463,9 +2054,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/apf/xl
 +
 +MODULE_DESCRIPTION("Xilinx xlnk engine generic driver");
 +MODULE_LICENSE("GPL");
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/apf/xlnk-eng.h
+diff --git a/drivers/staging/apf/xlnk-eng.h b/drivers/staging/apf/xlnk-eng.h
+new file mode 100644
+index 000000000..3961e7b85
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/apf/xlnk-eng.h	2023-04-14 12:24:13.899253000 +0900
++++ b/drivers/staging/apf/xlnk-eng.h
 @@ -0,0 +1,32 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
 +/*
@@ -2499,9 +2092,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/apf/xl
 +
 +#endif
 +
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/apf/xlnk-ioctl.h
+diff --git a/drivers/staging/apf/xlnk-ioctl.h b/drivers/staging/apf/xlnk-ioctl.h
+new file mode 100644
+index 000000000..d29d557f9
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/apf/xlnk-ioctl.h	2023-04-14 12:24:13.899253000 +0900
++++ b/drivers/staging/apf/xlnk-ioctl.h
 @@ -0,0 +1,42 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
 +/*
@@ -2545,9 +2140,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/apf/xl
 +#define XLNK_IOC_MAXNR		101
 +
 +#endif
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/apf/xlnk-sysdef.h
+diff --git a/drivers/staging/apf/xlnk-sysdef.h b/drivers/staging/apf/xlnk-sysdef.h
+new file mode 100644
+index 000000000..d6304b44d
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/apf/xlnk-sysdef.h	2023-04-14 12:24:13.899253000 +0900
++++ b/drivers/staging/apf/xlnk-sysdef.h
 @@ -0,0 +1,39 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
 +/*
@@ -2588,9 +2185,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/apf/xl
 +#endif
 +
 +#endif
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/apf/xlnk.c
+diff --git a/drivers/staging/apf/xlnk.c b/drivers/staging/apf/xlnk.c
+new file mode 100644
+index 000000000..9f847057e
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/apf/xlnk.c	2023-04-14 12:24:13.899253000 +0900
++++ b/drivers/staging/apf/xlnk.c
 @@ -0,0 +1,1511 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
@@ -4103,9 +3702,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/apf/xl
 +
 +MODULE_DESCRIPTION("Xilinx APF driver");
 +MODULE_LICENSE("GPL");
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/apf/xlnk.h
+diff --git a/drivers/staging/apf/xlnk.h b/drivers/staging/apf/xlnk.h
+new file mode 100644
+index 000000000..089626882
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/apf/xlnk.h	2023-04-14 12:24:13.899253000 +0900
++++ b/drivers/staging/apf/xlnk.h
 @@ -0,0 +1,180 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
 +/*
@@ -4287,9 +3888,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/apf/xl
 +};
 +
 +#endif
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/fclk/Kconfig
+diff --git a/drivers/staging/fclk/Kconfig b/drivers/staging/fclk/Kconfig
+new file mode 100644
+index 000000000..3e13f2170
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/fclk/Kconfig	2023-04-14 12:24:13.946151000 +0900
++++ b/drivers/staging/fclk/Kconfig
 @@ -0,0 +1,9 @@
 +#
 +# Xilinx PL clk enabler
@@ -4300,20 +3903,26 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/fclk/K
 +	depends on COMMON_CLK && OF
 +	help
 +	  Support for the Xilinx fclk clock enabler.
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/fclk/Makefile
+diff --git a/drivers/staging/fclk/Makefile b/drivers/staging/fclk/Makefile
+new file mode 100644
+index 000000000..71723036c
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/fclk/Makefile	2023-04-14 12:24:13.946151000 +0900
++++ b/drivers/staging/fclk/Makefile
 @@ -0,0 +1 @@
 +obj-$(CONFIG_XILINX_FCLK)	+= xilinx_fclk.o
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/fclk/TODO
+diff --git a/drivers/staging/fclk/TODO b/drivers/staging/fclk/TODO
+new file mode 100644
+index 000000000..912325fe5
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/fclk/TODO	2023-04-14 12:24:13.946151000 +0900
++++ b/drivers/staging/fclk/TODO
 @@ -0,0 +1,2 @@
 +TODO:
 +	- Remove this hack and clock adapt all the drivers.
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/fclk/dt-binding.txt
+diff --git a/drivers/staging/fclk/dt-binding.txt b/drivers/staging/fclk/dt-binding.txt
+new file mode 100644
+index 000000000..23521608b
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/fclk/dt-binding.txt	2023-04-14 12:24:13.946151000 +0900
++++ b/drivers/staging/fclk/dt-binding.txt
 @@ -0,0 +1,16 @@
 +Binding for Xilinx pl clocks
 +
@@ -4331,9 +3940,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/fclk/d
 +		compatible = "xlnx,fclk";
 +		clocks = <&clkc 71>;
 +	};
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/fclk/xilinx_fclk.c
+diff --git a/drivers/staging/fclk/xilinx_fclk.c b/drivers/staging/fclk/xilinx_fclk.c
+new file mode 100644
+index 000000000..0428b7aba
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/fclk/xilinx_fclk.c	2023-04-14 12:24:13.946151000 +0900
++++ b/drivers/staging/fclk/xilinx_fclk.c
 @@ -0,0 +1,115 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
@@ -4450,9 +4061,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/fclk/x
 +MODULE_AUTHOR("Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>");
 +MODULE_DESCRIPTION("fclk enable");
 +MODULE_LICENSE("GPL v2");
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/uartlite-rs485/Kconfig
+diff --git a/drivers/staging/uartlite-rs485/Kconfig b/drivers/staging/uartlite-rs485/Kconfig
+new file mode 100644
+index 000000000..e97678aeb
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/uartlite-rs485/Kconfig	2023-04-14 12:24:14.943234000 +0900
++++ b/drivers/staging/uartlite-rs485/Kconfig
 @@ -0,0 +1,15 @@
 +# SPDX-License-Identifier: GPL-2.0
 +#
@@ -4469,9 +4082,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/uartli
 +	  To compile this driver as a module, choose M here: the
 +	  module will be called uartlite_485.
 +
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/uartlite-rs485/Makefile
+diff --git a/drivers/staging/uartlite-rs485/Makefile b/drivers/staging/uartlite-rs485/Makefile
+new file mode 100644
+index 000000000..535529284
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/uartlite-rs485/Makefile	2023-04-14 12:24:14.943234000 +0900
++++ b/drivers/staging/uartlite-rs485/Makefile
 @@ -0,0 +1,6 @@
 +# SPDX-License-Identifier: GPL-2.0
 +#
@@ -4479,9 +4094,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/uartli
 +#
 +
 +obj-$(CONFIG_SERIAL_UARTLITE_RS485) += uartlite-rs485.o
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/uartlite-rs485/uartlite-rs485.c
+diff --git a/drivers/staging/uartlite-rs485/uartlite-rs485.c b/drivers/staging/uartlite-rs485/uartlite-rs485.c
+new file mode 100644
+index 000000000..66dcdbe7e
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/uartlite-rs485/uartlite-rs485.c	2023-04-14 12:24:14.943234000 +0900
++++ b/drivers/staging/uartlite-rs485/uartlite-rs485.c
 @@ -0,0 +1,717 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
@@ -5200,9 +4817,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/uartli
 +MODULE_AUTHOR("Peter Korsgaard <jacmet@sunsite.dk>");
 +MODULE_DESCRIPTION("Xilinx uartlite serial driver");
 +MODULE_LICENSE("GPL");
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xilinx-tsn/Kconfig
+diff --git a/drivers/staging/xilinx-tsn/Kconfig b/drivers/staging/xilinx-tsn/Kconfig
+new file mode 100644
+index 000000000..eadaefd54
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/xilinx-tsn/Kconfig	2023-04-14 12:24:15.057104500 +0900
++++ b/drivers/staging/xilinx-tsn/Kconfig
 @@ -0,0 +1,68 @@
 +# SPDX-License-Identifier: GPL-2.0-only
 +#
@@ -5272,9 +4891,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xilinx
 +	  Enable TSN QBR protocol support.
 +
 +endif # NET_VENDOR_XILINX
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xilinx-tsn/Makefile
+diff --git a/drivers/staging/xilinx-tsn/Makefile b/drivers/staging/xilinx-tsn/Makefile
+new file mode 100644
+index 000000000..4dc348a1e
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/xilinx-tsn/Makefile	2023-04-14 12:24:15.057104500 +0900
++++ b/drivers/staging/xilinx-tsn/Makefile
 @@ -0,0 +1,14 @@
 +# SPDX-License-Identifier: GPL-2.0
 +#
@@ -5290,9 +4911,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xilinx
 +obj-$(CONFIG_XILINX_TSN_SWITCH) += xilinx_tsn_switch.o xilinx_tsn_switchdev.o
 +obj-$(CONFIG_XILINX_TSN_QBR) += xilinx_tsn_preemption.o
 +obj-$(CONFIG_AXIENET_HAS_TADMA) += xilinx_tsn_tadma.o
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xilinx-tsn/xilinx_axienet_main_tsn.c
+diff --git a/drivers/staging/xilinx-tsn/xilinx_axienet_main_tsn.c b/drivers/staging/xilinx-tsn/xilinx_axienet_main_tsn.c
+new file mode 100644
+index 000000000..863052190
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/xilinx-tsn/xilinx_axienet_main_tsn.c	2023-04-14 12:24:15.057104500 +0900
++++ b/drivers/staging/xilinx-tsn/xilinx_axienet_main_tsn.c
 @@ -0,0 +1,2025 @@
 +// SPDX-License-Identifier: GPL-2.0-only
 +/*
@@ -7319,9 +6942,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xilinx
 +MODULE_DESCRIPTION("Xilinx Axi Ethernet driver");
 +MODULE_AUTHOR("Xilinx");
 +MODULE_LICENSE("GPL");
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xilinx-tsn/xilinx_axienet_mcdma_tsn.c
+diff --git a/drivers/staging/xilinx-tsn/xilinx_axienet_mcdma_tsn.c b/drivers/staging/xilinx-tsn/xilinx_axienet_mcdma_tsn.c
+new file mode 100644
+index 000000000..230372940
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/xilinx-tsn/xilinx_axienet_mcdma_tsn.c	2023-04-14 12:24:15.057104500 +0900
++++ b/drivers/staging/xilinx-tsn/xilinx_axienet_mcdma_tsn.c
 @@ -0,0 +1,1118 @@
 +// SPDX-License-Identifier: GPL-2.0
 +
@@ -8441,9 +8066,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xilinx
 +{
 +	sysfs_remove_group(kobj, &mcdma_attributes);
 +}
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xilinx-tsn/xilinx_axienet_mdio_tsn.c
+diff --git a/drivers/staging/xilinx-tsn/xilinx_axienet_mdio_tsn.c b/drivers/staging/xilinx-tsn/xilinx_axienet_mdio_tsn.c
+new file mode 100644
+index 000000000..3eff4449b
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/xilinx-tsn/xilinx_axienet_mdio_tsn.c	2023-04-14 12:24:15.057104500 +0900
++++ b/drivers/staging/xilinx-tsn/xilinx_axienet_mdio_tsn.c
 @@ -0,0 +1,297 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
@@ -8742,9 +8369,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xilinx
 +	mdiobus_free(lp->mii_bus);
 +	lp->mii_bus = NULL;
 +}
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xilinx-tsn/xilinx_axienet_tsn.h
+diff --git a/drivers/staging/xilinx-tsn/xilinx_axienet_tsn.h b/drivers/staging/xilinx-tsn/xilinx_axienet_tsn.h
+new file mode 100644
+index 000000000..32c3fc498
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/xilinx-tsn/xilinx_axienet_tsn.h	2023-04-14 12:24:15.057104500 +0900
++++ b/drivers/staging/xilinx-tsn/xilinx_axienet_tsn.h
 @@ -0,0 +1,1333 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
 +/*
@@ -10079,9 +9708,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xilinx
 +#endif
 +
 +#endif /* XILINX_AXI_ENET_TSN_H */
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xilinx-tsn/xilinx_tsn_cb.c
+diff --git a/drivers/staging/xilinx-tsn/xilinx_tsn_cb.c b/drivers/staging/xilinx-tsn/xilinx_tsn_cb.c
+new file mode 100644
+index 000000000..97764fed6
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/xilinx-tsn/xilinx_tsn_cb.c	2023-04-14 12:24:15.057104500 +0900
++++ b/drivers/staging/xilinx-tsn/xilinx_tsn_cb.c
 @@ -0,0 +1,199 @@
 +// SPDX-License-Identifier: GPL-2.0-only
 +/*
@@ -10282,9 +9913,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xilinx
 +	data->seq_recv_rst.msb = axienet_ior(&lp,
 +					     SEQ_RECV_RESETS_OFFSET + offset + 0x4);
 +}
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xilinx-tsn/xilinx_tsn_ep.c
+diff --git a/drivers/staging/xilinx-tsn/xilinx_tsn_ep.c b/drivers/staging/xilinx-tsn/xilinx_tsn_ep.c
+new file mode 100644
+index 000000000..4b24bae6b
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/xilinx-tsn/xilinx_tsn_ep.c	2023-04-14 12:24:15.057104500 +0900
++++ b/drivers/staging/xilinx-tsn/xilinx_tsn_ep.c
 @@ -0,0 +1,639 @@
 +// SPDX-License-Identifier: GPL-2.0-only
 +/*
@@ -10925,9 +10558,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xilinx
 +MODULE_DESCRIPTION("Xilinx Axi Ethernet driver");
 +MODULE_AUTHOR("Xilinx");
 +MODULE_LICENSE("GPL v2");
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xilinx-tsn/xilinx_tsn_ep_ex.c
+diff --git a/drivers/staging/xilinx-tsn/xilinx_tsn_ep_ex.c b/drivers/staging/xilinx-tsn/xilinx_tsn_ep_ex.c
+new file mode 100644
+index 000000000..27818b39c
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/xilinx-tsn/xilinx_tsn_ep_ex.c	2023-04-14 12:24:15.057104500 +0900
++++ b/drivers/staging/xilinx-tsn/xilinx_tsn_ep_ex.c
 @@ -0,0 +1,159 @@
 +// SPDX-License-Identifier: GPL-2.0-only
 +/*
@@ -11088,9 +10723,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xilinx
 +MODULE_DESCRIPTION("Xilinx Axi Ethernet driver");
 +MODULE_AUTHOR("Xilinx");
 +MODULE_LICENSE("GPL v2");
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xilinx-tsn/xilinx_tsn_ip.c
+diff --git a/drivers/staging/xilinx-tsn/xilinx_tsn_ip.c b/drivers/staging/xilinx-tsn/xilinx_tsn_ip.c
+new file mode 100644
+index 000000000..827cfb2f4
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/xilinx-tsn/xilinx_tsn_ip.c	2023-04-14 12:24:15.057104500 +0900
++++ b/drivers/staging/xilinx-tsn/xilinx_tsn_ip.c
 @@ -0,0 +1,403 @@
 +// SPDX-License-Identifier: GPL-2.0
 +
@@ -11495,9 +11132,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xilinx
 +MODULE_DESCRIPTION("Xilinx Axi Ethernet driver");
 +MODULE_AUTHOR("Xilinx");
 +MODULE_LICENSE("GPL v2");
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xilinx-tsn/xilinx_tsn_preemption.c
+diff --git a/drivers/staging/xilinx-tsn/xilinx_tsn_preemption.c b/drivers/staging/xilinx-tsn/xilinx_tsn_preemption.c
+new file mode 100644
+index 000000000..01554a823
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/xilinx-tsn/xilinx_tsn_preemption.c	2023-04-14 12:24:15.057104500 +0900
++++ b/drivers/staging/xilinx-tsn/xilinx_tsn_preemption.c
 @@ -0,0 +1,258 @@
 +// SPDX-License-Identifier: GPL-2.0-only
 +/*
@@ -11757,9 +11396,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xilinx
 +		return -EFAULT;
 +	return 0;
 +}
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xilinx-tsn/xilinx_tsn_preemption.h
+diff --git a/drivers/staging/xilinx-tsn/xilinx_tsn_preemption.h b/drivers/staging/xilinx-tsn/xilinx_tsn_preemption.h
+new file mode 100644
+index 000000000..31090764b
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/xilinx-tsn/xilinx_tsn_preemption.h	2023-04-14 12:24:15.057104500 +0900
++++ b/drivers/staging/xilinx-tsn/xilinx_tsn_preemption.h
 @@ -0,0 +1,171 @@
 +/* SPDX-License-Identifier: GPL-2.0-only */
 +/*
@@ -11932,9 +11573,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xilinx
 +	struct preempt_ctrl_sts ctrl;
 +};
 +#endif /* XILINX_TSN_PREEMPTION_H */
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xilinx-tsn/xilinx_tsn_ptp.h
+diff --git a/drivers/staging/xilinx-tsn/xilinx_tsn_ptp.h b/drivers/staging/xilinx-tsn/xilinx_tsn_ptp.h
+new file mode 100644
+index 000000000..15172c0af
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/xilinx-tsn/xilinx_tsn_ptp.h	2023-04-14 12:24:15.057104500 +0900
++++ b/drivers/staging/xilinx-tsn/xilinx_tsn_ptp.h
 @@ -0,0 +1,89 @@
 +/* SPDX-License-Identifier: GPL-2.0-only */
 +/*
@@ -12025,9 +11668,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xilinx
 +irqreturn_t axienet_ptp_tx_irq(int irq, void *_ndev);
 +
 +#endif
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xilinx-tsn/xilinx_tsn_ptp_clock.c
+diff --git a/drivers/staging/xilinx-tsn/xilinx_tsn_ptp_clock.c b/drivers/staging/xilinx-tsn/xilinx_tsn_ptp_clock.c
+new file mode 100644
+index 000000000..29a1924d5
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/xilinx-tsn/xilinx_tsn_ptp_clock.c	2023-04-14 12:24:15.057104500 +0900
++++ b/drivers/staging/xilinx-tsn/xilinx_tsn_ptp_clock.c
 @@ -0,0 +1,325 @@
 +// SPDX-License-Identifier: GPL-2.0-only
 +/*
@@ -12354,9 +11999,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xilinx
 +	timer->ptp_clock = NULL;
 +	return NULL;
 +}
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xilinx-tsn/xilinx_tsn_ptp_xmit.c
+diff --git a/drivers/staging/xilinx-tsn/xilinx_tsn_ptp_xmit.c b/drivers/staging/xilinx-tsn/xilinx_tsn_ptp_xmit.c
+new file mode 100644
+index 000000000..934c024b0
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/xilinx-tsn/xilinx_tsn_ptp_xmit.c	2023-04-14 12:24:15.057104500 +0900
++++ b/drivers/staging/xilinx-tsn/xilinx_tsn_ptp_xmit.c
 @@ -0,0 +1,370 @@
 +// SPDX-License-Identifier: GPL-2.0-only
 +/*
@@ -12728,9 +12375,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xilinx
 +
 +	return IRQ_HANDLED;
 +}
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xilinx-tsn/xilinx_tsn_qci.c
+diff --git a/drivers/staging/xilinx-tsn/xilinx_tsn_qci.c b/drivers/staging/xilinx-tsn/xilinx_tsn_qci.c
+new file mode 100644
+index 000000000..3262330f2
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/xilinx-tsn/xilinx_tsn_qci.c	2023-04-14 12:24:15.057104500 +0900
++++ b/drivers/staging/xilinx-tsn/xilinx_tsn_qci.c
 @@ -0,0 +1,154 @@
 +// SPDX-License-Identifier: GPL-2.0-only
 +/*
@@ -12886,9 +12535,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xilinx
 +	data->err_meter.lsb = axienet_ior(&lp, METER_ERR_OFFSET + offset);
 +	data->err_meter.msb = axienet_ior(&lp, METER_ERR_OFFSET + offset + 0x4);
 +}
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xilinx-tsn/xilinx_tsn_shaper.c
+diff --git a/drivers/staging/xilinx-tsn/xilinx_tsn_shaper.c b/drivers/staging/xilinx-tsn/xilinx_tsn_shaper.c
+new file mode 100644
+index 000000000..b0776e687
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/xilinx-tsn/xilinx_tsn_shaper.c	2023-04-14 12:24:15.057104500 +0900
++++ b/drivers/staging/xilinx-tsn/xilinx_tsn_shaper.c
 @@ -0,0 +1,232 @@
 +// SPDX-License-Identifier: GPL-2.0-only
 +/*
@@ -13122,9 +12773,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xilinx
 +
 +	free_irq(lp->qbv_irq, ndev);
 +}
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xilinx-tsn/xilinx_tsn_shaper.h
+diff --git a/drivers/staging/xilinx-tsn/xilinx_tsn_shaper.h b/drivers/staging/xilinx-tsn/xilinx_tsn_shaper.h
+new file mode 100644
+index 000000000..2ebd19e22
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/xilinx-tsn/xilinx_tsn_shaper.h	2023-04-14 12:24:15.057104500 +0900
++++ b/drivers/staging/xilinx-tsn/xilinx_tsn_shaper.h
 @@ -0,0 +1,137 @@
 +/* SPDX-License-Identifier: GPL-2.0-only */
 +/*
@@ -13263,9 +12916,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xilinx
 +};
 +
 +#endif /* XILINX_TSN_SHAPER_H */
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xilinx-tsn/xilinx_tsn_switch.c
+diff --git a/drivers/staging/xilinx-tsn/xilinx_tsn_switch.c b/drivers/staging/xilinx-tsn/xilinx_tsn_switch.c
+new file mode 100644
+index 000000000..5e53f5acc
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/xilinx-tsn/xilinx_tsn_switch.c	2023-04-14 12:24:15.057104500 +0900
++++ b/drivers/staging/xilinx-tsn/xilinx_tsn_switch.c
 @@ -0,0 +1,1859 @@
 +// SPDX-License-Identifier: GPL-2.0-only
 +/*
@@ -15126,9 +14781,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xilinx
 +MODULE_DESCRIPTION("Xilinx TSN Switch driver");
 +MODULE_AUTHOR("Xilinx");
 +MODULE_LICENSE("GPL v2");
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xilinx-tsn/xilinx_tsn_switch.h
+diff --git a/drivers/staging/xilinx-tsn/xilinx_tsn_switch.h b/drivers/staging/xilinx-tsn/xilinx_tsn_switch.h
+new file mode 100644
+index 000000000..3886df8c2
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/xilinx-tsn/xilinx_tsn_switch.h	2023-04-14 12:24:15.057104500 +0900
++++ b/drivers/staging/xilinx-tsn/xilinx_tsn_switch.h
 @@ -0,0 +1,479 @@
 +/* SPDX-License-Identifier: GPL-2.0-only */
 +/*
@@ -15609,9 +15266,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xilinx
 +void xlnx_switchdev_remove(void);
 +#endif
 +#endif /* XILINX_TSN_SWITCH_H */
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xilinx-tsn/xilinx_tsn_switchdev.c
+diff --git a/drivers/staging/xilinx-tsn/xilinx_tsn_switchdev.c b/drivers/staging/xilinx-tsn/xilinx_tsn_switchdev.c
+new file mode 100644
+index 000000000..efde8ab99
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/xilinx-tsn/xilinx_tsn_switchdev.c	2023-04-14 12:24:15.057104500 +0900
++++ b/drivers/staging/xilinx-tsn/xilinx_tsn_switchdev.c
 @@ -0,0 +1,374 @@
 +// SPDX-License-Identifier: GPL-2.0-only
 +/*
@@ -15987,9 +15646,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xilinx
 +	unregister_switchdev_blocking_notifier(&xlnx_switchdev_blocking_notifier);
 +}
 +#endif
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xilinx-tsn/xilinx_tsn_tadma.c
+diff --git a/drivers/staging/xilinx-tsn/xilinx_tsn_tadma.c b/drivers/staging/xilinx-tsn/xilinx_tsn_tadma.c
+new file mode 100644
+index 000000000..0035db0ba
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/xilinx-tsn/xilinx_tsn_tadma.c	2023-04-14 12:24:15.057104500 +0900
++++ b/drivers/staging/xilinx-tsn/xilinx_tsn_tadma.c
 @@ -0,0 +1,735 @@
 +// SPDX-License-Identifier: GPL-2.0
 +
@@ -16726,9 +16387,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xilinx
 +
 +	return 0;
 +}
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xilinx-tsn/xilinx_tsn_tadma.h
+diff --git a/drivers/staging/xilinx-tsn/xilinx_tsn_tadma.h b/drivers/staging/xilinx-tsn/xilinx_tsn_tadma.h
+new file mode 100644
+index 000000000..35fca9354
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/xilinx-tsn/xilinx_tsn_tadma.h	2023-04-14 12:24:15.057104500 +0900
++++ b/drivers/staging/xilinx-tsn/xilinx_tsn_tadma.h
 @@ -0,0 +1,132 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
 +/*
@@ -16862,9 +16525,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xilinx
 +	iowrite32(value, (lp->tadma_regs + offset));
 +}
 +#endif /* _XTADMA_TSN_H */
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xilinx-tsn/xilinx_tsn_timer.h
+diff --git a/drivers/staging/xilinx-tsn/xilinx_tsn_timer.h b/drivers/staging/xilinx-tsn/xilinx_tsn_timer.h
+new file mode 100644
+index 000000000..37c425c64
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/xilinx-tsn/xilinx_tsn_timer.h	2023-04-14 12:24:15.057104500 +0900
++++ b/drivers/staging/xilinx-tsn/xilinx_tsn_timer.h
 @@ -0,0 +1,74 @@
 +/* SPDX-License-Identifier: GPL-2.0-only */
 +/*
@@ -16940,9 +16605,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xilinx
 +int axienet_ptp_timer_remove(void *priv);
 +int axienet_get_phc_index(void *priv);
 +#endif
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xlnx_hdcp1x/Kconfig
+diff --git a/drivers/staging/xlnx_hdcp1x/Kconfig b/drivers/staging/xlnx_hdcp1x/Kconfig
+new file mode 100644
+index 000000000..f1da9a7c2
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/xlnx_hdcp1x/Kconfig	2023-04-14 12:24:15.072726200 +0900
++++ b/drivers/staging/xlnx_hdcp1x/Kconfig
 @@ -0,0 +1,8 @@
 +config XLNX_HDCP1X_CIPHER
 +	bool
@@ -16952,22 +16619,28 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xlnx_h
 +
 +	  This code will be compiled by selection from the interface
 +	  drivers (DP/HDMI) of xilinx.
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xlnx_hdcp1x/MAINTAINERS
+diff --git a/drivers/staging/xlnx_hdcp1x/MAINTAINERS b/drivers/staging/xlnx_hdcp1x/MAINTAINERS
+new file mode 100644
+index 000000000..e2ba0c4f9
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/xlnx_hdcp1x/MAINTAINERS	2023-04-14 12:24:15.072726200 +0900
++++ b/drivers/staging/xlnx_hdcp1x/MAINTAINERS
 @@ -0,0 +1,4 @@
 +XILINX HDCP1X CIPHER DRIVER
 +M:	Jagadeesh Banisetti <jagadeesh.banisetti@amd.com>
 +S:	Maintained
 +F:	drivers/staging/xlnx_hdcp1x
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xlnx_hdcp1x/Makefile
+diff --git a/drivers/staging/xlnx_hdcp1x/Makefile b/drivers/staging/xlnx_hdcp1x/Makefile
+new file mode 100644
+index 000000000..b500fb1a1
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/xlnx_hdcp1x/Makefile	2023-04-14 12:24:15.072726200 +0900
++++ b/drivers/staging/xlnx_hdcp1x/Makefile
 @@ -0,0 +1 @@
 +obj-y += xilinx-hdcp1x-cipher.o
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xlnx_hdcp1x/xilinx-hdcp1x-cipher.c
+diff --git a/drivers/staging/xlnx_hdcp1x/xilinx-hdcp1x-cipher.c b/drivers/staging/xlnx_hdcp1x/xilinx-hdcp1x-cipher.c
+new file mode 100644
+index 000000000..f310a36f9
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/xlnx_hdcp1x/xilinx-hdcp1x-cipher.c	2023-04-14 12:24:15.072726200 +0900
++++ b/drivers/staging/xlnx_hdcp1x/xilinx-hdcp1x-cipher.c
 @@ -0,0 +1,716 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
@@ -17685,9 +17358,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xlnx_h
 +	return 0;
 +}
 +EXPORT_SYMBOL_GPL(xhdcp1x_cipher_is_linkintegrity_failed);
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xlnx_tsmux/Kconfig
+diff --git a/drivers/staging/xlnx_tsmux/Kconfig b/drivers/staging/xlnx_tsmux/Kconfig
+new file mode 100644
+index 000000000..0c1d9498e
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/xlnx_tsmux/Kconfig	2023-04-14 12:24:15.072726200 +0900
++++ b/drivers/staging/xlnx_tsmux/Kconfig
 @@ -0,0 +1,11 @@
 +config XLNX_TSMUX
 +	tristate "Xilinx MPEG2 Transport Stream Muxer"
@@ -17700,22 +17375,28 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xlnx_t
 +
 +	  To compile this driver as a module, choose M here.
 +	  If unsure, choose N.
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xlnx_tsmux/MAINTAINERS
+diff --git a/drivers/staging/xlnx_tsmux/MAINTAINERS b/drivers/staging/xlnx_tsmux/MAINTAINERS
+new file mode 100644
+index 000000000..cfab4fa55
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/xlnx_tsmux/MAINTAINERS	2023-04-14 12:24:15.072726200 +0900
++++ b/drivers/staging/xlnx_tsmux/MAINTAINERS
 @@ -0,0 +1,4 @@
 +XILINX MPG2TSMUX DRIVER
 +M:	Venkateshwar Rao <venkateshwar.rao.gannavarapu@xilinx.com>
 +S:	Maintained
 +F:	drivers/staging/xlnx_tsmux
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xlnx_tsmux/Makefile
+diff --git a/drivers/staging/xlnx_tsmux/Makefile b/drivers/staging/xlnx_tsmux/Makefile
+new file mode 100644
+index 000000000..443706833
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/xlnx_tsmux/Makefile	2023-04-14 12:24:15.072726200 +0900
++++ b/drivers/staging/xlnx_tsmux/Makefile
 @@ -0,0 +1 @@
 +obj-$(CONFIG_XLNX_TSMUX) += xlnx_mpg2tsmux.o
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xlnx_tsmux/dt-binding.txt
+diff --git a/drivers/staging/xlnx_tsmux/dt-binding.txt b/drivers/staging/xlnx_tsmux/dt-binding.txt
+new file mode 100644
+index 000000000..e4a7095d9
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/xlnx_tsmux/dt-binding.txt	2023-04-14 12:24:15.072726200 +0900
++++ b/drivers/staging/xlnx_tsmux/dt-binding.txt
 @@ -0,0 +1,28 @@
 +The Xilinx mpegtsmux IP reads the elementary streams from memory and
 +writes the MPEG2 TS(transport stream) to memory.
@@ -17745,9 +17426,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xlnx_t
 +		clock-names = "ap_clk";
 +		clocks = <&misc_clk_0>;
 +	};
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xlnx_tsmux/xlnx_mpg2tsmux.c
+diff --git a/drivers/staging/xlnx_tsmux/xlnx_mpg2tsmux.c b/drivers/staging/xlnx_tsmux/xlnx_mpg2tsmux.c
+new file mode 100644
+index 000000000..60041864d
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/xlnx_tsmux/xlnx_mpg2tsmux.c	2023-04-14 12:24:15.072726200 +0900
++++ b/drivers/staging/xlnx_tsmux/xlnx_mpg2tsmux.c
 @@ -0,0 +1,1568 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
@@ -19317,9 +19000,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xlnx_t
 +MODULE_AUTHOR("Xilinx Inc.");
 +MODULE_DESCRIPTION("Xilinx mpeg2 transport stream muxer IP driver");
 +MODULE_LICENSE("GPL v2");
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xlnxsync/Kconfig
+diff --git a/drivers/staging/xlnxsync/Kconfig b/drivers/staging/xlnxsync/Kconfig
+new file mode 100644
+index 000000000..08e73384d
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/xlnxsync/Kconfig	2023-04-14 12:24:15.072726200 +0900
++++ b/drivers/staging/xlnxsync/Kconfig
 @@ -0,0 +1,11 @@
 +config XLNX_SYNC
 +	tristate "Xilinx Synchronizer"
@@ -19332,22 +19017,28 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xlnxsy
 +
 +	  To compile this driver as a module, choose M here.
 +	  If unsure, choose N
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xlnxsync/MAINTAINERS
+diff --git a/drivers/staging/xlnxsync/MAINTAINERS b/drivers/staging/xlnxsync/MAINTAINERS
+new file mode 100644
+index 000000000..e2d720419
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/xlnxsync/MAINTAINERS	2023-04-14 12:24:15.072726200 +0900
++++ b/drivers/staging/xlnxsync/MAINTAINERS
 @@ -0,0 +1,4 @@
 +XILINX SYNCHRONIZER DRIVER
 +M:	Vishal Sagar <vishal.sagar@xilinx.com>
 +S:	Maintained
 +F:	drivers/staging/xlnxsync
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xlnxsync/Makefile
+diff --git a/drivers/staging/xlnxsync/Makefile b/drivers/staging/xlnxsync/Makefile
+new file mode 100644
+index 000000000..b126a36da
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/xlnxsync/Makefile	2023-04-14 12:24:15.072726200 +0900
++++ b/drivers/staging/xlnxsync/Makefile
 @@ -0,0 +1 @@
 +obj-$(CONFIG_XLNX_SYNC) += xlnxsync.o
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xlnxsync/dt-binding.txt
+diff --git a/drivers/staging/xlnxsync/dt-binding.txt b/drivers/staging/xlnxsync/dt-binding.txt
+new file mode 100644
+index 000000000..f1ed9d724
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/xlnxsync/dt-binding.txt	2023-04-14 12:24:15.072726200 +0900
++++ b/drivers/staging/xlnxsync/dt-binding.txt
 @@ -0,0 +1,34 @@
 +Xilinx Synchronizer
 +-------------------
@@ -19383,9 +19074,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xlnxsy
 +	xlnx,num-chan = <4>;
 +	xlnx,encode;
 +};
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xlnxsync/xlnxsync.c
+diff --git a/drivers/staging/xlnxsync/xlnxsync.c b/drivers/staging/xlnxsync/xlnxsync.c
+new file mode 100644
+index 000000000..baf507f39
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/xlnxsync/xlnxsync.c	2023-04-14 12:24:15.072726200 +0900
++++ b/drivers/staging/xlnxsync/xlnxsync.c
 @@ -0,0 +1,1494 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
@@ -20881,9 +20574,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xlnxsy
 +MODULE_DESCRIPTION("Xilinx Synchronizer IP Driver");
 +MODULE_LICENSE("GPL v2");
 +MODULE_VERSION(XLNXSYNC_DRIVER_VERSION);
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xroeframer/Kconfig
+diff --git a/drivers/staging/xroeframer/Kconfig b/drivers/staging/xroeframer/Kconfig
+new file mode 100644
+index 000000000..0aaf47478
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/xroeframer/Kconfig	2023-04-14 12:24:15.072726200 +0900
++++ b/drivers/staging/xroeframer/Kconfig
 @@ -0,0 +1,18 @@
 +#
 +# Xilinx Radio over Ethernet Framer driver
@@ -20903,9 +20598,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xroefr
 +
 +	  - Uplink, from the Phone to the BaseBand, Antenna to Ethernet,
 +	  we call this the Framer path, or fram on all related IP signals.
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xroeframer/Makefile
+diff --git a/drivers/staging/xroeframer/Makefile b/drivers/staging/xroeframer/Makefile
+new file mode 100644
+index 000000000..f7bf07e98
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/xroeframer/Makefile	2023-04-14 12:24:15.072726200 +0900
++++ b/drivers/staging/xroeframer/Makefile
 @@ -0,0 +1,12 @@
 +# SPDX-License-Identifier: GPL-2.0
 +#
@@ -20919,9 +20616,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xroefr
 +		sysfs_xroe_framer_ipv6.o \
 +		sysfs_xroe_framer_udp.o \
 +		sysfs_xroe_framer_stats.o
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xroeframer/README
+diff --git a/drivers/staging/xroeframer/README b/drivers/staging/xroeframer/README
+new file mode 100644
+index 000000000..505a46c2c
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/xroeframer/README	2023-04-14 12:24:15.072726200 +0900
++++ b/drivers/staging/xroeframer/README
 @@ -0,0 +1,47 @@
 +Xilinx Radio over Ethernet Framer driver
 +=========================================
@@ -20970,9 +20669,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xroefr
 +
 +There is also the option of accessing the framer's register map using
 +ioctl calls for both reading and writing (where permitted) directly.
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xroeframer/dt-binding.txt
+diff --git a/drivers/staging/xroeframer/dt-binding.txt b/drivers/staging/xroeframer/dt-binding.txt
+new file mode 100644
+index 000000000..8dabef16d
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/xroeframer/dt-binding.txt	2023-04-14 12:24:15.072726200 +0900
++++ b/drivers/staging/xroeframer/dt-binding.txt
 @@ -0,0 +1,17 @@
 +* Xilinx Radio over Ethernet Framer driver
 +
@@ -20991,9 +20692,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xroefr
 +			      "internal_bus_clk";
 +		clocks = <0x43 0x44 0x44 0x45 0x45>;
 +	};
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xroeframer/roe_framer_ctrl.h
+diff --git a/drivers/staging/xroeframer/roe_framer_ctrl.h b/drivers/staging/xroeframer/roe_framer_ctrl.h
+new file mode 100644
+index 000000000..162c49a9b
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/xroeframer/roe_framer_ctrl.h	2023-04-14 12:24:15.072726200 +0900
++++ b/drivers/staging/xroeframer/roe_framer_ctrl.h
 @@ -0,0 +1,1088 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
@@ -22083,9 +21786,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xroefr
 +#define STATS_USER_CTRL_RX_PKTS_RATE_OFFSET 0x0 /* 0 */
 +#define STATS_USER_CTRL_RX_PKTS_RATE_WIDTH 0x20 /* 32 */
 +#define STATS_USER_CTRL_RX_PKTS_RATE_DEFAULT 0x0 /* 0 */
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xroeframer/sysfs_xroe.c
+diff --git a/drivers/staging/xroeframer/sysfs_xroe.c b/drivers/staging/xroeframer/sysfs_xroe.c
+new file mode 100644
+index 000000000..54a57d343
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/xroeframer/sysfs_xroe.c	2023-04-14 12:24:15.072726200 +0900
++++ b/drivers/staging/xroeframer/sysfs_xroe.c
 @@ -0,0 +1,562 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
@@ -22649,9 +22354,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xroefr
 +	buffer = ioread32(working_address);
 +	return (buffer & mask) >> offset;
 +}
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xroeframer/sysfs_xroe_framer_ipv4.c
+diff --git a/drivers/staging/xroeframer/sysfs_xroe_framer_ipv4.c b/drivers/staging/xroeframer/sysfs_xroe_framer_ipv4.c
+new file mode 100644
+index 000000000..aaaefb10c
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/xroeframer/sysfs_xroe_framer_ipv4.c	2023-04-14 12:24:15.072726200 +0900
++++ b/drivers/staging/xroeframer/sysfs_xroe_framer_ipv4.c
 @@ -0,0 +1,718 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
@@ -23371,9 +23078,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xroefr
 +	}
 +	return ret;
 +}
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xroeframer/sysfs_xroe_framer_ipv6.c
+diff --git a/drivers/staging/xroeframer/sysfs_xroe_framer_ipv6.c b/drivers/staging/xroeframer/sysfs_xroe_framer_ipv6.c
+new file mode 100644
+index 000000000..c26eae426
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/xroeframer/sysfs_xroe_framer_ipv6.c	2023-04-14 12:24:15.072726200 +0900
++++ b/drivers/staging/xroeframer/sysfs_xroe_framer_ipv6.c
 @@ -0,0 +1,571 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
@@ -23946,9 +23655,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xroefr
 +	}
 +	return ret;
 +}
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xroeframer/sysfs_xroe_framer_stats.c
+diff --git a/drivers/staging/xroeframer/sysfs_xroe_framer_stats.c b/drivers/staging/xroeframer/sysfs_xroe_framer_stats.c
+new file mode 100644
+index 000000000..063664bb9
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/xroeframer/sysfs_xroe_framer_stats.c	2023-04-14 12:24:15.072726200 +0900
++++ b/drivers/staging/xroeframer/sysfs_xroe_framer_stats.c
 @@ -0,0 +1,401 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
@@ -24351,9 +24062,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xroefr
 +{
 +	kobject_put(kobj_stats);
 +}
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xroeframer/sysfs_xroe_framer_udp.c
+diff --git a/drivers/staging/xroeframer/sysfs_xroe_framer_udp.c b/drivers/staging/xroeframer/sysfs_xroe_framer_udp.c
+new file mode 100644
+index 000000000..8f8a77b25
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/xroeframer/sysfs_xroe_framer_udp.c	2023-04-14 12:24:15.072726200 +0900
++++ b/drivers/staging/xroeframer/sysfs_xroe_framer_udp.c
 @@ -0,0 +1,181 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
@@ -24536,9 +24249,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xroefr
 +	for (i = 0; i < MAX_NUM_ETH_PORTS; i++)
 +		kobject_put(kobj_udp[i]);
 +}
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xroeframer/xroe_framer.c
+diff --git a/drivers/staging/xroeframer/xroe_framer.c b/drivers/staging/xroeframer/xroe_framer.c
+new file mode 100644
+index 000000000..7d4b6f447
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/xroeframer/xroe_framer.c	2023-04-14 12:24:15.072726200 +0900
++++ b/drivers/staging/xroeframer/xroe_framer.c
 @@ -0,0 +1,155 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
@@ -24695,9 +24410,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xroefr
 +MODULE_LICENSE("GPL v2");
 +MODULE_AUTHOR("Xilinx Inc.");
 +MODULE_DESCRIPTION("framer - Xilinx Radio over Ethernet Framer driver");
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xroeframer/xroe_framer.h
+diff --git a/drivers/staging/xroeframer/xroe_framer.h b/drivers/staging/xroeframer/xroe_framer.h
+new file mode 100644
+index 000000000..67b833310
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/xroeframer/xroe_framer.h	2023-04-14 12:24:15.072726200 +0900
++++ b/drivers/staging/xroeframer/xroe_framer.h
 @@ -0,0 +1,63 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
 +/*
@@ -24762,9 +24479,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xroefr
 +			       struct kobject *kobj);
 +u32 utils_sysfs_show_wrapper(u32 address, u32 offset, u32 mask,
 +			     struct kobject *kobj);
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xroetrafficgen/Kconfig
+diff --git a/drivers/staging/xroetrafficgen/Kconfig b/drivers/staging/xroetrafficgen/Kconfig
+new file mode 100644
+index 000000000..d2ead1483
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/xroetrafficgen/Kconfig	2023-04-14 12:24:15.072726200 +0900
++++ b/drivers/staging/xroetrafficgen/Kconfig
 @@ -0,0 +1,14 @@
 +# SPDX-License-Identifier: GPL-2.0
 +
@@ -24780,9 +24499,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xroetr
 +	  It generates rolling rampdata for eCPRI antenna paths.
 +	  Each path is tagged with the antenna number. The sink locks to this
 +	  ramp data, then checks the next value is as expected.
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xroetrafficgen/Makefile
+diff --git a/drivers/staging/xroetrafficgen/Makefile b/drivers/staging/xroetrafficgen/Makefile
+new file mode 100644
+index 000000000..e180a9bbc
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/xroetrafficgen/Makefile	2023-04-14 12:24:15.072726200 +0900
++++ b/drivers/staging/xroetrafficgen/Makefile
 @@ -0,0 +1,8 @@
 +# SPDX-License-Identifier: GPL-2.0
 +#
@@ -24792,9 +24513,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xroetr
 +
 +framer-objs := 	xroe-traffic-gen.o \
 +		xroe-traffic-gen-sysfs.o \
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xroetrafficgen/README
+diff --git a/drivers/staging/xroetrafficgen/README b/drivers/staging/xroetrafficgen/README
+new file mode 100644
+index 000000000..1828426af
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/xroetrafficgen/README	2023-04-14 12:24:15.072726200 +0900
++++ b/drivers/staging/xroetrafficgen/README
 @@ -0,0 +1,19 @@
 +Xilinx Radio over Ethernet Traffic Generator driver
 +===================================================
@@ -24815,9 +24538,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xroetr
 +(see "dt-binding.txt" for more information). When the driver is loaded, the
 +general controls (such as sink lock, enable, loopback etc) are exposed
 +under /sys/kernel/xroetrafficgen.
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xroetrafficgen/dt-binding.txt
+diff --git a/drivers/staging/xroetrafficgen/dt-binding.txt b/drivers/staging/xroetrafficgen/dt-binding.txt
+new file mode 100644
+index 000000000..3516d3ff8
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/xroetrafficgen/dt-binding.txt	2023-04-14 12:24:15.072726200 +0900
++++ b/drivers/staging/xroetrafficgen/dt-binding.txt
 @@ -0,0 +1,15 @@
 +* Xilinx Radio over Ethernet Traffic Generator driver
 +
@@ -24834,9 +24559,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xroetr
 +		clock-names = "s_axis_fram_aclk", "s_axi_aclk";
 +		clocks = <0x44 0x43>;
 +	};
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xroetrafficgen/roe_radio_ctrl.h
+diff --git a/drivers/staging/xroetrafficgen/roe_radio_ctrl.h b/drivers/staging/xroetrafficgen/roe_radio_ctrl.h
+new file mode 100644
+index 000000000..e093386f3
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/xroetrafficgen/roe_radio_ctrl.h	2023-04-14 12:24:15.088347500 +0900
++++ b/drivers/staging/xroetrafficgen/roe_radio_ctrl.h
 @@ -0,0 +1,183 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
 +/*
@@ -25021,9 +24748,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xroetr
 +#define FRAM_PAUSE_DATA_SIZE_OFFSET 0x0
 +#define FRAM_PAUSE_DATA_SIZE_WIDTH 0x7
 +#define FRAM_PAUSE_DATA_SIZE_DEFAULT 0x0
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xroetrafficgen/xroe-traffic-gen-sysfs.c
+diff --git a/drivers/staging/xroetrafficgen/xroe-traffic-gen-sysfs.c b/drivers/staging/xroetrafficgen/xroe-traffic-gen-sysfs.c
+new file mode 100644
+index 000000000..c9b05866f
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/xroetrafficgen/xroe-traffic-gen-sysfs.c	2023-04-14 12:24:15.088347500 +0900
++++ b/drivers/staging/xroetrafficgen/xroe-traffic-gen-sysfs.c
 @@ -0,0 +1,824 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
@@ -25849,9 +25578,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xroetr
 +{
 +	sysfs_remove_group(&dev->kobj, *xroe_traffic_gen_groups);
 +}
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xroetrafficgen/xroe-traffic-gen.c
+diff --git a/drivers/staging/xroetrafficgen/xroe-traffic-gen.c b/drivers/staging/xroetrafficgen/xroe-traffic-gen.c
+new file mode 100644
+index 000000000..1ed6e488d
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/xroetrafficgen/xroe-traffic-gen.c	2023-04-14 12:24:15.088347500 +0900
++++ b/drivers/staging/xroetrafficgen/xroe-traffic-gen.c
 @@ -0,0 +1,124 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
@@ -25977,9 +25708,11 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xroetr
 +MODULE_LICENSE("GPL v2");
 +MODULE_AUTHOR("Xilinx Inc.");
 +MODULE_DESCRIPTION("Xilinx Radio over Ethernet Traffic Generator driver");
-diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xroetrafficgen/xroe-traffic-gen.h
+diff --git a/drivers/staging/xroetrafficgen/xroe-traffic-gen.h b/drivers/staging/xroetrafficgen/xroe-traffic-gen.h
+new file mode 100644
+index 000000000..55d968d89
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/staging/xroetrafficgen/xroe-traffic-gen.h	2023-04-14 12:24:15.088347500 +0900
++++ b/drivers/staging/xroetrafficgen/xroe-traffic-gen.h
 @@ -0,0 +1,15 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
 +/*
@@ -25996,3 +25729,447 @@ diff -urN '--label=/dev/null' /dev/null linux-xlnx-2022.2/drivers/staging/xroetr
 +
 +int xroe_traffic_gen_sysfs_init(struct device *dev);
 +void xroe_traffic_gen_sysfs_exit(struct device *dev);
+diff --git a/include/uapi/linux/xlnx_mpg2tsmux_interface.h b/include/uapi/linux/xlnx_mpg2tsmux_interface.h
+new file mode 100644
+index 000000000..d422ba907
+--- /dev/null
++++ b/include/uapi/linux/xlnx_mpg2tsmux_interface.h
+@@ -0,0 +1,253 @@
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++
++/*
++ * Xilinx mpeg2 transport stream muxer ioctl calls
++ *
++ * Copyright (C) 2019 Xilinx, Inc.
++ *
++ * Author:	Venkateshwar Rao G <venkateshwar.rao.gannava@xilinx.com>
++ */
++
++#ifndef __XLNX_MPG2TSMUX_INTERFACE_H__
++#define __XLNX_MPG2TSMUX_INTERFACE_H__
++
++#include <linux/types.h>
++#include <linux/ioctl.h>
++
++/**
++ * enum ts_mux_command - command for stream context
++ * @CREATE_TS_MISC: create misc
++ * @CREATE_TS_VIDEO_KEYFRAME: create video key frame
++ * @CREATE_TS_VIDEO_NON_KEYFRAME: create non key frame
++ * @CREATE_TS_AUDIO: create audio
++ * @WRITE_PAT: write pat
++ * @WRITE_PMT: write pmt
++ * @WRITE_SI: write si
++ * @INVALID: invalid
++ */
++enum ts_mux_command {
++	CREATE_TS_MISC = 0,
++	CREATE_TS_VIDEO_KEYFRAME,
++	CREATE_TS_VIDEO_NON_KEYFRAME,
++	CREATE_TS_AUDIO,
++	WRITE_PAT,
++	WRITE_PMT,
++	WRITE_SI,
++	INVALID
++};
++
++/**
++ * struct stream_context_in - struct to enqueue a stream context descriptor
++ * @command: stream context type
++ * @stream_id: stream identification number
++ * @extended_stream_id: extended stream id
++ * @is_pcr_stream: flag for pcr stream
++ * @is_valid_pts: flag for valid pts
++ * @is_valid_dts: flag for valid dts
++ * @is_dmabuf: flag to set if external src buffer is DMA allocated
++ * @pid: packet id number
++ * @size_data_in: size in bytes of input buffer
++ * @pts: presentation time stamp
++ * @dts: display time stamp
++ * @srcbuf_id: source buffer id after mmap
++ * @insert_pcr: flag for inserting pcr in stream context
++ * @pcr_extension: pcr extension number
++ * @pcr_base: pcr base number
++ */
++struct stream_context_in {
++	enum ts_mux_command command;
++	__u8 stream_id;
++	__u8 extended_stream_id;
++	int is_pcr_stream;
++	int is_valid_pts;
++	int is_valid_dts;
++	int is_dmabuf;
++	__u16 pid;
++	__u64 size_data_in;
++	__u64 pts;
++	__u64 dts;
++	__u32 srcbuf_id;
++	int insert_pcr;
++	__u16 pcr_extension;
++	__u64 pcr_base;
++};
++
++/**
++ * struct mux_context_in - struct to enqueue a mux context descriptor
++ * @is_dmabuf: flag to set if external src buffer is DMA allocated
++ * @dstbuf_id: destination buffer id after mmap
++ * @dmabuf_size: size in bytes of output buffer
++ */
++struct muxer_context_in {
++	int is_dmabuf;
++	__u32 dstbuf_id;
++	__u32 dmabuf_size;
++};
++
++/**
++ * enum xlnx_tsmux_status - ip status
++ * @MPG2MUX_BUSY: device busy
++ * @MPG2MUX_READY: device ready
++ * @MPG2MUX_ERROR: error state
++ */
++enum xlnx_tsmux_status {
++	MPG2MUX_BUSY = 0,
++	MPG2MUX_READY,
++	MPG2MUX_ERROR
++};
++
++/**
++ * struct strc_bufs_info - struct to specify bufs requirement
++ * @num_buf: number of buffers
++ * @buf_size: size of each buffer
++ */
++struct strc_bufs_info {
++	__u32 num_buf;
++	__u32 buf_size;
++};
++
++/**
++ * struct strc_out_buf - struct to get output buffer info
++ * @buf_id: buf id into which output is written
++ * @buf_write: output bytes written in buf
++ */
++struct out_buffer {
++	__u32 buf_id;
++	__u32 buf_write;
++};
++
++/**
++ * enum strmtbl_cnxt - streamid table operation
++ * @NO_UPDATE: no table update
++ * @ADD_TO_TBL: add the entry to table
++ * @DEL_FR_TBL: delete the entry from table
++ */
++enum strmtbl_cnxt {
++	NO_UPDATE = 0,
++	ADD_TO_TBL,
++	DEL_FR_TBL,
++};
++
++/**
++ * struct strm_tbl_info - struct to enqueue/dequeue streamid in table
++ * @strmtbl_ctxt: enqueue/dequeue stream id
++ * @pid: stream id
++ */
++struct strc_strminfo {
++	enum strmtbl_cnxt strmtbl_ctxt;
++	__u16 pid;
++};
++
++/**
++ * enum xlnx_tsmux_dma_dir - dma direction
++ * @DMA_TO_MPG2MUX: memory to device
++ * @DMA_FROM_MPG2MUX: device to memory
++ */
++enum xlnx_tsmux_dma_dir {
++	DMA_TO_MPG2MUX = 1,
++	DMA_FROM_MPG2MUX,
++};
++
++/**
++ * enum xlnx_tsmux_dmabuf_flags - dma buffer handling
++ * @DMABUF_ERROR: buffer error
++ * @DMABUF_CONTIG: contig buffer
++ * @DMABUF_NON_CONTIG: non contigs buffer
++ * @DMABUF_ATTACHED: buffer attached
++ */
++enum xlnx_tsmux_dmabuf_flags {
++	DMABUF_ERROR = 1,
++	DMABUF_CONTIG = 2,
++	DMABUF_NON_CONTIG = 4,
++	DMABUF_ATTACHED = 8,
++};
++
++/**
++ * struct xlnx_tsmux_dmabuf_info - struct to verify dma buf before enque
++ * @buf_fd: file descriptor
++ * @dir: direction of the dma buffer
++ * @flags: flags returned by the driver
++ */
++struct xlnx_tsmux_dmabuf_info {
++	int buf_fd;
++	enum xlnx_tsmux_dma_dir dir;
++	enum xlnx_tsmux_dmabuf_flags flags;
++};
++
++/* MPG2MUX IOCTL CALL LIST */
++
++#define MPG2MUX_MAGIC 'M'
++
++/**
++ * MPG2MUX_INBUFALLOC - src buffer allocation
++ */
++#define MPG2MUX_INBUFALLOC _IOWR(MPG2MUX_MAGIC, 1, struct strc_bufs_info *)
++
++/**
++ * MPG2MUX_INBUFDEALLOC - deallocates the all src buffers
++ */
++#define MPG2MUX_INBUFDEALLOC _IO(MPG2MUX_MAGIC, 2)
++
++/**
++ * MPG2MUX_OUTBUFALLOC - allocates DMA able memory for dst
++ */
++#define MPG2MUX_OUTBUFALLOC _IOWR(MPG2MUX_MAGIC, 3, struct strc_bufs_info *)
++
++/**
++ * MPG2MUX_OUTBUFDEALLOC - deallocates the all dst buffers allocated
++ */
++#define MPG2MUX_OUTBUFDEALLOC _IO(MPG2MUX_MAGIC, 4)
++
++/**
++ * MPG2MUX_STBLALLOC - allocates DMA able memory for streamid table
++ */
++#define MPG2MUX_STBLALLOC _IOW(MPG2MUX_MAGIC, 5, unsigned short *)
++
++/**
++ * MPG2MUX_STBLDEALLOC - deallocates streamid table memory
++ */
++#define MPG2MUX_STBLDEALLOC _IO(MPG2MUX_MAGIC, 6)
++
++/**
++ * MPG2MUX_TBLUPDATE - enqueue or dequeue in streamid table
++ */
++#define MPG2MUX_TBLUPDATE _IOW(MPG2MUX_MAGIC, 7, struct strc_strminfo *)
++
++/**
++ * MPG2MUX_SETSTRM - enqueue a stream descriptor in stream context
++ *		linked list along with src buf address
++ */
++#define MPG2MUX_SETSTRM _IOW(MPG2MUX_MAGIC, 8, struct stream_context_in *)
++
++/**
++ * MPG2MUX_START - starts muxer IP after configuring stream
++ *		and mux context registers
++ */
++#define MPG2MUX_START _IO(MPG2MUX_MAGIC, 9)
++
++/**
++ * MPG2MUX_STOP - stops the muxer IP
++ */
++#define MPG2MUX_STOP _IO(MPG2MUX_MAGIC, 10)
++
++/**
++ * MPG2MUX_STATUS - command to get the status of IP
++ */
++#define MPG2MUX_STATUS _IOR(MPG2MUX_MAGIC, 11, unsigned short *)
++
++/**
++ * MPG2MUX_GETOUTBUF - get the output buffer id with size of output data
++ */
++#define MPG2MUX_GETOUTBUF _IOW(MPG2MUX_MAGIC, 12, struct out_buffer *)
++
++/**
++ * MPG2MUX_SETMUX - enqueue a mux descriptor with dst buf address
++ */
++#define MPG2MUX_SETMUX _IOW(MPG2MUX_MAGIC, 13, struct muxer_context_in *)
++
++/**
++ * MPG2MUX_VRFY_DMABUF - status of a given dma buffer fd
++ */
++#define MPG2MUX_VDBUF _IOWR(MPG2MUX_MAGIC, 14, struct xlnx_tsmux_dmabuf_info *)
++
++#endif
+diff --git a/include/uapi/linux/xlnxsync.h b/include/uapi/linux/xlnxsync.h
+new file mode 100644
+index 000000000..69fa1138f
+--- /dev/null
++++ b/include/uapi/linux/xlnxsync.h
+@@ -0,0 +1,179 @@
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
++
++#ifndef __XLNXSYNC_H__
++#define __XLNXSYNC_H__
++
++#include <linux/types.h>
++
++#define XLNXSYNC_IOCTL_HDR_VER		0x10004
++
++/*
++ * This is set in the fb_id of struct xlnxsync_chan_config when
++ * configuring the channel. This makes the driver auto search for
++ * a free framebuffer slot.
++ */
++#define XLNXSYNC_AUTO_SEARCH		0xFF
++
++#define XLNXSYNC_MAX_ENC_CHAN		4
++#define XLNXSYNC_MAX_DEC_CHAN		2
++#define XLNXSYNC_BUF_PER_CHAN		3
++
++#define XLNXSYNC_PROD			0
++#define XLNXSYNC_CONS			1
++#define XLNXSYNC_IO			2
++
++#define XLNXSYNC_MAX_CORES		4
++
++/**
++ * struct xlnxsync_err_intr - Channel error interrupt types
++ * @prod_sync: Producer synchronization error interrupt
++ * @prod_wdg: Producer watchdog interrupt
++ * @cons_sync: Consumer synchronization error interrupt
++ * @cons_wdg: Consumer watchdog interrupt
++ * @ldiff: Luma buffer difference interrupt
++ * @cdiff: Chroma buffer difference interrupt
++ */
++struct xlnxsync_err_intr {
++	__u8 prod_sync : 1;
++	__u8 prod_wdg : 1;
++	__u8 cons_sync : 1;
++	__u8 cons_wdg : 1;
++	__u8 ldiff : 1;
++	__u8 cdiff : 1;
++};
++
++/**
++ * struct xlnxsync_intr - Channel Interrupt types
++ * @hdr_ver: IOCTL header version
++ * @err: Structure for error interrupts
++ * @prod_lfbdone: Producer luma frame buffer done interrupt
++ * @prod_cfbdone: Producer chroma frame buffer done interrupt
++ * @cons_lfbdone: Consumer luma frame buffer done interrupt
++ * @cons_cfbdone: Consumer chroma frame buffer done interrupt
++ */
++struct xlnxsync_intr {
++	__u64 hdr_ver;
++	struct xlnxsync_err_intr err;
++	__u8 prod_lfbdone : 1;
++	__u8 prod_cfbdone : 1;
++	__u8 cons_lfbdone : 1;
++	__u8 cons_cfbdone : 1;
++};
++
++/**
++ * struct xlnxsync_chan_config - Synchronizer channel configuration struct
++ * @hdr_ver: IOCTL header version
++ * @luma_start_offset: Start offset of Luma buffer
++ * @chroma_start_offset: Start offset of Chroma buffer
++ * @luma_end_offset: End offset of Luma buffer
++ * @chroma_end_offset: End offset of Chroma buffer
++ * @luma_margin: Margin for Luma buffer
++ * @chroma_margin: Margin for Chroma buffer
++ * @luma_core_offset: Array of 4 offsets for luma
++ * @chroma_core_offset: Array of 4 offsets for chroma
++ * @dma_fd: File descriptor of dma
++ * @fb_id: Framebuffer index. Valid values 0/1/2/XLNXSYNC_AUTO_SEARCH
++ * @ismono: Flag to indicate if buffer is Luma only.
++ * Valid 0..3 & XLNXSYNC_AUTO_SEARCH
++ *
++ * This structure contains the configuration for monitoring a particular
++ * framebuffer on a particular channel.
++ */
++struct xlnxsync_chan_config {
++	__u64 hdr_ver;
++	__u64 luma_start_offset[XLNXSYNC_IO];
++	__u64 chroma_start_offset[XLNXSYNC_IO];
++	__u64 luma_end_offset[XLNXSYNC_IO];
++	__u64 chroma_end_offset[XLNXSYNC_IO];
++	__u32 luma_margin;
++	__u32 chroma_margin;
++	__u32 luma_core_offset[XLNXSYNC_MAX_CORES];
++	__u32 chroma_core_offset[XLNXSYNC_MAX_CORES];
++	__u32 dma_fd;
++	__u8 fb_id[XLNXSYNC_IO];
++	__u8 ismono[XLNXSYNC_IO];
++};
++
++/**
++ * struct xlnxsync_clr_err - Clear channel error
++ * @hdr_ver: IOCTL header version
++ * @err: Structure for error interrupts
++ */
++struct xlnxsync_clr_err {
++	__u64 hdr_ver;
++	struct xlnxsync_err_intr err;
++};
++
++/**
++ * struct xlnxsync_fbdone - Framebuffer Done
++ * @hdr_ver: IOCTL header version
++ * @status: Framebuffer Done status
++ */
++struct xlnxsync_fbdone {
++	__u64 hdr_ver;
++	__u8 status[XLNXSYNC_BUF_PER_CHAN][XLNXSYNC_IO];
++};
++
++/**
++ * struct xlnxsync_config - Synchronizer IP configuration
++ * @hdr_ver: IOCTL header version
++ * @encode: true if encoder type, false for decoder type
++ * @max_channels: Maximum channels this IP supports
++ * @active_channels: Number of active IP channels
++ * @reserved_id: Reserved channel ID for instance
++ */
++struct xlnxsync_config {
++	__u64	hdr_ver;
++	__u8	encode;
++	__u8	max_channels;
++	__u8	active_channels;
++	__u8	reserved_id;
++	__u32	reserved[10];
++};
++
++/**
++ * struct xlnxsync_stat - Sync IP channel status
++ * @hdr_ver: IOCTL header version
++ * @fbdone: for every pair of luma/chroma buffer for every producer/consumer
++ * @enable: channel enable
++ * @err: Structure for error interrupts
++ */
++struct xlnxsync_stat {
++	__u64 hdr_ver;
++	__u8 fbdone[XLNXSYNC_BUF_PER_CHAN][XLNXSYNC_IO];
++	__u8 enable;
++	struct xlnxsync_err_intr err;
++};
++
++#define XLNXSYNC_MAGIC			'X'
++
++/*
++ * This ioctl is used to get the IP config (i.e. encode / decode)
++ * and max number of channels
++ */
++#define XLNXSYNC_GET_CFG		_IOR(XLNXSYNC_MAGIC, 1,\
++					     struct xlnxsync_config *)
++/* This ioctl is used to get the channel status */
++#define XLNXSYNC_CHAN_GET_STATUS	_IOR(XLNXSYNC_MAGIC, 2, __u32 *)
++/* This is used to set the framebuffer address for a channel */
++#define XLNXSYNC_CHAN_SET_CONFIG	_IOW(XLNXSYNC_MAGIC, 3,\
++					     struct xlnxsync_chan_config *)
++/* Enable a channel. */
++#define XLNXSYNC_CHAN_ENABLE		_IO(XLNXSYNC_MAGIC, 4)
++/* Disable a channel. */
++#define XLNXSYNC_CHAN_DISABLE		_IO(XLNXSYNC_MAGIC, 5)
++/* This is used to clear the Sync and Watchdog errors  for a channel */
++#define XLNXSYNC_CHAN_CLR_ERR		_IOW(XLNXSYNC_MAGIC, 6,\
++					     struct xlnxsync_clr_err *)
++/* This is used to get the framebuffer done status for a channel */
++#define XLNXSYNC_CHAN_GET_FBDONE_STAT	_IOR(XLNXSYNC_MAGIC, 7,\
++					     struct xlnxsync_fbdone *)
++/* This is used to clear the framebuffer done status for a channel */
++#define XLNXSYNC_CHAN_CLR_FBDONE_STAT	_IOW(XLNXSYNC_MAGIC, 8,\
++					     struct xlnxsync_fbdone *)
++/* This is used to set interrupt mask */
++#define XLNXSYNC_CHAN_SET_INTR_MASK	_IOW(XLNXSYNC_MAGIC, 9,\
++					     struct xlnxsync_intr *)
++/* This is used to reset the last programmed slot */
++#define XLNXSYNC_RESET_SLOT		_IO(XLNXSYNC_MAGIC, 10)
++#endif
