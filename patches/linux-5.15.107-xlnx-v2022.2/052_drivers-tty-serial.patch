@@ -1,6 +1,8 @@
---- linux-5.15.36/Documentation/devicetree/bindings/serial/pl011.yaml	2023-04-14 12:25:43.213986400 +0900
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/serial/pl011.yaml	2023-04-14 12:23:50.066174800 +0900
-@@ -19,14 +19,19 @@
+diff --git a/Documentation/devicetree/bindings/serial/pl011.yaml b/Documentation/devicetree/bindings/serial/pl011.yaml
+index 5ea00f8a2..0529609d6 100644
+--- a/Documentation/devicetree/bindings/serial/pl011.yaml
++++ b/Documentation/devicetree/bindings/serial/pl011.yaml
+@@ -19,14 +19,19 @@ select:
        contains:
          enum:
            - arm,pl011
@@ -23,8 +25,11 @@
  
    reg:
      maxItems: 1
+diff --git a/Documentation/devicetree/bindings/serial/xlnx,opb-uartlite.yaml b/Documentation/devicetree/bindings/serial/xlnx,opb-uartlite.yaml
+new file mode 100644
+index 000000000..63b5cc559
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/serial/xlnx,opb-uartlite.yaml	2023-04-14 12:23:50.066174800 +0900
++++ b/Documentation/devicetree/bindings/serial/xlnx,opb-uartlite.yaml
 @@ -0,0 +1,54 @@
 +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 +%YAML 1.2
@@ -80,9 +85,11 @@
 +    };
 +
 +...
---- linux-5.15.36/drivers/tty/serial/Kconfig	2023-04-14 12:26:08.202908800 +0900
-+++ linux-xlnx-2022.2/drivers/tty/serial/Kconfig	2023-04-14 12:24:15.277310800 +0900
-@@ -531,7 +531,7 @@
+diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
+index 131a6a587..1254b523c 100644
+--- a/drivers/tty/serial/Kconfig
++++ b/drivers/tty/serial/Kconfig
+@@ -531,7 +531,7 @@ config SERIAL_UARTLITE_NR_UARTS
  	int "Maximum number of uartlite serial ports"
  	depends on SERIAL_UARTLITE
  	range 1 256
@@ -91,9 +98,11 @@
  	help
  	  Set this to the number of uartlites in your system, or the number
  	  you think you might implement.
---- linux-5.15.36/drivers/tty/serial/amba-pl011.c	2023-04-14 12:26:08.202908800 +0900
-+++ linux-xlnx-2022.2/drivers/tty/serial/amba-pl011.c	2023-04-14 12:24:15.292932000 +0900
-@@ -2178,6 +2178,55 @@
+diff --git a/drivers/tty/serial/amba-pl011.c b/drivers/tty/serial/amba-pl011.c
+index b91fe25a6..175c809f5 100644
+--- a/drivers/tty/serial/amba-pl011.c
++++ b/drivers/tty/serial/amba-pl011.c
+@@ -2199,6 +2199,55 @@ sbsa_uart_set_termios(struct uart_port *port, struct ktermios *termios,
  	spin_unlock_irqrestore(&port->lock, flags);
  }
  
@@ -149,7 +158,7 @@
  static const char *pl011_type(struct uart_port *port)
  {
  	struct uart_amba_port *uap =
-@@ -2298,6 +2347,26 @@
+@@ -2321,6 +2370,26 @@ static const struct uart_ops sbsa_uart_pops = {
  #endif
  };
  
@@ -176,7 +185,7 @@
  static struct uart_amba_port *amba_ports[UART_NR];
  
  #ifdef CONFIG_SERIAL_AMBA_PL011_CONSOLE
-@@ -2895,7 +2964,10 @@
+@@ -2918,7 +2987,10 @@ static int sbsa_uart_probe(struct platform_device *pdev)
  	uap->reg_offset	= uap->vendor->reg_offset;
  	uap->fifosize	= 32;
  	uap->port.iotype = uap->vendor->access_32b ? UPIO_MEM32 : UPIO_MEM;
@@ -188,7 +197,7 @@
  	uap->fixed_baud = baudrate;
  
  	snprintf(uap->type, sizeof(uap->type), "SBSA");
-@@ -2922,6 +2994,7 @@
+@@ -2945,6 +3017,7 @@ static int sbsa_uart_remove(struct platform_device *pdev)
  
  static const struct of_device_id sbsa_uart_of_match[] = {
  	{ .compatible = "arm,sbsa-uart", },
@@ -196,9 +205,11 @@
  	{},
  };
  MODULE_DEVICE_TABLE(of, sbsa_uart_of_match);
---- linux-5.15.36/drivers/tty/serial/uartlite.c	2023-04-14 12:26:08.249773300 +0900
-+++ linux-xlnx-2022.2/drivers/tty/serial/uartlite.c	2023-04-14 12:24:15.339796100 +0900
-@@ -368,7 +368,7 @@
+diff --git a/drivers/tty/serial/uartlite.c b/drivers/tty/serial/uartlite.c
+index 36871cebd..1ccdfbca9 100644
+--- a/drivers/tty/serial/uartlite.c
++++ b/drivers/tty/serial/uartlite.c
+@@ -368,7 +368,7 @@ static int ulite_request_port(struct uart_port *port)
  	}
  
  	pdata->reg_ops = &uartlite_be;
@@ -207,8 +218,10 @@
  	uart_out32(ULITE_CONTROL_RST_TX, ULITE_CONTROL, port);
  	ret = uart_in32(ULITE_STATUS, port);
  	/* Endianess detection */
---- linux-5.15.36/drivers/tty/serial/xilinx_uartps.c	2023-04-14 12:26:08.249773300 +0900
-+++ linux-xlnx-2022.2/drivers/tty/serial/xilinx_uartps.c	2023-04-14 12:24:15.339796100 +0900
+diff --git a/drivers/tty/serial/xilinx_uartps.c b/drivers/tty/serial/xilinx_uartps.c
+index 815e3e26e..917979402 100644
+--- a/drivers/tty/serial/xilinx_uartps.c
++++ b/drivers/tty/serial/xilinx_uartps.c
 @@ -2,7 +2,7 @@
  /*
   * Cadence UART driver (found in Xilinx Zynq)
@@ -233,7 +246,7 @@
  module_param(rx_timeout, uint, 0444);
  MODULE_PARM_DESC(rx_timeout, "Rx timeout, 1-255");
  
-@@ -229,6 +229,13 @@
+@@ -229,6 +229,13 @@ static void cdns_uart_handle_rx(void *dev_id, unsigned int isrstatus)
  
  	is_rxbs_support = cdns_uart->quirks & CDNS_UART_RXBS_SUPPORT;
  
@@ -247,16 +260,7 @@
  	while ((readl(port->membase + CDNS_UART_SR) &
  		CDNS_UART_SR_RXEMPTY) != CDNS_UART_SR_RXEMPTY) {
  		if (is_rxbs_support)
-@@ -375,6 +382,8 @@
- 		isrstatus &= ~CDNS_UART_IXR_TXEMPTY;
- 	}
- 
-+	isrstatus &= port->read_status_mask;
-+	isrstatus &= ~port->ignore_status_mask;
- 	/*
- 	 * Skip RX processing if RX is disabled as RXEMPTY will never be set
- 	 * as read bytes will not be removed from the FIFO.
-@@ -1100,13 +1109,17 @@
+@@ -1102,13 +1109,17 @@ static void cdns_uart_poll_put_char(struct uart_port *port, unsigned char c)
  static void cdns_uart_pm(struct uart_port *port, unsigned int state,
  		   unsigned int oldstate)
  {
@@ -275,7 +279,7 @@
  		break;
  	}
  }
-@@ -1144,6 +1157,13 @@
+@@ -1146,6 +1157,13 @@ static struct uart_driver cdns_uart_uart_driver;
   */
  static void cdns_uart_console_putchar(struct uart_port *port, int ch)
  {
@@ -289,7 +293,7 @@
  	while (readl(port->membase + CDNS_UART_SR) & CDNS_UART_SR_TXFULL)
  		cpu_relax();
  	writel(ch, port->membase + CDNS_UART_FIFO);
-@@ -1343,12 +1363,18 @@
+@@ -1345,12 +1363,18 @@ static int cdns_uart_resume(struct device *device)
  	unsigned long flags;
  	u32 ctrl_reg;
  	int may_wake;
@@ -310,18 +314,18 @@
  
  		spin_lock_irqsave(&port->lock, flags);
  
-@@ -1397,9 +1423,17 @@
+@@ -1399,9 +1423,17 @@ static int __maybe_unused cdns_runtime_resume(struct device *dev)
  {
  	struct uart_port *port = dev_get_drvdata(dev);
  	struct cdns_uart *cdns_uart = port->private_data;
 +	int ret;
- 
--	clk_enable(cdns_uart->pclk);
--	clk_enable(cdns_uart->uartclk);
++
 +	ret = clk_enable(cdns_uart->pclk);
 +	if (ret)
 +		return ret;
-+
+ 
+-	clk_enable(cdns_uart->pclk);
+-	clk_enable(cdns_uart->uartclk);
 +	ret = clk_enable(cdns_uart->uartclk);
 +	if (ret) {
 +		clk_disable(cdns_uart->pclk);
@@ -330,7 +334,7 @@
  	return 0;
  };
  
-@@ -1425,6 +1459,84 @@
+@@ -1427,6 +1459,84 @@ MODULE_DEVICE_TABLE(of, cdns_uart_of_match);
  /* Temporary variable for storing number of instances */
  static int instances;
  
@@ -415,7 +419,7 @@
  /**
   * cdns_uart_probe - Platform driver probe
   * @pdev: Pointer to the platform device structure
-@@ -1447,15 +1559,9 @@
+@@ -1449,15 +1559,9 @@ static int cdns_uart_probe(struct platform_device *pdev)
  	if (!port)
  		return -ENOMEM;
  
@@ -433,7 +437,7 @@
  
  	if (!cdns_uart_uart_driver.state) {
  		cdns_uart_uart_driver.owner = THIS_MODULE;
-@@ -1464,6 +1570,7 @@
+@@ -1466,6 +1570,7 @@ static int cdns_uart_probe(struct platform_device *pdev)
  		cdns_uart_uart_driver.major = CDNS_UART_MAJOR;
  		cdns_uart_uart_driver.minor = CDNS_UART_MINOR;
  		cdns_uart_uart_driver.nr = CDNS_UART_NR_PORTS;
@@ -441,7 +445,7 @@
  #ifdef CONFIG_SERIAL_XILINX_PS_UART_CONSOLE
  		cdns_uart_uart_driver.cons = &cdns_uart_console;
  #endif
-@@ -1565,6 +1672,8 @@
+@@ -1567,6 +1672,8 @@ static int cdns_uart_probe(struct platform_device *pdev)
  	port->dev = &pdev->dev;
  	port->uartclk = clk_get_rate(cdns_uart_data->uartclk);
  	port->private_data = cdns_uart_data;
@@ -450,7 +454,7 @@
  	cdns_uart_data->port = port;
  	platform_set_drvdata(pdev, port);
  
-@@ -1625,6 +1734,11 @@
+@@ -1627,6 +1734,11 @@ static int cdns_uart_probe(struct platform_device *pdev)
  err_out_unregister_driver:
  	if (!instances)
  		uart_unregister_driver(cdns_uart_data->cdns_uart_driver);
@@ -462,7 +466,7 @@
  	return rc;
  }
  
-@@ -1647,6 +1761,9 @@
+@@ -1649,6 +1761,9 @@ static int cdns_uart_remove(struct platform_device *pdev)
  #endif
  	rc = uart_remove_one_port(cdns_uart_data->cdns_uart_driver, port);
  	port->mapbase = 0;
