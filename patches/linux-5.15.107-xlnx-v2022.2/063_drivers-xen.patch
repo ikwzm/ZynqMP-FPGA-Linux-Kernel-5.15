@@ -1,34 +1,8 @@
---- /dev/null
-+++ linux-xlnx-2022.2/include/xen/pvcalls.h	2023-04-14 12:24:20.339077600 +0900
-@@ -0,0 +1,13 @@
-+#ifndef __LINUX_NET_PVCALLS_H
-+#define __LINUX_NET_PVCALLS_H
-+
-+#include <linux/net.h>
-+
-+#ifdef CONFIG_XEN_PVCALLS_FRONTEND
-+extern bool pvcalls;
-+#else
-+#define pvcalls (0)
-+#endif
-+extern const struct proto_ops pvcalls_stream_ops;
-+
-+#endif
---- linux-5.15.36/include/xen/xen.h	2023-04-14 12:26:13.048696900 +0900
-+++ linux-xlnx-2022.2/include/xen/xen.h	2023-04-14 12:24:20.339077600 +0900
-@@ -61,4 +61,9 @@
- #include <xen/balloon.h>
- #endif
- 
-+static inline int xen_vring_use_dma(void)
-+{
-+	return xen_pv_domain();
-+}
-+
- #endif	/* _XEN_XEN_H */
---- linux-5.15.36/drivers/xen/Kconfig	2023-04-14 12:26:09.211114700 +0900
-+++ linux-xlnx-2022.2/drivers/xen/Kconfig	2023-04-14 12:24:16.326349200 +0900
-@@ -205,7 +205,7 @@
+diff --git a/drivers/xen/Kconfig b/drivers/xen/Kconfig
+index 1b2c3aca6..cd73afebd 100644
+--- a/drivers/xen/Kconfig
++++ b/drivers/xen/Kconfig
+@@ -205,7 +205,7 @@ config XEN_PCIDEV_BACKEND
  	  If in doubt, say m.
  
  config XEN_PVCALLS_FRONTEND
@@ -37,9 +11,11 @@
  	depends on INET && XEN
  	select XEN_XENBUS_FRONTEND
  	help
---- linux-5.15.36/drivers/xen/Makefile	2023-04-14 12:26:09.211114700 +0900
-+++ linux-xlnx-2022.2/drivers/xen/Makefile	2023-04-14 12:24:16.326349200 +0900
-@@ -32,6 +32,7 @@
+diff --git a/drivers/xen/Makefile b/drivers/xen/Makefile
+index 343459345..3ac37622b 100644
+--- a/drivers/xen/Makefile
++++ b/drivers/xen/Makefile
+@@ -32,6 +32,7 @@ obj-$(CONFIG_XEN_SCSI_BACKEND)		+= xen-scsiback.o
  obj-$(CONFIG_XEN_AUTO_XLATE)		+= xlate_mmu.o
  obj-$(CONFIG_XEN_PVCALLS_BACKEND)	+= pvcalls-back.o
  obj-$(CONFIG_XEN_PVCALLS_FRONTEND)	+= pvcalls-front.o
@@ -47,8 +23,11 @@
  xen-evtchn-y				:= evtchn.o
  xen-gntdev-y				:= gntdev.o
  xen-gntdev-$(CONFIG_XEN_GNTDEV_DMABUF)	+= gntdev-dmabuf.o
+diff --git a/drivers/xen/pvcalls.c b/drivers/xen/pvcalls.c
+new file mode 100644
+index 000000000..1156ff350
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/xen/pvcalls.c	2023-04-14 12:24:16.341970800 +0900
++++ b/drivers/xen/pvcalls.c
 @@ -0,0 +1,134 @@
 +#include <linux/types.h>
 +#include <linux/bitops.h>
@@ -184,8 +163,10 @@
 +       return 0;
 +}
 +early_param("pvcalls", xen_parse_pvcalls);
---- linux-5.15.36/drivers/xen/xenbus/xenbus_probe.c	2023-04-14 12:26:09.242357100 +0900
-+++ linux-xlnx-2022.2/drivers/xen/xenbus/xenbus_probe.c	2023-04-14 12:24:16.341970800 +0900
+diff --git a/drivers/xen/xenbus/xenbus_probe.c b/drivers/xen/xenbus/xenbus_probe.c
+index fe360c33c..51e52e175 100644
+--- a/drivers/xen/xenbus/xenbus_probe.c
++++ b/drivers/xen/xenbus/xenbus_probe.c
 @@ -65,6 +65,7 @@
  #include "xenbus.h"
  
@@ -194,7 +175,7 @@
  int xen_store_evtchn;
  EXPORT_SYMBOL_GPL(xen_store_evtchn);
  
-@@ -750,6 +751,17 @@
+@@ -750,6 +751,17 @@ static void xenbus_probe(void)
  {
  	xenstored_ready = 1;
  
@@ -212,7 +193,7 @@
  	/*
  	 * In the HVM case, xenbus_init() deferred its call to
  	 * xs_init() in case callbacks were not operational yet.
-@@ -798,20 +810,22 @@
+@@ -798,20 +810,22 @@ static int __init xenbus_probe_initcall(void)
  {
  	/*
  	 * Probe XenBus here in the XS_PV case, and also XS_HVM unless we
@@ -242,7 +223,7 @@
  		struct task_struct *probe_task;
  
  		probe_task = kthread_run(xenbus_probe_thread, NULL,
-@@ -907,6 +921,20 @@
+@@ -907,6 +921,20 @@ static struct notifier_block xenbus_resume_nb = {
  	.notifier_call = xenbus_resume_cb,
  };
  
@@ -263,7 +244,7 @@
  static int __init xenbus_init(void)
  {
  	int err;
-@@ -959,23 +987,37 @@
+@@ -959,23 +987,37 @@ static int __init xenbus_init(void)
  		 *
  		 * Also recognize all bits set as an invalid value.
  		 */
@@ -313,3 +294,36 @@
  		break;
  	default:
  		pr_warn("Xenstore state unknown\n");
+diff --git a/include/xen/pvcalls.h b/include/xen/pvcalls.h
+new file mode 100644
+index 000000000..7a6147528
+--- /dev/null
++++ b/include/xen/pvcalls.h
+@@ -0,0 +1,13 @@
++#ifndef __LINUX_NET_PVCALLS_H
++#define __LINUX_NET_PVCALLS_H
++
++#include <linux/net.h>
++
++#ifdef CONFIG_XEN_PVCALLS_FRONTEND
++extern bool pvcalls;
++#else
++#define pvcalls (0)
++#endif
++extern const struct proto_ops pvcalls_stream_ops;
++
++#endif
+diff --git a/include/xen/xen.h b/include/xen/xen.h
+index 43efba045..e3eec1d2c 100644
+--- a/include/xen/xen.h
++++ b/include/xen/xen.h
+@@ -61,4 +61,9 @@ void xen_free_unpopulated_pages(unsigned int nr_pages, struct page **pages);
+ #include <xen/balloon.h>
+ #endif
+ 
++static inline int xen_vring_use_dma(void)
++{
++	return xen_pv_domain();
++}
++
+ #endif	/* _XEN_XEN_H */
