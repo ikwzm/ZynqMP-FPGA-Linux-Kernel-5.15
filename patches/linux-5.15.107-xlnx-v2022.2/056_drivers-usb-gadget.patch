@@ -653,7 +653,7 @@ index 0de7f11d1..8dc562e21 100644
  			break;
  		}
 diff --git a/drivers/usb/gadget/legacy/webcam.c b/drivers/usb/gadget/legacy/webcam.c
-index e9b5846b2..8aba456ad 100644
+index e9b5846b2..36539b531 100644
 --- a/drivers/usb/gadget/legacy/webcam.c
 +++ b/drivers/usb/gadget/legacy/webcam.c
 @@ -163,7 +163,7 @@ static const struct uvc_format_uncompressed uvc_format_yuv = {
@@ -672,8 +672,9 @@ index e9b5846b2..8aba456ad 100644
 -DECLARE_UVC_FRAME_UNCOMPRESSED(3);
 +DECLARE_UVC_FRAME_UNCOMPRESSED(5);
  
- static const struct UVC_FRAME_UNCOMPRESSED(3) uvc_frame_yuv_360p = {
+-static const struct UVC_FRAME_UNCOMPRESSED(3) uvc_frame_yuv_360p = {
 -	.bLength		= UVC_DT_FRAME_UNCOMPRESSED_SIZE(3),
++static const struct UVC_FRAME_UNCOMPRESSED(5) uvc_frame_yuv_360p = {
 +	.bLength		= UVC_DT_FRAME_UNCOMPRESSED_SIZE(5),
  	.bDescriptorType	= USB_DT_CS_INTERFACE,
  	.bDescriptorSubType	= UVC_VS_FRAME_UNCOMPRESSED,
