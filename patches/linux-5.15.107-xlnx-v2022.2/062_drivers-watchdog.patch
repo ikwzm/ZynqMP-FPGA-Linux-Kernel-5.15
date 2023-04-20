@@ -1,5 +1,8 @@
+diff --git a/Documentation/devicetree/bindings/watchdog/xlnx,xps-timebase-wdt.yaml b/Documentation/devicetree/bindings/watchdog/xlnx,xps-timebase-wdt.yaml
+new file mode 100644
+index 000000000..4f71e22e9
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/watchdog/xlnx,xps-timebase-wdt.yaml	2023-04-14 12:23:50.410851600 +0900
++++ b/Documentation/devicetree/bindings/watchdog/xlnx,xps-timebase-wdt.yaml
 @@ -0,0 +1,69 @@
 +# SPDX-License-Identifier: GPL-2.0-or-later OR BSD-2-Clause
 +%YAML 1.2
@@ -70,8 +73,10 @@
 +      xlnx,wdt-interval = <0x1b>;
 +    };
 +...
---- linux-5.15.36/drivers/watchdog/of_xilinx_wdt.c	2023-04-14 12:26:09.179872800 +0900
-+++ linux-xlnx-2022.2/drivers/watchdog/of_xilinx_wdt.c	2023-04-14 12:24:16.279485400 +0900
+diff --git a/drivers/watchdog/of_xilinx_wdt.c b/drivers/watchdog/of_xilinx_wdt.c
+index 331854436..d27800953 100644
+--- a/drivers/watchdog/of_xilinx_wdt.c
++++ b/drivers/watchdog/of_xilinx_wdt.c
 @@ -2,7 +2,7 @@
  /*
   * Watchdog Device Driver for Xilinx axi/xps_timebase_wdt
@@ -153,7 +158,7 @@
  };
  
  static int xilinx_wdt_start(struct watchdog_device *wdd)
-@@ -129,6 +179,220 @@
+@@ -129,6 +179,220 @@ static const struct watchdog_ops xilinx_wdt_ops = {
  	.ping = xilinx_wdt_keepalive,
  };
  
@@ -374,7 +379,7 @@
  static u32 xwdt_selftest(struct xwdt_device *xdev)
  {
  	int i;
-@@ -159,39 +423,82 @@
+@@ -159,39 +423,82 @@ static void xwdt_clk_disable_unprepare(void *data)
  	clk_disable_unprepare(data);
  }
  
@@ -470,7 +475,7 @@
  
  	xdev->clk = devm_clk_get(dev, NULL);
  	if (IS_ERR(xdev->clk)) {
-@@ -222,21 +529,44 @@
+@@ -222,21 +529,44 @@ static int xwdt_probe(struct platform_device *pdev)
  			return rc;
  	}
  
@@ -526,7 +531,7 @@
  	}
  
  	rc = devm_watchdog_register_device(dev, xilinx_wdt_wdd);
-@@ -262,9 +592,10 @@
+@@ -262,9 +592,10 @@ static int xwdt_probe(struct platform_device *pdev)
  static int __maybe_unused xwdt_suspend(struct device *dev)
  {
  	struct xwdt_device *xdev = dev_get_drvdata(dev);
@@ -539,7 +544,7 @@
  
  	return 0;
  }
-@@ -278,24 +609,17 @@
+@@ -278,24 +609,17 @@ static int __maybe_unused xwdt_suspend(struct device *dev)
  static int __maybe_unused xwdt_resume(struct device *dev)
  {
  	struct xwdt_device *xdev = dev_get_drvdata(dev);
