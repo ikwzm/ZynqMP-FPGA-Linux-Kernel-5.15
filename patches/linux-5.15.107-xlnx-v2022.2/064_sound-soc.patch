@@ -1,5 +1,7 @@
---- linux-5.15.36/Documentation/devicetree/bindings/sound/xlnx,audio-formatter.txt	2023-04-14 12:25:43.401470400 +0900
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/sound/xlnx,audio-formatter.txt	2023-04-14 12:23:50.253630600 +0900
+diff --git a/Documentation/devicetree/bindings/sound/xlnx,audio-formatter.txt b/Documentation/devicetree/bindings/sound/xlnx,audio-formatter.txt
+index cbc93c8f4..1d2550207 100644
+--- a/Documentation/devicetree/bindings/sound/xlnx,audio-formatter.txt
++++ b/Documentation/devicetree/bindings/sound/xlnx,audio-formatter.txt
 @@ -1,6 +1,6 @@
  Device-Tree bindings for Xilinx PL audio formatter
  
@@ -8,7 +10,7 @@
  of audio samples.
  
  Required properties:
-@@ -13,8 +13,21 @@
+@@ -13,8 +13,21 @@ Required properties:
   - interrupts-parent: Phandle for interrupt controller.
   - interrupts: List of Interrupt numbers.
   - reg: Base address and size of the IP core instance.
@@ -31,7 +33,7 @@
   - clocks: Input clock specifier. Refer to common clock bindings.
  
  Example:
-@@ -24,6 +37,8 @@
+@@ -24,6 +37,8 @@ Example:
  		interrupt-parent = <&gic>;
  		interrupts = <0 104 4>, <0 105 4>;
  		reg = <0x0 0x80010000 0x0 0x1000>;
@@ -42,8 +44,11 @@
 +		clock-names = "s_axi_lite_aclk", "m_axis_mm2s_aclk", "aud_mclk", "s_axis_s2mm_aclk";
 +		clocks = <&clk 71>, <&audio_ss_0_clk_wiz_0 0>, <&audio_ss_0_clk_wiz_0 0>, <&clk 71>;
  	};
+diff --git a/Documentation/devicetree/bindings/sound/xlnx,dp-snd-card.txt b/Documentation/devicetree/bindings/sound/xlnx,dp-snd-card.txt
+new file mode 100644
+index 000000000..7eb932913
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/sound/xlnx,dp-snd-card.txt	2023-04-14 12:23:50.253630600 +0900
++++ b/Documentation/devicetree/bindings/sound/xlnx,dp-snd-card.txt
 @@ -0,0 +1,17 @@
 +Device-Tree bindings for Xilinx ZynqMP DisplayPort Audio Card
 +
@@ -62,8 +67,11 @@
 +		xlnx,dp-snd-pcm = <&xlnx_dp_snd_pcm0>, <&xlnx_dp_snd_pcm1>;
 +		xlnx,dp-snd-codec = <&xlnx_dp_snd_codec0>;
 +	};
+diff --git a/Documentation/devicetree/bindings/sound/xlnx,dp-snd-codec.txt b/Documentation/devicetree/bindings/sound/xlnx,dp-snd-codec.txt
+new file mode 100644
+index 000000000..d094fdd9d
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/sound/xlnx,dp-snd-codec.txt	2023-04-14 12:23:50.253630600 +0900
++++ b/Documentation/devicetree/bindings/sound/xlnx,dp-snd-codec.txt
 @@ -0,0 +1,18 @@
 +Device-Tree bindings for Xilinx ZynqMP DisplayPort Codec
 +
@@ -83,8 +91,11 @@
 +		clocks = <&dp_aud_clk>;
 +		clock-names = "aud_clk";
 +	};
+diff --git a/Documentation/devicetree/bindings/sound/xlnx,dp-snd-pcm.txt b/Documentation/devicetree/bindings/sound/xlnx,dp-snd-pcm.txt
+new file mode 100644
+index 000000000..e76f302a0
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/sound/xlnx,dp-snd-pcm.txt	2023-04-14 12:23:50.253630600 +0900
++++ b/Documentation/devicetree/bindings/sound/xlnx,dp-snd-pcm.txt
 @@ -0,0 +1,18 @@
 +Device-Tree bindings for Xilinx ZynqMP DisplayPort PCM
 +
@@ -104,9 +115,11 @@
 +		dmas = <&xlnx_dpdma 4>;
 +		dma-names = "tx";
 +	};
---- linux-5.15.36/Documentation/devicetree/bindings/sound/xlnx,i2s.txt	2023-04-14 12:25:43.401470400 +0900
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/sound/xlnx,i2s.txt	2023-04-14 12:23:50.253630600 +0900
-@@ -11,18 +11,31 @@
+diff --git a/Documentation/devicetree/bindings/sound/xlnx,i2s.txt b/Documentation/devicetree/bindings/sound/xlnx,i2s.txt
+index 5e7c7d5bb..19ab3cd31 100644
+--- a/Documentation/devicetree/bindings/sound/xlnx,i2s.txt
++++ b/Documentation/devicetree/bindings/sound/xlnx,i2s.txt
+@@ -11,18 +11,31 @@ Required property common to both I2S playback and capture:
   - xlnx,dwidth: sample data width. Can be any of 16, 24.
   - xlnx,num-channels: Number of I2S streams. Can be any of 1, 2, 3, 4.
  		      supported channels = 2 * xlnx,num-channels
@@ -138,8 +151,10 @@
  	};
 +	Documentation of "audio_ss_0_audio_formatter_0" node is located
 +	at Documentation/devicetree/bindings/sound/xlnx,audio-formatter.txt
---- linux-5.15.36/Documentation/devicetree/bindings/sound/xlnx,spdif.txt	2023-04-14 12:25:43.401470400 +0900
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/sound/xlnx,spdif.txt	2023-04-14 12:23:50.253630600 +0900
+diff --git a/Documentation/devicetree/bindings/sound/xlnx,spdif.txt b/Documentation/devicetree/bindings/sound/xlnx,spdif.txt
+index 15c2d64d2..45214da42 100644
+--- a/Documentation/devicetree/bindings/sound/xlnx,spdif.txt
++++ b/Documentation/devicetree/bindings/sound/xlnx,spdif.txt
 @@ -1,28 +1,27 @@
 -Device-Tree bindings for Xilinx SPDIF IP
 +Device-Tree bindings for Xilinx SPDIF PL IP
@@ -179,8 +194,11 @@
 -		xlnx,aud_clk_i = <49152913>;
 +		xlnx,snd-pcm = <&audio_formatter_0>;
  	};
+diff --git a/Documentation/devicetree/bindings/sound/xlnx,v-uhdsdi-audio.txt b/Documentation/devicetree/bindings/sound/xlnx,v-uhdsdi-audio.txt
+new file mode 100644
+index 000000000..69134458b
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/sound/xlnx,v-uhdsdi-audio.txt	2023-04-14 12:23:50.253630600 +0900
++++ b/Documentation/devicetree/bindings/sound/xlnx,v-uhdsdi-audio.txt
 @@ -0,0 +1,60 @@
 +Device-Tree bindings for Xilinx SDI audio
 +
@@ -242,8 +260,10 @@
 +
 +	Node 'audio_ss_0_audio_formatter_0' node is documented
 +	at Documentation/devicetree/bindings/sound/xlnx,audio-formatter.txt
---- linux-5.15.36/sound/soc/xilinx/Kconfig	2023-04-14 12:26:16.142215200 +0900
-+++ linux-xlnx-2022.2/sound/soc/xilinx/Kconfig	2023-04-14 12:24:23.542934500 +0900
+diff --git a/sound/soc/xilinx/Kconfig b/sound/soc/xilinx/Kconfig
+index 5bd2730aa..ade55b32a 100644
+--- a/sound/soc/xilinx/Kconfig
++++ b/sound/soc/xilinx/Kconfig
 @@ -1,4 +1,19 @@
  # SPDX-License-Identifier: GPL-2.0-only
 +config SND_SOC_XILINX_DP
@@ -264,7 +284,7 @@
  config SND_SOC_XILINX_I2S
  	tristate "Audio support for the Xilinx I2S"
  	help
-@@ -7,6 +22,7 @@
+@@ -7,6 +22,7 @@ config SND_SOC_XILINX_I2S
  	  mode, IP receives audio in AES format, extracts PCM and sends
  	  PCM data. In receiver mode, IP receives PCM audio and
  	  encapsulates PCM in AES format and sends AES data.
@@ -272,7 +292,7 @@
  
  config SND_SOC_XILINX_AUDIO_FORMATTER
  	tristate "Audio support for the Xilinx audio formatter"
-@@ -19,5 +35,14 @@
+@@ -19,5 +35,14 @@ config SND_SOC_XILINX_SPDIF
  	tristate "Audio support for the Xilinx SPDIF"
  	help
  	  Select this option to enable Xilinx SPDIF Audio.
@@ -289,8 +309,10 @@
 +	  Select this option to enable Xilinx PL sound card
 +	  support. This enables sound card using xilinx soft IPs
 +	  in audio pipeline.
---- linux-5.15.36/sound/soc/xilinx/Makefile	2023-04-14 12:26:16.142215200 +0900
-+++ linux-xlnx-2022.2/sound/soc/xilinx/Makefile	2023-04-14 12:24:23.542934500 +0900
+diff --git a/sound/soc/xilinx/Makefile b/sound/soc/xilinx/Makefile
+index be7652ce7..74a4d1536 100644
+--- a/sound/soc/xilinx/Makefile
++++ b/sound/soc/xilinx/Makefile
 @@ -1,7 +1,11 @@
  # SPDX-License-Identifier: GPL-2.0-only
 +obj-$(CONFIG_SND_SOC_XILINX_DP) += xilinx-dp-pcm.o
@@ -305,8 +327,11 @@
 -obj-$(CONFIG_SND_SOC_XILINX_SPDIF) += snd-soc-xlnx-spdif.o
 +obj-$(CONFIG_SND_SOC_XILINX_SPDIF) += xlnx_spdif.o
 +obj-$(CONFIG_SND_SOC_XILINX_PL_SND_CARD) += xlnx_pl_snd_card.o
+diff --git a/sound/soc/xilinx/xilinx-dp-card.c b/sound/soc/xilinx/xilinx-dp-card.c
+new file mode 100644
+index 000000000..396a87d56
 --- /dev/null
-+++ linux-xlnx-2022.2/sound/soc/xilinx/xilinx-dp-card.c	2023-04-14 12:24:23.542934500 +0900
++++ b/sound/soc/xilinx/xilinx-dp-card.c
 @@ -0,0 +1,123 @@
 +/*
 + * Xilinx DisplayPort SoC Sound Card support
@@ -431,8 +456,11 @@
 +
 +MODULE_DESCRIPTION("Xilinx DisplayPort Sound Card module");
 +MODULE_LICENSE("GPL v2");
+diff --git a/sound/soc/xilinx/xilinx-dp-codec.c b/sound/soc/xilinx/xilinx-dp-codec.c
+new file mode 100644
+index 000000000..07e701fd2
 --- /dev/null
-+++ linux-xlnx-2022.2/sound/soc/xilinx/xilinx-dp-codec.c	2023-04-14 12:24:23.542934500 +0900
++++ b/sound/soc/xilinx/xilinx-dp-codec.c
 @@ -0,0 +1,261 @@
 +/*
 + * Xilinx DisplayPort Sound Codec support
@@ -695,8 +723,11 @@
 +
 +MODULE_DESCRIPTION("Xilinx DisplayPort Sound Codec module");
 +MODULE_LICENSE("GPL v2");
+diff --git a/sound/soc/xilinx/xilinx-dp-pcm.c b/sound/soc/xilinx/xilinx-dp-pcm.c
+new file mode 100644
+index 000000000..0b970d62d
 --- /dev/null
-+++ linux-xlnx-2022.2/sound/soc/xilinx/xilinx-dp-pcm.c	2023-04-14 12:24:23.542934500 +0900
++++ b/sound/soc/xilinx/xilinx-dp-pcm.c
 @@ -0,0 +1,94 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
@@ -792,8 +823,10 @@
 +
 +MODULE_DESCRIPTION("Xilinx DisplayPort Sound PCM module");
 +MODULE_LICENSE("GPL v2");
---- linux-5.15.36/sound/soc/xilinx/xlnx_formatter_pcm.c	2023-04-14 12:26:16.142215200 +0900
-+++ linux-xlnx-2022.2/sound/soc/xilinx/xlnx_formatter_pcm.c	2023-04-14 12:24:23.542934500 +0900
+diff --git a/sound/soc/xilinx/xlnx_formatter_pcm.c b/sound/soc/xilinx/xlnx_formatter_pcm.c
+index 5c4158069..6eeb89677 100644
+--- a/sound/soc/xilinx/xlnx_formatter_pcm.c
++++ b/sound/soc/xilinx/xlnx_formatter_pcm.c
 @@ -1,22 +1,26 @@
  // SPDX-License-Identifier: GPL-2.0
 -//
@@ -837,7 +870,7 @@
  #define AUD_CTRL_ACTIVE_CH_SHIFT	19
  #define PERIOD_CFG_PERIODS_SHIFT	16
  
-@@ -83,7 +89,12 @@
+@@ -83,7 +89,12 @@ struct xlnx_pcm_drv_data {
  	int mm2s_irq;
  	struct snd_pcm_substream *play_stream;
  	struct snd_pcm_substream *capture_stream;
@@ -850,7 +883,7 @@
  	unsigned int sysclk;
  };
  
-@@ -110,7 +121,7 @@
+@@ -110,7 +121,7 @@ static const struct snd_pcm_hardware xlnx_pcm_hardware = {
  	.formats = SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_LE |
  		   SNDRV_PCM_FMTBIT_S24_LE,
  	.channels_min = 2,
@@ -859,7 +892,7 @@
  	.rates = SNDRV_PCM_RATE_8000_192000,
  	.rate_min = 8000,
  	.rate_max = 192000,
-@@ -248,16 +259,16 @@
+@@ -248,16 +259,16 @@ static int xlnx_formatter_pcm_reset(void __iomem *mmio_base)
  {
  	u32 val, retries = 0;
  
@@ -880,7 +913,7 @@
  	}
  	if (val & AUD_CTRL_RESET_MASK)
  		return -ENODEV;
-@@ -269,12 +280,12 @@
+@@ -269,12 +280,12 @@ static void xlnx_formatter_disable_irqs(void __iomem *mmio_base, int stream)
  {
  	u32 val;
  
@@ -895,7 +928,7 @@
  }
  
  static irqreturn_t xlnx_mm2s_irq_handler(int irq, void *arg)
-@@ -285,9 +296,9 @@
+@@ -285,9 +296,9 @@ static irqreturn_t xlnx_mm2s_irq_handler(int irq, void *arg)
  	struct xlnx_pcm_drv_data *adata = dev_get_drvdata(dev);
  
  	reg = adata->mmio + XLNX_MM2S_OFFSET + XLNX_AUD_STS;
@@ -907,7 +940,7 @@
  		if (adata->play_stream)
  			snd_pcm_period_elapsed(adata->play_stream);
  		return IRQ_HANDLED;
-@@ -304,9 +315,9 @@
+@@ -304,9 +315,9 @@ static irqreturn_t xlnx_s2mm_irq_handler(int irq, void *arg)
  	struct xlnx_pcm_drv_data *adata = dev_get_drvdata(dev);
  
  	reg = adata->mmio + XLNX_S2MM_OFFSET + XLNX_AUD_STS;
@@ -919,7 +952,7 @@
  		if (adata->capture_stream)
  			snd_pcm_period_elapsed(adata->capture_stream);
  		return IRQ_HANDLED;
-@@ -332,7 +343,12 @@
+@@ -332,7 +343,12 @@ static int xlnx_formatter_pcm_open(struct snd_soc_component *component,
  	u32 ch_count_mask, ch_count_shift, data_xfer_mode, data_xfer_shift;
  	struct xlnx_pcm_stream_param *stream_data;
  	struct snd_pcm_runtime *runtime = substream->runtime;
@@ -933,7 +966,7 @@
  
  	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK &&
  	    !adata->mm2s_presence)
-@@ -364,10 +380,12 @@
+@@ -364,10 +380,12 @@ static int xlnx_formatter_pcm_open(struct snd_soc_component *component,
  		adata->capture_stream = substream;
  	}
  
@@ -947,7 +980,7 @@
  
  	stream_data->xfer_mode = (val & data_xfer_mode) >> data_xfer_shift;
  	stream_data->ch_limit = (val & ch_count_mask) >> ch_count_shift;
-@@ -409,9 +427,9 @@
+@@ -409,9 +427,9 @@ static int xlnx_formatter_pcm_open(struct snd_soc_component *component,
  	}
  
  	/* enable DMA IOC irq */
@@ -959,7 +992,7 @@
  
  	return 0;
  }
-@@ -423,6 +441,9 @@
+@@ -423,6 +441,9 @@ static int xlnx_formatter_pcm_close(struct snd_soc_component *component,
  	struct xlnx_pcm_stream_param *stream_data =
  			substream->runtime->private_data;
  
@@ -969,7 +1002,7 @@
  	ret = xlnx_formatter_pcm_reset(stream_data->mmio);
  	if (ret) {
  		dev_err(component->dev, "audio formatter reset failed\n");
-@@ -443,7 +464,7 @@
+@@ -443,7 +464,7 @@ xlnx_formatter_pcm_pointer(struct snd_soc_component *component,
  	struct snd_pcm_runtime *runtime = substream->runtime;
  	struct xlnx_pcm_stream_param *stream_data = runtime->private_data;
  
@@ -978,7 +1011,7 @@
  
  	if (pos >= stream_data->buffer_size)
  		pos = 0;
-@@ -455,12 +476,20 @@
+@@ -455,12 +476,20 @@ static int xlnx_formatter_pcm_hw_params(struct snd_soc_component *component,
  					struct snd_pcm_substream *substream,
  					struct snd_pcm_hw_params *params)
  {
@@ -1001,7 +1034,7 @@
  
  	active_ch = params_channels(params);
  	if (active_ch > stream_data->ch_limit)
-@@ -480,13 +509,20 @@
+@@ -480,13 +509,20 @@ static int xlnx_formatter_pcm_hw_params(struct snd_soc_component *component,
  	}
  
  	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE &&
@@ -1028,7 +1061,7 @@
  
  			xlnx_parse_aes_params(aes_reg1_val, aes_reg2_val,
  					      component->dev);
-@@ -494,15 +530,19 @@
+@@ -494,15 +530,19 @@ static int xlnx_formatter_pcm_hw_params(struct snd_soc_component *component,
  	}
  
  	size = params_buffer_bytes(params);
@@ -1051,7 +1084,7 @@
  	bits_per_sample = params_width(params);
  	switch (bits_per_sample) {
  	case 8:
-@@ -520,25 +560,35 @@
+@@ -520,25 +560,35 @@ static int xlnx_formatter_pcm_hw_params(struct snd_soc_component *component,
  	case 32:
  		val |= (BIT_DEPTH_32 << AUD_CTRL_DATA_WIDTH_SHIFT);
  		break;
@@ -1094,7 +1127,7 @@
  {
  	u32 val;
  	struct xlnx_pcm_stream_param *stream_data =
-@@ -548,16 +598,16 @@
+@@ -548,16 +598,16 @@ static int xlnx_formatter_pcm_trigger(struct snd_soc_component *component,
  	case SNDRV_PCM_TRIGGER_START:
  	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
  	case SNDRV_PCM_TRIGGER_RESUME:
@@ -1115,7 +1148,7 @@
  		break;
  	}
  
-@@ -567,10 +617,14 @@
+@@ -567,10 +617,14 @@ static int xlnx_formatter_pcm_trigger(struct snd_soc_component *component,
  static int xlnx_formatter_pcm_new(struct snd_soc_component *component,
  				  struct snd_soc_pcm_runtime *rtd)
  {
@@ -1134,7 +1167,7 @@
  	return 0;
  }
  
-@@ -580,15 +634,150 @@
+@@ -580,15 +634,150 @@ static const struct snd_soc_component_driver xlnx_asoc_component = {
  	.open		= xlnx_formatter_pcm_open,
  	.close		= xlnx_formatter_pcm_close,
  	.hw_params	= xlnx_formatter_pcm_hw_params,
@@ -1285,7 +1318,7 @@
  	struct xlnx_pcm_drv_data *aud_drv_data;
  	struct device *dev = &pdev->dev;
  
-@@ -596,6 +785,12 @@
+@@ -596,6 +785,12 @@ static int xlnx_formatter_pcm_probe(struct platform_device *pdev)
  	if (!aud_drv_data)
  		return -ENOMEM;
  
@@ -1298,7 +1331,7 @@
  	aud_drv_data->axi_clk = devm_clk_get(dev, "s_axi_lite_aclk");
  	if (IS_ERR(aud_drv_data->axi_clk)) {
  		ret = PTR_ERR(aud_drv_data->axi_clk);
-@@ -604,8 +799,7 @@
+@@ -604,8 +799,7 @@ static int xlnx_formatter_pcm_probe(struct platform_device *pdev)
  	}
  	ret = clk_prepare_enable(aud_drv_data->axi_clk);
  	if (ret) {
@@ -1308,7 +1341,7 @@
  		return ret;
  	}
  
-@@ -616,59 +810,17 @@
+@@ -616,59 +810,17 @@ static int xlnx_formatter_pcm_probe(struct platform_device *pdev)
  		goto clk_err;
  	}
  
@@ -1320,9 +1353,7 @@
 -					       XLNX_MM2S_OFFSET);
 -		if (ret) {
 -			dev_err(dev, "audio formatter reset failed\n");
-+		ret = configure_mm2s(aud_drv_data, pdev);
-+		if (ret)
- 			goto clk_err;
+-			goto clk_err;
 -		}
 -		xlnx_formatter_disable_irqs(aud_drv_data->mmio +
 -					    XLNX_MM2S_OFFSET,
@@ -1339,7 +1370,9 @@
 -				       "xlnx_formatter_pcm_mm2s_irq", dev);
 -		if (ret) {
 -			dev_err(dev, "xlnx audio mm2s irq request failed\n");
--			goto clk_err;
++		ret = configure_mm2s(aud_drv_data, pdev);
++		if (ret)
+ 			goto clk_err;
 -		}
  	}
 +
@@ -1349,7 +1382,9 @@
 -					       XLNX_S2MM_OFFSET);
 -		if (ret) {
 -			dev_err(dev, "audio formatter reset failed\n");
--			goto clk_err;
++		ret = configure_s2mm(aud_drv_data, pdev);
++		if (ret)
+ 			goto clk_err;
 -		}
 -		xlnx_formatter_disable_irqs(aud_drv_data->mmio +
 -					    XLNX_S2MM_OFFSET,
@@ -1359,9 +1394,7 @@
 -								 "irq_s2mm");
 -		if (aud_drv_data->s2mm_irq < 0) {
 -			ret = aud_drv_data->s2mm_irq;
-+		ret = configure_s2mm(aud_drv_data, pdev);
-+		if (ret)
- 			goto clk_err;
+-			goto clk_err;
 -		}
 -		ret = devm_request_irq(dev, aud_drv_data->s2mm_irq,
 -				       xlnx_s2mm_irq_handler, 0,
@@ -1374,7 +1407,7 @@
  	}
  
  	dev_set_drvdata(dev, aud_drv_data);
-@@ -680,6 +832,19 @@
+@@ -680,6 +832,19 @@ static int xlnx_formatter_pcm_probe(struct platform_device *pdev)
  		goto clk_err;
  	}
  
@@ -1394,7 +1427,7 @@
  	return 0;
  
  clk_err:
-@@ -692,6 +857,8 @@
+@@ -692,6 +857,8 @@ static int xlnx_formatter_pcm_remove(struct platform_device *pdev)
  	int ret = 0;
  	struct xlnx_pcm_drv_data *adata = dev_get_drvdata(&pdev->dev);
  
@@ -1403,8 +1436,10 @@
  	if (adata->s2mm_presence)
  		ret = xlnx_formatter_pcm_reset(adata->mmio + XLNX_S2MM_OFFSET);
  
---- linux-5.15.36/sound/soc/xilinx/xlnx_i2s.c	2023-04-14 12:26:16.142215200 +0900
-+++ linux-xlnx-2022.2/sound/soc/xilinx/xlnx_i2s.c	2023-04-14 12:24:23.542934500 +0900
+diff --git a/sound/soc/xilinx/xlnx_i2s.c b/sound/soc/xilinx/xlnx_i2s.c
+index cc641e582..31f05a017 100644
+--- a/sound/soc/xilinx/xlnx_i2s.c
++++ b/sound/soc/xilinx/xlnx_i2s.c
 @@ -7,6 +7,7 @@
  // Author: Praveen Vuppala <praveenv@xilinx.com>
  // Author: Maruthi Srinivas Bayyavarapu <maruthis@xilinx.com>
@@ -1438,7 +1473,7 @@
  
  	return 0;
  }
-@@ -40,13 +48,13 @@
+@@ -40,13 +48,13 @@ static int xlnx_i2s_hw_params(struct snd_pcm_substream *substream,
  			      struct snd_soc_dai *i2s_dai)
  {
  	u32 reg_off, chan_id;
@@ -1454,7 +1489,7 @@
  		chan_id--;
  	}
  
-@@ -56,18 +64,18 @@
+@@ -56,18 +64,18 @@ static int xlnx_i2s_hw_params(struct snd_pcm_substream *substream,
  static int xlnx_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
  			    struct snd_soc_dai *i2s_dai)
  {
@@ -1476,7 +1511,7 @@
  		break;
  	default:
  		return -EINVAL;
-@@ -95,10 +103,10 @@
+@@ -95,10 +103,10 @@ MODULE_DEVICE_TABLE(of, xlnx_i2s_of_match);
  
  static int xlnx_i2s_probe(struct platform_device *pdev)
  {
@@ -1489,7 +1524,7 @@
  	struct device *dev = &pdev->dev;
  	struct device_node *node = dev->of_node;
  
-@@ -106,9 +114,16 @@
+@@ -106,9 +114,16 @@ static int xlnx_i2s_probe(struct platform_device *pdev)
  	if (!dai_drv)
  		return -ENOMEM;
  
@@ -1509,7 +1544,7 @@
  
  	ret = of_property_read_u32(node, "xlnx,num-channels", &ch);
  	if (ret < 0) {
-@@ -141,6 +156,15 @@
+@@ -141,6 +156,15 @@ static int xlnx_i2s_probe(struct platform_device *pdev)
  		dai_drv->playback.channels_max = ch;
  		dai_drv->playback.rates	= SNDRV_PCM_RATE_8000_192000;
  		dai_drv->ops = &xlnx_i2s_dai_ops;
@@ -1525,7 +1560,7 @@
  	} else if (of_device_is_compatible(node, "xlnx,i2s-receiver-1.0")) {
  		dai_drv->name = "xlnx_i2s_capture";
  		dai_drv->capture.stream_name = "Capture";
-@@ -149,30 +173,93 @@
+@@ -149,30 +173,93 @@ static int xlnx_i2s_probe(struct platform_device *pdev)
  		dai_drv->capture.channels_max = ch;
  		dai_drv->capture.rates = SNDRV_PCM_RATE_8000_192000;
  		dai_drv->ops = &xlnx_i2s_dai_ops;
@@ -1621,8 +1656,11 @@
  };
  
  module_platform_driver(xlnx_i2s_aud_driver);
+diff --git a/sound/soc/xilinx/xlnx_pl_snd_card.c b/sound/soc/xilinx/xlnx_pl_snd_card.c
+new file mode 100644
+index 000000000..961278708
 --- /dev/null
-+++ linux-xlnx-2022.2/sound/soc/xilinx/xlnx_pl_snd_card.c	2023-04-14 12:24:23.542934500 +0900
++++ b/sound/soc/xilinx/xlnx_pl_snd_card.c
 @@ -0,0 +1,540 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
@@ -2164,8 +2202,11 @@
 +MODULE_DESCRIPTION("Xilinx FPGA sound card driver");
 +MODULE_AUTHOR("Maruthi Srinivas Bayyavarapu");
 +MODULE_LICENSE("GPL v2");
+diff --git a/sound/soc/xilinx/xlnx_sdi_audio.c b/sound/soc/xilinx/xlnx_sdi_audio.c
+new file mode 100644
+index 000000000..a53745838
 --- /dev/null
-+++ linux-xlnx-2022.2/sound/soc/xilinx/xlnx_sdi_audio.c	2023-04-14 12:24:23.542934500 +0900
++++ b/sound/soc/xilinx/xlnx_sdi_audio.c
 @@ -0,0 +1,609 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
@@ -2776,8 +2817,11 @@
 +MODULE_DESCRIPTION("xilinx sdi audio codec driver");
 +MODULE_AUTHOR("Maruthi Srinivas Bayyavarapu");
 +MODULE_LICENSE("GPL v2");
+diff --git a/sound/soc/xilinx/xlnx_snd_common.h b/sound/soc/xilinx/xlnx_snd_common.h
+new file mode 100644
+index 000000000..f19d8de0f
 --- /dev/null
-+++ linux-xlnx-2022.2/sound/soc/xilinx/xlnx_snd_common.h	2023-04-14 12:24:23.558555600 +0900
++++ b/sound/soc/xilinx/xlnx_snd_common.h
 @@ -0,0 +1,23 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
 +/*
@@ -2802,8 +2846,10 @@
 +	struct clk *mclk;
 +};
 +#endif /* _XLNX_SND_COMMON_H */
---- linux-5.15.36/sound/soc/xilinx/xlnx_spdif.c	2023-04-14 12:26:16.142215200 +0900
-+++ linux-xlnx-2022.2/sound/soc/xilinx/xlnx_spdif.c	2023-04-14 12:24:23.558555600 +0900
+diff --git a/sound/soc/xilinx/xlnx_spdif.c b/sound/soc/xilinx/xlnx_spdif.c
+index e2ca087ad..e3ea52895 100644
+--- a/sound/soc/xilinx/xlnx_spdif.c
++++ b/sound/soc/xilinx/xlnx_spdif.c
 @@ -24,32 +24,43 @@
  #define XLNX_SPDIF_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE)
  
@@ -2864,7 +2910,7 @@
  };
  
  static irqreturn_t xlnx_spdifrx_irq_handler(int irq, void *arg)
-@@ -57,13 +68,13 @@
+@@ -57,13 +68,13 @@ static irqreturn_t xlnx_spdifrx_irq_handler(int irq, void *arg)
  	u32 val;
  	struct spdif_dev_data *ctx = arg;
  
@@ -2884,7 +2930,7 @@
  		       ctx->base + XSPDIF_IRQ_ENABLE_REG);
  
  		ctx->rx_chsts_updated = true;
-@@ -80,15 +91,15 @@
+@@ -80,15 +91,15 @@ static int xlnx_spdif_startup(struct snd_pcm_substream *substream,
  	u32 val;
  	struct spdif_dev_data *ctx = dev_get_drvdata(dai->dev);
  
@@ -2905,7 +2951,7 @@
  	}
  
  	return 0;
-@@ -99,7 +110,7 @@
+@@ -99,7 +110,7 @@ static void xlnx_spdif_shutdown(struct snd_pcm_substream *substream,
  {
  	struct spdif_dev_data *ctx = dev_get_drvdata(dai->dev);
  
@@ -2914,7 +2960,7 @@
  }
  
  static int xlnx_spdif_hw_params(struct snd_pcm_substream *substream,
-@@ -109,38 +120,40 @@
+@@ -109,38 +120,40 @@ static int xlnx_spdif_hw_params(struct snd_pcm_substream *substream,
  	u32 val, clk_div, clk_cfg;
  	struct spdif_dev_data *ctx = dev_get_drvdata(dai->dev);
  
@@ -2966,7 +3012,7 @@
  	writel(val, ctx->base + XSPDIF_CONTROL_REG);
  
  	return 0;
-@@ -150,7 +163,7 @@
+@@ -150,7 +163,7 @@ static int rx_stream_detect(struct snd_soc_dai *dai)
  {
  	int err;
  	struct spdif_dev_data *ctx = dev_get_drvdata(dai->dev);
@@ -2975,7 +3021,7 @@
  
  	/* start capture only if stream is detected within 40ms timeout */
  	err = wait_event_interruptible_timeout(ctx->chsts_q,
-@@ -172,12 +185,12 @@
+@@ -172,12 +185,12 @@ static int xlnx_spdif_trigger(struct snd_pcm_substream *substream, int cmd,
  	int ret = 0;
  	struct spdif_dev_data *ctx = dev_get_drvdata(dai->dev);
  
@@ -2990,7 +3036,7 @@
  		writel(val, ctx->base + XSPDIF_CONTROL_REG);
  		if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
  			ret = rx_stream_detect(dai);
-@@ -185,7 +198,7 @@
+@@ -185,7 +198,7 @@ static int xlnx_spdif_trigger(struct snd_pcm_substream *substream, int cmd,
  	case SNDRV_PCM_TRIGGER_STOP:
  	case SNDRV_PCM_TRIGGER_SUSPEND:
  	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
@@ -2999,7 +3045,7 @@
  		writel(val, ctx->base + XSPDIF_CONTROL_REG);
  		break;
  	default:
-@@ -263,21 +276,34 @@
+@@ -263,21 +276,34 @@ static int xlnx_spdif_probe(struct platform_device *pdev)
  	ctx->base = devm_platform_ioremap_resource(pdev, 0);
  	if (IS_ERR(ctx->base)) {
  		ret = PTR_ERR(ctx->base);
@@ -3037,7 +3083,7 @@
  		}
  		ret = devm_request_irq(dev, res->start,
  				       xlnx_spdifrx_irq_handler,
-@@ -285,17 +311,30 @@
+@@ -285,17 +311,30 @@ static int xlnx_spdif_probe(struct platform_device *pdev)
  		if (ret) {
  			dev_err(dev, "spdif rx irq request failed\n");
  			ret = -ENODEV;
@@ -3073,7 +3119,7 @@
  	}
  
  	dev_set_drvdata(dev, ctx);
-@@ -307,11 +346,17 @@
+@@ -307,11 +346,17 @@ static int xlnx_spdif_probe(struct platform_device *pdev)
  		goto clk_err;
  	}
  
@@ -3092,7 +3138,7 @@
  	return ret;
  }
  
-@@ -319,6 +364,8 @@
+@@ -319,6 +364,8 @@ static int xlnx_spdif_remove(struct platform_device *pdev)
  {
  	struct spdif_dev_data *ctx = dev_get_drvdata(&pdev->dev);
  
