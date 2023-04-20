@@ -12,10 +12,10 @@ index d7537745b..653fdb0ba 100644
  dtb-$(CONFIG_ARCH_ZYNQMP) += zynqmp-zc1751-xm015-dc1.dtb
 diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-kv260-revB.dts b/arch/arm64/boot/dts/xilinx/zynqmp-kv260-revB.dts
 new file mode 100644
-index 000000000..4be2c6b04
+index 000000000..4af4b674d
 --- /dev/null
 +++ b/arch/arm64/boot/dts/xilinx/zynqmp-kv260-revB.dts
-@@ -0,0 +1,347 @@
+@@ -0,0 +1,332 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
 + * dts file for Kira KV260 Vision AI Starter Kit
