@@ -1,5 +1,8 @@
+diff --git a/Documentation/devicetree/bindings/phy/xlnx,gt-quad-base.yaml b/Documentation/devicetree/bindings/phy/xlnx,gt-quad-base.yaml
+new file mode 100644
+index 000000000..2b774b05b
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/phy/xlnx,gt-quad-base.yaml	2023-04-14 12:23:49.771085100 +0900
++++ b/Documentation/devicetree/bindings/phy/xlnx,gt-quad-base.yaml
 @@ -0,0 +1,49 @@
 +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 +%YAML 1.2
@@ -50,8 +53,11 @@
 +           #phy-cells = <0>;
 +   };
 +...
+diff --git a/Documentation/devicetree/bindings/phy/xlnx,v-hmdi-phy1.yaml b/Documentation/devicetree/bindings/phy/xlnx,v-hmdi-phy1.yaml
+new file mode 100644
+index 000000000..2e874fe90
 --- /dev/null
-+++ linux-xlnx-2022.2/Documentation/devicetree/bindings/phy/xlnx,v-hmdi-phy1.yaml	2023-04-14 12:23:49.771085100 +0900
++++ b/Documentation/devicetree/bindings/phy/xlnx,v-hmdi-phy1.yaml
 @@ -0,0 +1,280 @@
 +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) %YAML 1.2
 +%YAML 1.2
@@ -333,247 +339,11 @@
 +           #phy-cells = <0>;
 +   };
 +...
---- /dev/null
-+++ linux-xlnx-2022.2/include/linux/phy/phy-hdmi.h	2023-04-14 12:24:18.833858500 +0900
-@@ -0,0 +1,211 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+
-+#ifndef __PHY_HDMI_H_
-+#define __PHY_HDMI_H_
-+
-+#include <linux/types.h>
-+
-+/**
-+ * enum callback_type - HDMI PHY callback functions type
-+ * This enumerates the list of available HDMI PHY callback functions types.
-+ *
-+ * @RX_INIT_CB:		Receiver initialization callback type
-+ * @RX_READY_CB:	Receiver ready callback type
-+ * @TX_INIT_CB:		Transmitter initialization callback type
-+ * @TX_READY_CB:	Transmitter ready callback type
-+ */
-+enum callback_type {
-+	RX_INIT_CB,
-+	RX_READY_CB,
-+	TX_INIT_CB,
-+	TX_READY_CB,
-+};
-+
-+/**
-+ * struct hdmiphy_callback - HDMI PHY callback structure
-+ * This structure is used to represent the callback function of a
-+ * HDMI phy.
-+ *
-+ * @cb:		Callback function pointer
-+ * @data:	Pointer to store data
-+ * @type:	Callback type
-+ */
-+struct hdmiphy_callback {
-+	void (*cb)(void *callback_func);
-+	void *data;
-+	u32 type;
-+};
-+
-+/**
-+ * struct phy_configure_opts_hdmi - HDMI PHY configuration set
-+ *
-+ * This structure is used to represent the configuration state of a
-+ * HDMI phy.
-+ */
-+struct phy_configure_opts_hdmi {
-+	/**
-+	 * @tmdsclock_ratio_flag:
-+	 *
-+	 * SCDC tmds clock ratio flag.
-+	 *
-+	 * Allowed values: 0, 1
-+	 */
-+	u8 tmdsclock_ratio_flag : 1;
-+	/**
-+	 * @tmdsclock_ratio:
-+	 *
-+	 * SCDC tmds clock ratio bit.
-+	 *
-+	 * Allowed values: 0, 1
-+	 */
-+	u8 tmdsclock_ratio : 1;
-+
-+	/**
-+	 * @ibufds:
-+	 *
-+	 * Flag to enable/disable the TX or RX IBUFDS configuration.
-+	 *
-+	 * Allowed values: 0, 1
-+	 */
-+	u8 ibufds : 1;
-+	/**
-+	 * @ibufds_en:
-+	 *
-+	 * enables/disable the TX or RX IBUFDS peripheral.
-+	 *
-+	 * Allowed values: 0, 1
-+	 */
-+	u8 ibufds_en : 1;
-+	/**
-+	 * @clkout1_obuftds:
-+	 *
-+	 * Flag to enable/disable the TX or RX CLKOUT1 OBUFTDS configuration.
-+	 *
-+	 * Allowed values: 0, 1
-+	 */
-+	u8 clkout1_obuftds : 1;
-+	/**
-+	 * @clkout1_obuftds_en:
-+	 *
-+	 * enable/disable the TX or RX CLKOUT1 OBUFTDS peripheral.
-+	 *
-+	 * Allowed values: 0, 1
-+	 */
-+	u8 clkout1_obuftds_en : 1;
-+	/**
-+	 * @config_hdmi20:
-+	 *
-+	 * Flag to enable/disable HDMI-PHY to be configured in 2.0 mode
-+	 *
-+	 * Allowed values: 0, 1
-+	 */
-+	u8 config_hdmi20 : 1;
-+	/**
-+	 * @config_hdmi21:
-+	 *
-+	 * Flag to enable/disable HDMI-PHY to be configured in 2.1 mode
-+	 *
-+	 * Allowed values: 0, 1
-+	 */
-+	u8 config_hdmi21 : 1;
-+	/**
-+	 * @linerate:
-+	 *
-+	 * Supported linerates(in Gb/s) to be configured in FRL mode.
-+	 *
-+	 * Allowed values: 3, 6, 8. 10, 12
-+	 */
-+	u64 linerate;
-+	/**
-+	 * @nchannels:
-+	 *
-+	 * No of channels to confiure in FRL mode.
-+	 *
-+	 * Allowed values: 3, 4
-+	 */
-+	u8 nchannels;
-+	/**
-+	 * @rx_get_refclk:
-+	 *
-+	 * Flag to get the rx reference clock value from the PHY driver
-+	 *
-+	 * Allowed values: 0, 1
-+	 */
-+	u8 rx_get_refclk : 1;
-+	/**
-+	 * @rx_refclk_hz:
-+	 *
-+	 * Rx reference clock value.
-+	 *
-+	 */
-+	unsigned long rx_refclk_hz;
-+	/**
-+	 * @phycb:
-+	 *
-+	 * phy callback functions flag.
-+	 *
-+	 * Allowed values: 0, 1
-+	 */
-+	u8 phycb : 1;
-+	/**
-+	 * @hdmiphycb:
-+	 *
-+	 * HDMI PHY callback structure
-+	 */
-+	struct hdmiphy_callback hdmiphycb;
-+	/**
-+	 * @tx_params:
-+	 *
-+	 * Flag to update the tx stream paramerters.
-+	 *
-+	 * Allowed values: 0, 1
-+	 */
-+	u8 tx_params : 1;
-+	/**
-+	 * @cal_mmcm_param:
-+	 *
-+	 * Flage to update caliculate mmcm parameters.
-+	 *
-+	 * Allowed values: 0, 1
-+	 */
-+	u8 cal_mmcm_param : 1;
-+	/**
-+	 * @tx_tmdsclk:
-+	 *
-+	 * TX TMDS clock value.
-+	 *
-+	 */
-+	u64 tx_tmdsclk;
-+	/**
-+	 * @ppc:
-+	 *
-+	 * pixels per clock.
-+	 *
-+	 * Allowed values: 1, 2, 4, 8
-+	 */
-+	u8 ppc;
-+	/**
-+	 * @bpc:
-+	 *
-+	 * bits per component.
-+	 *
-+	 * Allowed  values: 8, 10, 23, 16
-+	 */
-+	u8 bpc;
-+	/**
-+	 * @fmt:
-+	 *
-+	 * color format.
-+	 *
-+	 * Allowed values: 0, 1, 2, 3
-+	 */
-+	u8 fmt;
-+	/**
-+	 * @reset_gt:
-+	 *
-+	 * Flag to reset the GT
-+	 */
-+	u8 reset_gt : 1;
-+};
-+
-+#endif /* __PHY_HDMI_H_ */
---- linux-5.15.36/include/linux/phy/phy.h	2023-04-14 12:26:11.546786500 +0900
-+++ linux-xlnx-2022.2/include/linux/phy/phy.h	2023-04-14 12:24:18.833858500 +0900
-@@ -17,6 +17,7 @@
- #include <linux/regulator/consumer.h>
- 
- #include <linux/phy/phy-dp.h>
-+#include <linux/phy/phy-hdmi.h>
- #include <linux/phy/phy-mipi-dphy.h>
- 
- struct phy;
-@@ -57,10 +58,13 @@
-  *		the MIPI_DPHY phy mode.
-  * @dp:		Configuration set applicable for phys supporting
-  *		the DisplayPort protocol.
-+ * @hdmi:	Configuration set applicable for phys supporting
-+ *		the HDMI protocol.
-  */
- union phy_configure_opts {
- 	struct phy_configure_opts_mipi_dphy	mipi_dphy;
- 	struct phy_configure_opts_dp		dp;
-+	struct phy_configure_opts_hdmi		hdmi;
- };
- 
- /**
---- linux-5.15.36/drivers/phy/xilinx/Kconfig	2023-04-14 12:26:04.972821100 +0900
-+++ linux-xlnx-2022.2/drivers/phy/xilinx/Kconfig	2023-04-14 12:24:12.087920900 +0900
-@@ -11,3 +11,21 @@
+diff --git a/drivers/phy/xilinx/Kconfig b/drivers/phy/xilinx/Kconfig
+index d8b0d46b2..4eab35d6d 100644
+--- a/drivers/phy/xilinx/Kconfig
++++ b/drivers/phy/xilinx/Kconfig
+@@ -11,3 +11,21 @@ config PHY_XILINX_ZYNQMP
  	help
  	  Enable this to support ZynqMP High Speed Gigabit Transceiver
  	  that is part of ZynqMP SoC.
@@ -595,8 +365,10 @@
 +	  Enable this to support DP GT QUAD PHY controller core in FPGA.
 +	  It is designed for enabling gt quad base configuration for Xilinx
 +	  Displayport Tx and Rx subsystems.
---- linux-5.15.36/drivers/phy/xilinx/Makefile	2023-04-14 12:26:04.972821100 +0900
-+++ linux-xlnx-2022.2/drivers/phy/xilinx/Makefile	2023-04-14 12:24:12.087920900 +0900
+diff --git a/drivers/phy/xilinx/Makefile b/drivers/phy/xilinx/Makefile
+index 3f1f6a2a9..4b4d4cb09 100644
+--- a/drivers/phy/xilinx/Makefile
++++ b/drivers/phy/xilinx/Makefile
 @@ -1,3 +1,10 @@
  # SPDX-License-Identifier: GPL-2.0
  
@@ -608,8 +380,11 @@
 +xilinx-hdmiphy-objs += xhdmiphy_gt_helper.o
 +xilinx-hdmiphy-objs += xhdmiphy_mmcm.o
 +obj-$(CONFIG_PHY_XILINX_DPGTQUAD)	+= xilinx_dpgtquadphy.o
+diff --git a/drivers/phy/xilinx/xhdmiphy.c b/drivers/phy/xilinx/xhdmiphy.c
+new file mode 100644
+index 000000000..f4054e564
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/phy/xilinx/xhdmiphy.c	2023-04-14 12:24:12.087920900 +0900
++++ b/drivers/phy/xilinx/xhdmiphy.c
 @@ -0,0 +1,894 @@
 +// SPDX-License-Identifier: GPL-2.0-only
 +/*
@@ -1505,8 +1280,11 @@
 +MODULE_LICENSE("GPL v2");
 +MODULE_AUTHOR("Rajesh Gugulothu <gugulothu.rajesh@xilinx.com");
 +MODULE_DESCRIPTION("Xilinx HDMI PHY driver");
+diff --git a/drivers/phy/xilinx/xhdmiphy.h b/drivers/phy/xilinx/xhdmiphy.h
+new file mode 100644
+index 000000000..f758fa89e
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/phy/xilinx/xhdmiphy.h	2023-04-14 12:24:12.087920900 +0900
++++ b/drivers/phy/xilinx/xhdmiphy.h
 @@ -0,0 +1,1159 @@
 +/* SPDX-License-Identifier: GPL-2.0-only */
 +
@@ -2667,8 +2445,11 @@
 +extern const struct gt_conf gtye5_conf;
 +#endif /* XHDMIPHY_H_ */
 +/** @} */
+diff --git a/drivers/phy/xilinx/xhdmiphy_core.c b/drivers/phy/xilinx/xhdmiphy_core.c
+new file mode 100644
+index 000000000..0b40e6370
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/phy/xilinx/xhdmiphy_core.c	2023-04-14 12:24:12.087920900 +0900
++++ b/drivers/phy/xilinx/xhdmiphy_core.c
 @@ -0,0 +1,1113 @@
 +// SPDX-License-Identifier: GPL-2.0-only
 +
@@ -3783,8 +3564,11 @@
 +
 +	return 0;
 +}
+diff --git a/drivers/phy/xilinx/xhdmiphy_gt_helper.c b/drivers/phy/xilinx/xhdmiphy_gt_helper.c
+new file mode 100644
+index 000000000..c3e96f33c
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/phy/xilinx/xhdmiphy_gt_helper.c	2023-04-14 12:24:12.087920900 +0900
++++ b/drivers/phy/xilinx/xhdmiphy_gt_helper.c
 @@ -0,0 +1,1398 @@
 +// SPDX-License-Identifier: GPL-2.0-only
 +
@@ -5184,8 +4968,11 @@
 +		.d = NULL,
 +	},
 +};
+diff --git a/drivers/phy/xilinx/xhdmiphy_mmcm.c b/drivers/phy/xilinx/xhdmiphy_mmcm.c
+new file mode 100644
+index 000000000..db7428423
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/phy/xilinx/xhdmiphy_mmcm.c	2023-04-14 12:24:12.087920900 +0900
++++ b/drivers/phy/xilinx/xhdmiphy_mmcm.c
 @@ -0,0 +1,1877 @@
 +// SPDX-License-Identifier: GPL-2.0-only
 +
@@ -7064,8 +6851,11 @@
 +
 +	return 1;
 +}
+diff --git a/drivers/phy/xilinx/xhdmiphy_modules.c b/drivers/phy/xilinx/xhdmiphy_modules.c
+new file mode 100644
+index 000000000..59d551961
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/phy/xilinx/xhdmiphy_modules.c	2023-04-14 12:24:12.087920900 +0900
++++ b/drivers/phy/xilinx/xhdmiphy_modules.c
 @@ -0,0 +1,2032 @@
 +// SPDX-License-Identifier: GPL-2.0-only
 +
@@ -9099,8 +8889,11 @@
 +
 +	xhdmiphy_write(inst, XHDMIPHY_INTR_STS_REG, event_ack);
 +}
+diff --git a/drivers/phy/xilinx/xilinx_dpgtquadphy.c b/drivers/phy/xilinx/xilinx_dpgtquadphy.c
+new file mode 100644
+index 000000000..db04f9760
 --- /dev/null
-+++ linux-xlnx-2022.2/drivers/phy/xilinx/xilinx_dpgtquadphy.c	2023-04-14 12:24:12.087920900 +0900
++++ b/drivers/phy/xilinx/xilinx_dpgtquadphy.c
 @@ -0,0 +1,181 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
@@ -9283,3 +9076,246 @@
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("Jagadeesh Banisetti <jbaniset@xilinx.com>");
 +MODULE_DESCRIPTION("Xilinx driver for GT Quad Base");
+diff --git a/include/linux/phy/phy-hdmi.h b/include/linux/phy/phy-hdmi.h
+new file mode 100644
+index 000000000..d37532939
+--- /dev/null
++++ b/include/linux/phy/phy-hdmi.h
+@@ -0,0 +1,211 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
++#ifndef __PHY_HDMI_H_
++#define __PHY_HDMI_H_
++
++#include <linux/types.h>
++
++/**
++ * enum callback_type - HDMI PHY callback functions type
++ * This enumerates the list of available HDMI PHY callback functions types.
++ *
++ * @RX_INIT_CB:		Receiver initialization callback type
++ * @RX_READY_CB:	Receiver ready callback type
++ * @TX_INIT_CB:		Transmitter initialization callback type
++ * @TX_READY_CB:	Transmitter ready callback type
++ */
++enum callback_type {
++	RX_INIT_CB,
++	RX_READY_CB,
++	TX_INIT_CB,
++	TX_READY_CB,
++};
++
++/**
++ * struct hdmiphy_callback - HDMI PHY callback structure
++ * This structure is used to represent the callback function of a
++ * HDMI phy.
++ *
++ * @cb:		Callback function pointer
++ * @data:	Pointer to store data
++ * @type:	Callback type
++ */
++struct hdmiphy_callback {
++	void (*cb)(void *callback_func);
++	void *data;
++	u32 type;
++};
++
++/**
++ * struct phy_configure_opts_hdmi - HDMI PHY configuration set
++ *
++ * This structure is used to represent the configuration state of a
++ * HDMI phy.
++ */
++struct phy_configure_opts_hdmi {
++	/**
++	 * @tmdsclock_ratio_flag:
++	 *
++	 * SCDC tmds clock ratio flag.
++	 *
++	 * Allowed values: 0, 1
++	 */
++	u8 tmdsclock_ratio_flag : 1;
++	/**
++	 * @tmdsclock_ratio:
++	 *
++	 * SCDC tmds clock ratio bit.
++	 *
++	 * Allowed values: 0, 1
++	 */
++	u8 tmdsclock_ratio : 1;
++
++	/**
++	 * @ibufds:
++	 *
++	 * Flag to enable/disable the TX or RX IBUFDS configuration.
++	 *
++	 * Allowed values: 0, 1
++	 */
++	u8 ibufds : 1;
++	/**
++	 * @ibufds_en:
++	 *
++	 * enables/disable the TX or RX IBUFDS peripheral.
++	 *
++	 * Allowed values: 0, 1
++	 */
++	u8 ibufds_en : 1;
++	/**
++	 * @clkout1_obuftds:
++	 *
++	 * Flag to enable/disable the TX or RX CLKOUT1 OBUFTDS configuration.
++	 *
++	 * Allowed values: 0, 1
++	 */
++	u8 clkout1_obuftds : 1;
++	/**
++	 * @clkout1_obuftds_en:
++	 *
++	 * enable/disable the TX or RX CLKOUT1 OBUFTDS peripheral.
++	 *
++	 * Allowed values: 0, 1
++	 */
++	u8 clkout1_obuftds_en : 1;
++	/**
++	 * @config_hdmi20:
++	 *
++	 * Flag to enable/disable HDMI-PHY to be configured in 2.0 mode
++	 *
++	 * Allowed values: 0, 1
++	 */
++	u8 config_hdmi20 : 1;
++	/**
++	 * @config_hdmi21:
++	 *
++	 * Flag to enable/disable HDMI-PHY to be configured in 2.1 mode
++	 *
++	 * Allowed values: 0, 1
++	 */
++	u8 config_hdmi21 : 1;
++	/**
++	 * @linerate:
++	 *
++	 * Supported linerates(in Gb/s) to be configured in FRL mode.
++	 *
++	 * Allowed values: 3, 6, 8. 10, 12
++	 */
++	u64 linerate;
++	/**
++	 * @nchannels:
++	 *
++	 * No of channels to confiure in FRL mode.
++	 *
++	 * Allowed values: 3, 4
++	 */
++	u8 nchannels;
++	/**
++	 * @rx_get_refclk:
++	 *
++	 * Flag to get the rx reference clock value from the PHY driver
++	 *
++	 * Allowed values: 0, 1
++	 */
++	u8 rx_get_refclk : 1;
++	/**
++	 * @rx_refclk_hz:
++	 *
++	 * Rx reference clock value.
++	 *
++	 */
++	unsigned long rx_refclk_hz;
++	/**
++	 * @phycb:
++	 *
++	 * phy callback functions flag.
++	 *
++	 * Allowed values: 0, 1
++	 */
++	u8 phycb : 1;
++	/**
++	 * @hdmiphycb:
++	 *
++	 * HDMI PHY callback structure
++	 */
++	struct hdmiphy_callback hdmiphycb;
++	/**
++	 * @tx_params:
++	 *
++	 * Flag to update the tx stream paramerters.
++	 *
++	 * Allowed values: 0, 1
++	 */
++	u8 tx_params : 1;
++	/**
++	 * @cal_mmcm_param:
++	 *
++	 * Flage to update caliculate mmcm parameters.
++	 *
++	 * Allowed values: 0, 1
++	 */
++	u8 cal_mmcm_param : 1;
++	/**
++	 * @tx_tmdsclk:
++	 *
++	 * TX TMDS clock value.
++	 *
++	 */
++	u64 tx_tmdsclk;
++	/**
++	 * @ppc:
++	 *
++	 * pixels per clock.
++	 *
++	 * Allowed values: 1, 2, 4, 8
++	 */
++	u8 ppc;
++	/**
++	 * @bpc:
++	 *
++	 * bits per component.
++	 *
++	 * Allowed  values: 8, 10, 23, 16
++	 */
++	u8 bpc;
++	/**
++	 * @fmt:
++	 *
++	 * color format.
++	 *
++	 * Allowed values: 0, 1, 2, 3
++	 */
++	u8 fmt;
++	/**
++	 * @reset_gt:
++	 *
++	 * Flag to reset the GT
++	 */
++	u8 reset_gt : 1;
++};
++
++#endif /* __PHY_HDMI_H_ */
+diff --git a/include/linux/phy/phy.h b/include/linux/phy/phy.h
+index f3286f4cd..c35185d73 100644
+--- a/include/linux/phy/phy.h
++++ b/include/linux/phy/phy.h
+@@ -17,6 +17,7 @@
+ #include <linux/regulator/consumer.h>
+ 
+ #include <linux/phy/phy-dp.h>
++#include <linux/phy/phy-hdmi.h>
+ #include <linux/phy/phy-mipi-dphy.h>
+ 
+ struct phy;
+@@ -57,10 +58,13 @@ enum phy_media {
+  *		the MIPI_DPHY phy mode.
+  * @dp:		Configuration set applicable for phys supporting
+  *		the DisplayPort protocol.
++ * @hdmi:	Configuration set applicable for phys supporting
++ *		the HDMI protocol.
+  */
+ union phy_configure_opts {
+ 	struct phy_configure_opts_mipi_dphy	mipi_dphy;
+ 	struct phy_configure_opts_dp		dp;
++	struct phy_configure_opts_hdmi		hdmi;
+ };
+ 
+ /**
