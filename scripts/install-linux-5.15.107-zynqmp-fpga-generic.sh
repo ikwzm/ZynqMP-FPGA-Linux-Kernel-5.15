@@ -33,10 +33,10 @@ do_help()
     echo ""
     echo "OPTIONS"
     echo "    -h, --help                  Run Help command"
-    echo "    -d, --dry-run               Don't actually run any command"
+    echo "    -n, --dry-run               Don't actually run any command"
     echo "    -v, --verbose               Turn on verbosity"
-    echo "    -D, --directory     <args>  Target directory"
-    echo "    -B, --build-version <args>  Build version"
+    echo "    -d, --directory     <args>  Target directory"
+    echo "    -b, --build-version <args>  Build version (default=$BUILD_VERSION)"
     echo ""
 }
 
@@ -64,16 +64,16 @@ while [ $# -gt 0 ]; do
 	    verbose=1
 	    shift
 	    ;;
-	-d|--dry-run)
+	-n|--dry-run)
 	    dry_run=1
 	    shift
 	    ;;
-	-B|--build-version)
+	-b|--build-version)
 	    shift
 	    BUILD_VERSION=$1
 	    shift
 	    ;;
-	-D|--directory)
+	-d|--directory)
 	    shift
 	    output_directory=$1
 	    shift
@@ -108,12 +108,12 @@ if [ $help_run -ne 0 ] ; then
 fi
 
 if [ -z $target_list ]; then
-    echo "Error: Need Target Option"
+    echo "Error: Target not specified"
     error=1
 fi
 
 if [ -z $output_directory ]; then
-    echo "Error: Need Output Target Directory"
+    echo "Error: Target Directory is not specified"
     error=1
 fi
 
