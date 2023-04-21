@@ -24,7 +24,7 @@ index 000000000..4af4b674d
 + *
 + */
 +
-+#include "zynqmp-sm-k26-revA.dts"
++#include "zynqmp-smk-k26-revA.dts"
 +#include <dt-bindings/net/ti-dp83867.h>
 +
 +/ {
