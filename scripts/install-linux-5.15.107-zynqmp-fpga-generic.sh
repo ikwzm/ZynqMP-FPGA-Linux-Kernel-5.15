@@ -3,7 +3,7 @@
 CURRENT_DIR=`pwd`
 KERNEL_VERSION=5.15.107
 LOCAL_VERSION=zynqmp-fpga-generic
-BUILD_VERSION=3
+BUILD_VERSION=4
 
 set -e
 script_name=$0
