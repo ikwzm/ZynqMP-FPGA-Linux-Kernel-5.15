@@ -27,9 +27,9 @@ do_help()
     echo ""
     echo "TARGET"
     echo "    UltraZed-EG-IOCC"
-    echo "    Ultra96         "
-    echo "    Ultra96-V2      "
-    echo "    Kv260           "
+    echo "    Ultra96|ultra96"
+    echo "    Ultra96v2|ultra96v2|Ultra96-V2"
+    echo "    Kv260|kv260"
     echo ""
     echo "OPTIONS"
     echo "    -h, --help                  Run Help command"
@@ -86,8 +86,8 @@ while [ $# -gt 0 ]; do
 	    target_list="$target_list Ultra96"
 	    shift
 	    ;;
-	Ultra96v2|ultra96v2|Ultra96-v2)
-	    target_list="$target_list Ultra96-v2"
+	Ultra96v2|ultra96v2|Ultra96-V2)
+	    target_list="$target_list Ultra96-V2"
 	    shift
 	    ;;
 	UltraZed-EG-IOCC)
@@ -97,6 +97,7 @@ while [ $# -gt 0 ]; do
 	*)
 	    echo "Error: Not Support Target $1"
 	    error=1
+	    help_run=1
 	    shift
 	    ;;
     esac
@@ -149,6 +150,9 @@ do_dtb_install()
     local dtb_source=""
     local dtb_target=""
     local dts_target=""
+    if [ $dry_run -ne 0 ] || [ $verbose -ne 0 ]; then
+	echo "do_dtb_install($1)"
+    fi    
     case "$1" in
 	UltraZed-EG-IOCC)
 	    dtb_source=zynqmp-uz3eg-iocc.dtb
@@ -172,9 +176,18 @@ do_dtb_install()
 	    dts_target=devicetree-$KERNEL_RELEASE-kv260-revB.dts
 	    ;;
     esac
+    if [ -z $dtb_source ]; then
+        echo "Error: Device Tree not specified"
+        return 1
+    fi
+    if [ ! -e $CURRENT_DIR/devicetrees/$KERNEL_RELEASE-$BUILD_VERSION/$dtb_source ]; then
+        echo "Error: Not found $dtb_source in $CURRENT_DIR/devicetrees/$KERNEL_RELEASE-$BUILD_VERSION"
+        return 1
+    fi
+	
     run_command "cp $CURRENT_DIR/devicetrees/$KERNEL_RELEASE-$BUILD_VERSION/$dtb_source $output_directory/$dtb_target"
     run_command "dtc -I dtb -O dts --symbols -o $output_directory/$dts_target $output_directory/$dtb_target"
-    
+    return 0
 }
 
 set $target_list
