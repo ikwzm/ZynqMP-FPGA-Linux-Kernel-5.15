@@ -225,7 +225,7 @@ index 000000000..8abc053df
 +                reset-gpios = <&gpio 82 1>;
 +        };
 diff --git a/MAINTAINERS b/MAINTAINERS
-index d0884a5d4..c0b9ecd06 100644
+index 2d3d2155c..9c1216842 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
 @@ -1363,7 +1363,7 @@ F:	drivers/net/ethernet/aquantia/atlantic/aq_ptp*
@@ -316,7 +316,7 @@ index d0884a5d4..c0b9ecd06 100644
  L:	linux-usb@vger.kernel.org
  S:	Maintained
  T:	git git://git.kernel.org/pub/scm/linux/kernel/git/peter.chen/usb.git
-@@ -5366,6 +5388,8 @@ F:	drivers/usb/dwc2/
+@@ -5365,6 +5387,8 @@ F:	drivers/usb/dwc2/
  
  DESIGNWARE USB3 DRD IP DRIVER
  M:	Felipe Balbi <balbi@kernel.org>
@@ -325,7 +325,7 @@ index d0884a5d4..c0b9ecd06 100644
  L:	linux-usb@vger.kernel.org
  S:	Maintained
  T:	git git://git.kernel.org/pub/scm/linux/kernel/git/balbi/usb.git
-@@ -6420,7 +6444,6 @@ F:	Documentation/gpu/xen-front.rst
+@@ -6419,7 +6443,6 @@ F:	Documentation/gpu/xen-front.rst
  F:	drivers/gpu/drm/xen/
  
  DRM DRIVERS FOR XILINX
@@ -333,7 +333,7 @@ index d0884a5d4..c0b9ecd06 100644
  M:	Laurent Pinchart <laurent.pinchart@ideasonboard.com>
  L:	dri-devel@lists.freedesktop.org
  S:	Maintained
-@@ -9178,6 +9201,13 @@ F:	Documentation/hwmon/ina2xx.rst
+@@ -9177,6 +9200,13 @@ F:	Documentation/hwmon/ina2xx.rst
  F:	drivers/hwmon/ina2xx.c
  F:	include/linux/platform_data/ina2xx.h
  
@@ -347,7 +347,7 @@ index d0884a5d4..c0b9ecd06 100644
  INDUSTRY PACK SUBSYSTEM (IPACK)
  M:	Samuel Iglesias Gonsalvez <siglesias@igalia.com>
  M:	Jens Taprogge <jens.taprogge@taprogge.org>
-@@ -10625,6 +10655,12 @@ F:	drivers/ata/pata_ftide010.c
+@@ -10624,6 +10654,12 @@ F:	drivers/ata/pata_ftide010.c
  F:	drivers/ata/sata_gemini.c
  F:	drivers/ata/sata_gemini.h
  
@@ -360,7 +360,7 @@ index d0884a5d4..c0b9ecd06 100644
  LIBATA SATA AHCI PLATFORM devices support
  M:	Hans de Goede <hdegoede@redhat.com>
  M:	Jens Axboe <axboe@kernel.dk>
-@@ -12229,6 +12265,20 @@ W:	http://www.monstr.eu/fdt/
+@@ -12228,6 +12264,20 @@ W:	http://www.monstr.eu/fdt/
  T:	git git://git.monstr.eu/linux-2.6-microblaze.git
  F:	arch/microblaze/
  
@@ -381,7 +381,7 @@ index d0884a5d4..c0b9ecd06 100644
  MICROCHIP AT91 DMA DRIVERS
  M:	Ludovic Desroches <ludovic.desroches@microchip.com>
  M:	Tudor Ambarus <tudor.ambarus@microchip.com>
-@@ -16029,6 +16079,12 @@ S:	Supported
+@@ -16028,6 +16078,12 @@ S:	Supported
  F:	Documentation/devicetree/bindings/iio/adc/renesas,rzg2l-adc.yaml
  F:	drivers/iio/adc/rzg2l_adc.c
  
@@ -394,7 +394,7 @@ index d0884a5d4..c0b9ecd06 100644
  RESET CONTROLLER FRAMEWORK
  M:	Philipp Zabel <p.zabel@pengutronix.de>
  S:	Maintained
-@@ -19582,6 +19638,8 @@ F:	drivers/net/wireless/rndis_wlan.c
+@@ -19581,6 +19637,8 @@ F:	drivers/net/wireless/rndis_wlan.c
  
  USB XHCI DRIVER
  M:	Mathias Nyman <mathias.nyman@intel.com>
@@ -403,7 +403,7 @@ index d0884a5d4..c0b9ecd06 100644
  L:	linux-usb@vger.kernel.org
  S:	Supported
  F:	drivers/usb/host/pci-quirks*
-@@ -19639,6 +19697,10 @@ F:	Documentation/driver-api/uio-howto.rst
+@@ -19638,6 +19696,10 @@ F:	Documentation/driver-api/uio-howto.rst
  F:	drivers/uio/
  F:	include/linux/uio_driver.h
  
@@ -414,7 +414,7 @@ index d0884a5d4..c0b9ecd06 100644
  UTIL-LINUX PACKAGE
  M:	Karel Zak <kzak@redhat.com>
  L:	util-linux@vger.kernel.org
-@@ -20591,32 +20653,211 @@ F:	fs/xfs/
+@@ -20590,32 +20652,211 @@ F:	fs/xfs/
  F:	include/uapi/linux/dqblk_xfs.h
  F:	include/uapi/linux/fsmap.h
  
@@ -637,7 +637,7 @@ index d0884a5d4..c0b9ecd06 100644
  S:	Maintained
  F:	Documentation/devicetree/bindings/misc/xlnx,sd-fec.txt
  F:	Documentation/misc-devices/xilinx_sdfec.rst
-@@ -20625,14 +20866,35 @@ F:	drivers/misc/Makefile
+@@ -20624,14 +20865,35 @@ F:	drivers/misc/Makefile
  F:	drivers/misc/xilinx_sdfec.c
  F:	include/uapi/misc/xilinx_sdfec.h
  
@@ -674,7 +674,7 @@ index d0884a5d4..c0b9ecd06 100644
  M:	Laurent Pinchart <laurent.pinchart@ideasonboard.com>
  L:	linux-media@vger.kernel.org
  S:	Supported
-@@ -20642,7 +20904,6 @@ F:	drivers/media/platform/xilinx/
+@@ -20641,7 +20903,6 @@ F:	drivers/media/platform/xilinx/
  F:	include/uapi/linux/xilinx-v4l2-controls.h
  
  XILINX ZYNQMP DPDMA DRIVER
@@ -682,7 +682,7 @@ index d0884a5d4..c0b9ecd06 100644
  M:	Laurent Pinchart <laurent.pinchart@ideasonboard.com>
  L:	dmaengine@vger.kernel.org
  S:	Supported
-@@ -20651,14 +20912,104 @@ F:	drivers/dma/xilinx/xilinx_dpdma.c
+@@ -20650,14 +20911,104 @@ F:	drivers/dma/xilinx/xilinx_dpdma.c
  F:	include/dt-bindings/dma/xlnx-zynqmp-dpdma.h
  
  XILINX ZYNQMP PSGTR PHY DRIVER
