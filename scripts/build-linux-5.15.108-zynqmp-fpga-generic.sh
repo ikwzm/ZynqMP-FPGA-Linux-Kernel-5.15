@@ -68,6 +68,12 @@ patch -p1 < ../patches/linux-$KERNEL_VERSION-zynqmp-fpga-kv260.diff
 git add --all
 git commit -m "[patch] for Kria KV260."
 
+### Patch for Kria KR260
+
+patch -p1 < ../patches/linux-$KERNEL_VERSION-zynqmp-fpga-kr260.diff 
+git add --all
+git commit -m "[patch] for Kria KR260."
+
 ### Add zynqmp_fpga_generic_defconfig
 
 cp ../files/zynqmp_fpga_generic_defconfig arch/arm64/configs/

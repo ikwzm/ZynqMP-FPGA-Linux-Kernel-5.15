@@ -80,6 +80,14 @@ shell$ git add --all
 shell$ git commit -m "[patch] for Kria KV260."
 ```
 
+### Patch for Kria KR260
+
+```console
+shell$ patch -p1 < ../patches/linux-5.15.108-zynqmp-fpga-kr260.diff 
+shell$ git add --all
+shell$ git commit -m "[patch] for Kria KR260."
+```
+
 ### Add zynqmp_fpga_generic_defconfig
 
 ```console
