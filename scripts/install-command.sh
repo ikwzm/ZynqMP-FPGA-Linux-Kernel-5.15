@@ -36,6 +36,7 @@ do_help()
     echo "    Ultra96|ultra96"
     echo "    Ultra96v2|ultra96v2|Ultra96-V2"
     echo "    Kv260|kv260"
+    echo "    Kr260|kr260"
     echo ""
     echo "OPTIONS"
     do_help_option "-h, --help                  Run Help command"
@@ -109,6 +110,10 @@ while [ $# -gt 0 ]; do
 	    ;;
 	Kv260|kv260)
 	    target_list="$target_list Kv260"
+	    shift
+	    ;;
+	Kr260|kr260)
+	    target_list="$target_list Kr260"
 	    shift
 	    ;;
 	Ultra96|ultra96)
@@ -238,6 +243,12 @@ do_dtb_install()
 	    dtb_source=zynqmp-kv260-revB.dtb
 	    dtb_target=devicetree-$kernel_release-kv260-revB.dtb
 	    dts_target=devicetree-$kernel_release-kv260-revB.dts
+	    ;;
+	Kr260)
+	  # dtb_source=zynqmp-smk-k26-revA-sck-kr-g-revB.dtb
+	    dtb_source=zynqmp-kr260-revB.dtb
+	    dtb_target=devicetree-$kernel_release-kr260-revB.dtb
+	    dts_target=devicetree-$kernel_release-kr260-revB.dts
 	    ;;
     esac
     if [ -z "$dtb_source" ]; then
