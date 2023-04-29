@@ -8230,6 +8230,7 @@ CONFIG_SENSORS_MAX20751=y
 #### CONFIG_SENSORS_UCD9200 is not set
 #### CONFIG_SENSORS_XDPE122 is not set
 #### CONFIG_SENSORS_ZL6100 is not set
+CONFIG_SENSORS_PWM_FAN=y
 #### CONFIG_SENSORS_SHT15 is not set
 #### CONFIG_SENSORS_SHT21 is not set
 #### CONFIG_SENSORS_SHT3x is not set
@@ -9201,13 +9202,18 @@ CONFIG_VIDEO_AP1302=y
 ##### Camera sensor devices
 #####
 ##### CONFIG_VIDEO_HI556 is not set
+##### CONFIG_VIDEO_IMX208 is not set
 ##### CONFIG_VIDEO_IMX214 is not set
-##### CONFIG_VIDEO_IMX219 is not set
+CONFIG_VIDEO_IMX219=m
 ##### CONFIG_VIDEO_IMX258 is not set
-CONFIG_VIDEO_IMX274=y
+CONFIG_VIDEO_IMX274=m
 ##### CONFIG_VIDEO_IMX290 is not set
 ##### CONFIG_VIDEO_IMX319 is not set
+##### CONFIG_VIDEO_IMX334 is not set
+##### CONFIG_VIDEO_IMX335 is not set
 ##### CONFIG_VIDEO_IMX355 is not set
+##### CONFIG_VIDEO_IMX412 is not set
+##### CONFIG_VIDEO_OV02A10 is not set
 ##### CONFIG_VIDEO_OV2640 is not set
 ##### CONFIG_VIDEO_OV2659 is not set
 ##### CONFIG_VIDEO_OV2680 is not set
@@ -9225,6 +9231,8 @@ CONFIG_VIDEO_IMX274=y
 ##### CONFIG_VIDEO_OV7670 is not set
 ##### CONFIG_VIDEO_OV7740 is not set
 ##### CONFIG_VIDEO_OV8856 is not set
+##### CONFIG_VIDEO_OV8865 is not set
+##### CONFIG_VIDEO_OV9282 is not set
 ##### CONFIG_VIDEO_OV9640 is not set
 ##### CONFIG_VIDEO_OV9650 is not set
 ##### CONFIG_VIDEO_OV13858 is not set
@@ -9242,6 +9250,7 @@ CONFIG_VIDEO_IMX274=y
 ##### CONFIG_VIDEO_NOON010PC30 is not set
 ##### CONFIG_VIDEO_M5MOLS is not set
 ##### CONFIG_VIDEO_RDACM20 is not set
+##### CONFIG_VIDEO_RDACM21 is not set
 ##### CONFIG_VIDEO_RJ54N1 is not set
 ##### CONFIG_VIDEO_S5K6AA is not set
 ##### CONFIG_VIDEO_S5K6A3 is not set
@@ -9938,7 +9947,7 @@ CONFIG_DRM_XLNX_BRIDGE_VTC=y
 #####
 ##### Support for frame buffer devices
 #####
-##### CONFIG_FB=y
+CONFIG_FB=y
 ##### CONFIG_FB_CMDLINE=y
 ##### COFNIG_FB_NOTIFY=y
 
@@ -10187,7 +10196,7 @@ CONFIG_SND=y
 ##### USB sound devices
 #####
 ##### CONFIG_SND_USB=y
-##### CONFIG_SND_USB_AUDIO=y
+CONFIG_SND_USB_AUDIO=m
 ##### CONFIG_SND_USB_UA101 is not set
 ##### CONFIG_SND_USB_CAIAQ is not set
 ##### CONFIG_SND_USB_6FIRE is not set
@@ -11280,7 +11289,7 @@ CONFIG_USB_CONFIGFS=y
 ######
 ###### Abstract Control Model (CDC ACM)
 ######
-###### CONFIG_USB_CONFIGFS_ACM is not set
+CONFIG_USB_CONFIGFS_ACM=y
 
 ######
 ###### Object Exchange Model (CDC OBEX)
@@ -11295,17 +11304,17 @@ CONFIG_USB_CONFIGFS=y
 ######
 ###### Ethernet Control Model (CDC ECM)
 ######
-###### CONFIG_USB_CONFIGFS_ECM is not set
+CONFIG_USB_CONFIGFS_ECM=y
 
 ######
 ###### Ethernet Control Model (CDC ECM) subset
 ######
-###### CONFIG_USB_CONFIGFS_ECM_SUBSET is not set
+CONFIG_USB_CONFIGFS_ECM_SUBSET=y
 
 ######
 ###### RNDIS
 ######
-###### CONFIG_USB_CONFIGFS_RNDIS is not set
+CONFIG_USB_CONFIGFS_RNDIS=y
 
 ######
 ###### Ethernet Emulation Model (EEM)
@@ -12381,17 +12390,17 @@ CONFIG_DMATEST=y
 ####
 #### DMA-BUF Userland Memory Heaps
 ####
-#### CONFIG_DMABUF_HEAPS is not set
+CONFIG_DMABUF_HEAPS=y
 
 #####
 ##### DMA-BUF System Heap
 #####
-##### CONFIG_DMABUF_HEAPS_SYSTEM is not set
+CONFIG_DMABUF_HEAPS_SYSTEM=y
 
 #####
 ##### DMA-BUF CMA Heap
 #####
-##### CONFIG_DMABUF_HEAPS_CMA is not set
+CONFIG_DMABUF_HEAPS_CMA=y
 
 #### end of DMA-BUF Userland Memory Heaps
 
@@ -12997,6 +13006,11 @@ CONFIG_XLNX_SYNC=y
 ####
 #### CONFIG_XROE_TRAFFIC_GEN is not set
 
+####
+#### Uartlite RS485 Serial device configuration
+####
+CONFIG_SERIAL_UARTLITE_RS485=y
+
 ### end of Staging drivers
 
 ###
@@ -13097,6 +13111,11 @@ CONFIG_COMMON_CLK_IDT8T49N24X=y
 #### Clock driver for IDT VersaClock 5,6 devices
 ####
 #### CONFIG_COMMON_CLK_VC5 is not set
+
+####
+#### Clock driver for Renesas Versaclock 7 devices
+####
+CONFIG_COMMON_CLK_VC7=y
 
 ####
 #### Clock driver for Memory Mapped Fixed values
@@ -13236,7 +13255,7 @@ CONFIG_COMMON_CLK_ZYNQMP=y
 ####
 #### Support for Remote Processor subsystem
 ####
-#### CONFIG_REMOTEPROC=y
+CONFIG_REMOTEPROC=y
 
 ####
 #### Remoteproc character device interface
@@ -13918,7 +13937,8 @@ CONFIG_BMC150_MAGN_SPI=y
 ###
 ### Pulse-Width Modulation (PWM) Support
 ###
-### CONFIG_PWM is not set
+CONFIG_PWM=y
+CONFIG_PWM_CADENCE=m
 ### end of Pulse-Width Modulation (PWM) Support
 
 ###
