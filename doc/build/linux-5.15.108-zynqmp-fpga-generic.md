@@ -99,8 +99,8 @@ shell$ git commit -m "[add] zynqmp_fpga_generic_defconfig to arch/arm64/configs"
 ### Create tag and .version
 
 ```console
-shell$ git tag -a 5.15.108-zynqmp-fpga-generic-4 -m "release 5.15.108-zynqmp-fpga-generic-4"
-shell$ echo 4 > .version
+shell$ git tag -a 5.15.108-zynqmp-fpga-generic-5 -m "release 5.15.108-zynqmp-fpga-generic-5"
+shell$ echo 5 > .version
 ```
 
 ## Build
@@ -125,13 +125,13 @@ shell$ make deb-pkg
 ### Install kernel image to this repository
 
 ```console
-shell$ cp arch/arm64/boot/Image.gz ../vmlinuz-5.15.108-zynqmp-fpga-generic-4
-shell$ cp .config             ../files/config-5.15.108-zynqmp-fpga-generic-4
+shell$ cp arch/arm64/boot/Image.gz ../vmlinuz-5.15.108-zynqmp-fpga-generic-5
+shell$ cp .config             ../files/config-5.15.108-zynqmp-fpga-generic-5
 ```
 
 ### Install devicetree to this repository
 
 ```console
-shell$ install -d ../devicetrees/5.15.108-zynqmp-fpga-generic-4
-shell$ cp arch/arm64/boot/dts/xilinx/* ../devicetrees/5.15.108-zynqmp-fpga-generic-4
+shell$ install -d ../devicetrees/5.15.108-zynqmp-fpga-generic-5
+shell$ cp arch/arm64/boot/dts/xilinx/* ../devicetrees/5.15.108-zynqmp-fpga-generic-5
 ```
