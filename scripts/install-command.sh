@@ -142,8 +142,8 @@ if [ $run_help -ne 0 ] ; then
     exit 0
 fi
 
-if [ -z "$CURRENT_DIR" ]; then
-    CURRENT_DIR=`pwd`
+if [ -z "$REPO_DIR" ]; then
+    REPO_DIR=`pwd`
 fi
 
 if [ -z "$kernel_version" ] && [ -n "$KERNEL_VERSION" ]; then
@@ -192,13 +192,13 @@ if [ $error -ne 0 ]; then
     exit 1
 fi
 
-if [ ! -e "$CURRENT_DIR/vmlinuz-$kernel_release-$build_version" ]; then
-    echo "Error: Not found vmlinuz-$kernel_release-$build_version in $CURRENT_DIR"
+if [ ! -e "$REPO_DIR/vmlinuz-$kernel_release-$build_version" ]; then
+    echo "Error: Not found vmlinuz-$kernel_release-$build_version in $REPO_DIR"
     error=1
 fi
 
-if [ ! -e "$CURRENT_DIR/devicetrees/$kernel_release-$build_version" ]; then
-    echo "Error: Not found devicetrees/$kernel_release-$build_version in $CURRENT_DIR"
+if [ ! -e "$REPO_DIR/devicetrees/$kernel_release-$build_version" ]; then
+    echo "Error: Not found devicetrees/$kernel_release-$build_version in $REPO_DIR"
     error=1
 fi
 
@@ -211,7 +211,7 @@ if [ $run_install_directory -ne 0 ]; then
 fi
 
 if [ $run_install_image -ne 0 ]; then
-    run_command "gzip -d -c $CURRENT_DIR/vmlinuz-$kernel_release-$build_version > $output_directory/image-$kernel_release"
+    run_command "gzip -d -c $REPO_DIR/vmlinuz-$kernel_release-$build_version > $output_directory/image-$kernel_release"
 fi
 
 do_dtb_install()
@@ -255,12 +255,12 @@ do_dtb_install()
         echo "Error: Device Tree not specified"
         return 1
     fi
-    if [ ! -e "$CURRENT_DIR/devicetrees/$kernel_release-$build_version/$dtb_source" ]; then
-        echo "Error: Not found $dtb_source in $CURRENT_DIR/devicetrees/$kernel_release-$build_version"
+    if [ ! -e "$REPO_DIR/devicetrees/$kernel_release-$build_version/$dtb_source" ]; then
+        echo "Error: Not found $dtb_source in $REPO_DIR/devicetrees/$kernel_release-$build_version"
         return 1
     fi
 	
-    run_command "cp $CURRENT_DIR/devicetrees/$kernel_release-$build_version/$dtb_source $output_directory/$dtb_target"
+    run_command "cp $REPO_DIR/devicetrees/$kernel_release-$build_version/$dtb_source $output_directory/$dtb_target"
     run_command "dtc -I dtb -O dts --symbols -o $output_directory/$dts_target $output_directory/$dtb_target"
     return 0
 }
