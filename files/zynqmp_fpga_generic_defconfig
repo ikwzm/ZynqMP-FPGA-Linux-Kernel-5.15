@@ -9647,7 +9647,7 @@ CONFIG_DRM_FBDEV_LEAK_PHYS_SMEM=y
 ####
 #### DisplayLink
 ####
-#### CONFIG_DRM_UDL is not set
+CONFIG_DRM_UDL=m
 
 ####
 #### AST server chips
