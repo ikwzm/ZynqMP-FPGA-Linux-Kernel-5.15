@@ -2,8 +2,8 @@
 
 CURRENT_DIR=`pwd`
 KERNEL_VERSION=5.15.108
-LOCAL_VERSION=zynqmp-fpga-generic
-BUILD_VERSION=5
+LOCAL_VERSION=zynqmp-fpga-trial
+BUILD_VERSION=1
 KERNEL_RELEASE=$KERNEL_VERSION-$LOCAL_VERSION
 LINUX_BUILD_DIR=linux-$KERNEL_RELEASE
 
@@ -17,7 +17,7 @@ echo "LINUX_BUILD_DIR =" $LINUX_BUILD_DIR
 
 git clone --depth 1 -b v$KERNEL_VERSION git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git $LINUX_BUILD_DIR
 
-### Make Branch linux-5.15.107-zynqmp-fpga-generic
+### Make Branch linux-5.15.107-zynqmp-fpga-trial
 
 cd $LINUX_BUILD_DIR
 git checkout -b $KERNEL_RELEASE refs/tags/v$KERNEL_VERSION
@@ -74,11 +74,13 @@ patch -p1 < ../patches/linux-$KERNEL_VERSION-zynqmp-fpga-kr260.diff
 git add --all
 git commit -m "[patch] for Kria KR260."
 
-### Add zynqmp_fpga_generic_defconfig
+exit
 
-cp ../files/zynqmp_fpga_generic_defconfig arch/arm64/configs/
-git add arch/arm64/configs/zynqmp_fpga_generic_defconfig
-git commit -m "[add] zynqmp_fpga_generic_defconfig to arch/arm64/configs"
+### Add zynqmp_fpga_trial_defconfig
+
+cp ../files/zynqmp_fpga_trial_defconfig arch/arm64/configs/
+git add arch/arm64/configs/zynqmp_fpga_trial_defconfig
+git commit -m "[add] zynqmp_fpga_trial_defconfig to arch/arm64/configs"
 
 ## Build
 
@@ -91,7 +93,7 @@ echo $BUILD_VERSION > .version
 
 export ARCH=arm64
 export CROSS_COMPILE=aarch64-linux-gnu-
-make zynqmp_fpga_generic_defconfig
+make zynqmp_fpga_trial_defconfig
 
 ### Build Linux Kernel and device tree
 
