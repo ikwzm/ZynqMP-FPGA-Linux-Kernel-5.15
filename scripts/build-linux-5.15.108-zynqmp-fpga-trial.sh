@@ -74,7 +74,28 @@ patch -p1 < ../patches/linux-$KERNEL_VERSION-zynqmp-fpga-kr260.diff
 git add --all
 git commit -m "[patch] for Kria KR260."
 
-exit
+### Patch for Lima
+
+patch -p1 < ../patches/linux-$KERNEL_VERSION-zynqmp-fpga-lima-drv.diff
+git add --update
+git commit -m "[add] CONFIG_DRM_LIMA_OF_ID_PREFIX to drivers/gpu/drm/lima/Kconfig and lima_drv.c" \
+           -m "[add] CONFIG_DRM_LIMA_OF_ID_PARAMETERIZE to drivers/gpu/drm/lima/Kconfig and lima_drv.c"
+
+patch -p1 < ../patches/linux-$KERNEL_VERSION-zynqmp-fpga-lima-clk.diff
+git add --update
+git commit -m "[change] clk of lima_device to use clk_bulk."
+
+patch -p1 < ../patches/linux-$KERNEL_VERSION-zynqmp-fpga-lima-irq.diff
+git add --update
+git commit -m "[change] lima_device to be able to specify multiple IRQ names."
+
+patch -p1 < ../patches/linux-$KERNEL_VERSION-zynqmp-fpga-drm-xlnx-align.diff
+git add --all
+git commit -m "[add] Dumb Buffer Alignment Size to Xilinx DRM KMS Driver for Lima support."
+
+patch -p1 < ../patches/linux-$KERNEL_VERSION-zynqmp-fpga-drm-xlnx-gem.diff
+git add --all
+git commit -m "[update] Xilinx DRM KMS Driver to enable data cache for Lima support."
 
 ### Add zynqmp_fpga_trial_defconfig
 
