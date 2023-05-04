@@ -132,8 +132,8 @@ shell$ git commit -m "[add] zynqmp_fpga_trial_defconfig to arch/arm64/configs"
 ### Create tag and .version
 
 ```console
-shell$ git tag -a 5.15.108-zynqmp-fpga-trial-1 -m "release 5.15.108-zynqmp-fpga-trial-1"
-shell$ echo 1 > .version
+shell$ git tag -a 5.15.108-zynqmp-fpga-trial-2 -m "release 5.15.108-zynqmp-fpga-trial-2"
+shell$ echo 2 > .version
 ```
 
 ## Build
@@ -158,13 +158,13 @@ shell$ make deb-pkg
 ### Install kernel image to this repository
 
 ```console
-shell$ cp arch/arm64/boot/Image.gz ../vmlinuz-5.15.108-zynqmp-fpga-trial-5
-shell$ cp .config             ../files/config-5.15.108-zynqmp-fpga-trial-5
+shell$ cp arch/arm64/boot/Image.gz ../vmlinuz-5.15.108-zynqmp-fpga-trial-2
+shell$ cp .config             ../files/config-5.15.108-zynqmp-fpga-trial-2
 ```
 
 ### Install devicetree to this repository
 
 ```console
-shell$ install -d ../devicetrees/5.15.108-zynqmp-fpga-trial-5
-shell$ cp arch/arm64/boot/dts/xilinx/* ../devicetrees/5.15.108-zynqmp-fpga-trial-5
+shell$ install -d ../devicetrees/5.15.108-zynqmp-fpga-trial-2
+shell$ cp arch/arm64/boot/dts/xilinx/* ../devicetrees/5.15.108-zynqmp-fpga-trial-2
 ```
