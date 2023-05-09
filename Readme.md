@@ -1,4 +1,4 @@
-ZynqMP-FPGA-Linux-5.15-Trial
+ZynqMP-FPGA-Linux-Kernel-5.15-Trial
 ====================================================================================
 
 Overview
