@@ -6,4 +6,5 @@ KERNEL_VERSION=5.15.108
 LOCAL_VERSION=zynqmp-fpga-trial
 BUILD_VERSION=2
 
+. "$SCRIPT_DIR/install-variables-zynqmp-fpga.sh"
 . "$SCRIPT_DIR/install-command.sh"
