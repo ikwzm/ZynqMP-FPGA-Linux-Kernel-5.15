@@ -34,7 +34,7 @@ index 715dcfa5a..fc8afd6aa 100644
 +      clock-frequency = <400000>;
      };
 diff --git a/drivers/i2c/busses/i2c-cadence.c b/drivers/i2c/busses/i2c-cadence.c
-index 33f5588a5..2c9fc28ef 100644
+index 5ea92dc97..40c42aca7 100644
 --- a/drivers/i2c/busses/i2c-cadence.c
 +++ b/drivers/i2c/busses/i2c-cadence.c
 @@ -7,13 +7,16 @@
@@ -188,7 +188,7 @@ index 33f5588a5..2c9fc28ef 100644
  		cdns_i2c_master_reset(adap);
  		dev_err(id->adap.dev.parent,
  				"timeout waiting on completion\n");
-@@ -840,10 +907,11 @@ static int cdns_i2c_master_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs,
+@@ -842,10 +909,11 @@ static int cdns_i2c_master_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs,
  #endif
  
  	/* Check if the bus is free */
@@ -204,7 +204,7 @@ index 33f5588a5..2c9fc28ef 100644
  
  	hold_quirk = !!(id->quirks & CDNS_I2C_BROKEN_HOLD_BIT);
  	/*
-@@ -1204,6 +1272,96 @@ static int __maybe_unused cdns_i2c_runtime_resume(struct device *dev)
+@@ -1206,6 +1274,96 @@ static int __maybe_unused cdns_i2c_runtime_resume(struct device *dev)
  	return 0;
  }
  
@@ -301,7 +301,7 @@ index 33f5588a5..2c9fc28ef 100644
  static const struct dev_pm_ops cdns_i2c_dev_pm_ops = {
  	SET_RUNTIME_PM_OPS(cdns_i2c_runtime_suspend,
  			   cdns_i2c_runtime_resume, NULL)
-@@ -1250,6 +1408,13 @@ static int cdns_i2c_probe(struct platform_device *pdev)
+@@ -1252,6 +1410,13 @@ static int cdns_i2c_probe(struct platform_device *pdev)
  		id->quirks = data->quirks;
  	}
  

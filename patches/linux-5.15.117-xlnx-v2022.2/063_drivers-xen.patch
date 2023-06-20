@@ -314,11 +314,11 @@ index 000000000..7a6147528
 +
 +#endif
 diff --git a/include/xen/xen.h b/include/xen/xen.h
-index 43efba045..e3eec1d2c 100644
+index 5a6a2ab67..2887679a5 100644
 --- a/include/xen/xen.h
 +++ b/include/xen/xen.h
-@@ -61,4 +61,9 @@ void xen_free_unpopulated_pages(unsigned int nr_pages, struct page **pages);
- #include <xen/balloon.h>
+@@ -72,4 +72,9 @@ static inline bool xen_processor_present(uint32_t acpi_id)
+ }
  #endif
  
 +static inline int xen_vring_use_dma(void)

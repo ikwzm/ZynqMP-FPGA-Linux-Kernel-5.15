@@ -2,7 +2,7 @@
 
 There are two ways
 
-1. run scripts/build-linux-5.15.108-zynqmp-fpga-trial.sh (easy)
+1. run scripts/build-linux-5.15.117-zynqmp-fpga-trial.sh (easy)
 2. run this chapter step-by-step (annoying)
 
 ## Download Linux Kernel Source
@@ -10,14 +10,14 @@ There are two ways
 ### Clone from linux-stable.git
 
 ```console
-shell$ git clone --depth 1 -b v5.15.108 git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-5.15.108-zynqmp-fpga-trial
+shell$ git clone --depth 1 -b v5.15.117 git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-5.15.117-zynqmp-fpga-trial
 ```
 
-### Make Branch linux-5.15.108-zynqmp-fpga-trial
+### Make Branch linux-5.15.117-zynqmp-fpga-trial
 
 ```console
-shell$ cd linux-5.15.108-zynqmp-fpga-trial
-shell$ git checkout -b 5.15.108-zynqmp-fpga-trial refs/tags/v5.15.108
+shell$ cd linux-5.15.117-zynqmp-fpga-trial
+shell$ git checkout -b 5.15.117-zynqmp-fpga-trial refs/tags/v5.15.117
 ```
 
 ## Patch to Linux Kernel
@@ -25,13 +25,13 @@ shell$ git checkout -b 5.15.108-zynqmp-fpga-trial refs/tags/v5.15.108
 ### Patch for linux-xlnx-v2022.2
 
 ```console
-shell$ sh ../patches/linux-5.15.108-xlnx-v2022.2/0xx_patch.sh
+shell$ sh ../patches/linux-5.15.117-xlnx-v2022.2/0xx_patch.sh
 ```
 
 ### Patch for builddeb
 
 ```console
-shell$ patch -p1 < ../patches/linux-5.15.108-zynqmp-fpga-builddeb.diff 
+shell$ patch -p1 < ../patches/linux-5.15.117-zynqmp-fpga-builddeb.diff 
 shell$ git add --all
 shell$ git commit -m "[update] scripts/package/builddeb to add tools/include and postinst script to header package."
 ```
@@ -42,8 +42,8 @@ shell$ git commit -m "[update] scripts/package/builddeb to add tools/include and
 shell$ rm -rf drivers/staging/wilc3000
 shell$ cp -r ../patches/microchip-wilc-driver/wilc1000 drivers/staging/wilc3000
 shell$ patch -d drivers/staging/wilc3000 < ../patches/microchip-wilc-driver/0001-ultra96-modifications-15.5.patch
-shell$ patch -p1 < ../patches/linux-5.15.108-zynqmp-fpga-wilc3000.diff
-shell$ patch -p1 < ../patches/linux-5.15.108-zynqmp-fpga-pwrseq-wilc.diff
+shell$ patch -p1 < ../patches/linux-5.15.117-zynqmp-fpga-wilc3000.diff
+shell$ patch -p1 < ../patches/linux-5.15.117-zynqmp-fpga-pwrseq-wilc.diff
 shell$ git add --all
 shell$ git commit -m "[add] drivers/staging/wilc3000"
 ```
@@ -51,7 +51,7 @@ shell$ git commit -m "[add] drivers/staging/wilc3000"
 ### Patch for Ultra96
 
 ```console
-shell$ patch -p1 < ../patches/linux-5.15.108-zynqmp-fpga-ultra96.diff
+shell$ patch -p1 < ../patches/linux-5.15.117-zynqmp-fpga-ultra96.diff
 shell$ git add --all
 shell$ git commit -m "[patch] for Ultra96."
 ```
@@ -59,7 +59,7 @@ shell$ git commit -m "[patch] for Ultra96."
 ### Patch for Ultra96-V2
 
 ```console
-shell$ patch -p1 < ../patches/linux-5.15.108-zynqmp-fpga-ultra96v2.diff 
+shell$ patch -p1 < ../patches/linux-5.15.117-zynqmp-fpga-ultra96v2.diff 
 shell$ git add --all
 shell$ git commit -m "[patch] for Ultra96-V2."
 ```
@@ -67,7 +67,7 @@ shell$ git commit -m "[patch] for Ultra96-V2."
 ### Patch for UltraZed-EG IO Carrier Card
 
 ```console
-shell$ patch -p1 < ../patches/linux-5.15.108-zynqmp-fpga-uz3eg-iocc.diff 
+shell$ patch -p1 < ../patches/linux-5.15.117-zynqmp-fpga-uz3eg-iocc.diff 
 shell$ git add --all
 shell$ git commit -m "[patch] for UltraZed-EG IO Carrier Card."
 ```
@@ -75,7 +75,7 @@ shell$ git commit -m "[patch] for UltraZed-EG IO Carrier Card."
 ### Patch for Kria KV260
 
 ```console
-shell$ patch -p1 < ../patches/linux-5.15.108-zynqmp-fpga-kv260.diff 
+shell$ patch -p1 < ../patches/linux-5.15.117-zynqmp-fpga-kv260.diff 
 shell$ git add --all
 shell$ git commit -m "[patch] for Kria KV260."
 ```
@@ -83,7 +83,7 @@ shell$ git commit -m "[patch] for Kria KV260."
 ### Patch for Kria KR260
 
 ```console
-shell$ patch -p1 < ../patches/linux-5.15.108-zynqmp-fpga-kr260.diff 
+shell$ patch -p1 < ../patches/linux-5.15.117-zynqmp-fpga-kr260.diff 
 shell$ git add --all
 shell$ git commit -m "[patch] for Kria KR260."
 ```
@@ -91,32 +91,32 @@ shell$ git commit -m "[patch] for Kria KR260."
 ### Patch for Lima
 
 ```console
-shell$ patch -p1 < ../patches/linux-5.15.108-zynqmp-fpga-lima-drv.diff
+shell$ patch -p1 < ../patches/linux-5.15.117-zynqmp-fpga-lima-drv.diff
 shell$ git add --update
 shell$ git commit -m "[add] CONFIG_DRM_LIMA_OF_ID_PREFIX to drivers/gpu/drm/lima/Kconfig and lima_drv.c" \
                   -m "[add] CONFIG_DRM_LIMA_OF_ID_PARAMETERIZE to drivers/gpu/drm/lima/Kconfig and lima_drv.c"
 ```
 
 ```console
-shell$ patch -p1 < ../patches/linux-5.15.108-zynqmp-fpga-lima-clk.diff
+shell$ patch -p1 < ../patches/linux-5.15.117-zynqmp-fpga-lima-clk.diff
 shell$ git add --update
 shell$ git commit -m "[change] clk of lima_device to use clk_bulk."
 ```
 
 ```console
-shell$ patch -p1 < ../patches/linux-5.15.108-zynqmp-fpga-lima-irq.diff
+shell$ patch -p1 < ../patches/linux-5.15.117-zynqmp-fpga-lima-irq.diff
 shell$ git add --update
 shell$ git commit -m "[change] lima_device to be able to specify multiple IRQ names."
 ```
 
 ```console
-shell$ patch -p1 < ../patches/linux-5.15.108-zynqmp-fpga-drm-xlnx-align.diff
+shell$ patch -p1 < ../patches/linux-5.15.117-zynqmp-fpga-drm-xlnx-align.diff
 shell$ git add --all
 shell$ git commit -m "[add] Dumb Buffer Alignment Size to Xilinx DRM KMS Driver for Lima support."
 ```
 
 ```console
-shell$ patch -p1 < ../patches/linux-5.15.108-zynqmp-fpga-drm-xlnx-gem.diff
+shell$ patch -p1 < ../patches/linux-5.15.117-zynqmp-fpga-drm-xlnx-gem.diff
 shell$ git add --all
 shell$ git commit -m "[update] Xilinx DRM KMS Driver to enable data cache for Lima support."
 ```
@@ -132,8 +132,8 @@ shell$ git commit -m "[add] zynqmp_fpga_trial_defconfig to arch/arm64/configs"
 ### Create tag and .version
 
 ```console
-shell$ git tag -a 5.15.108-zynqmp-fpga-trial-2 -m "release 5.15.108-zynqmp-fpga-trial-2"
-shell$ echo 2 > .version
+shell$ git tag -a 5.15.117-zynqmp-fpga-trial-1 -m "release 5.15.117-zynqmp-fpga-trial-1"
+shell$ echo 1 > .version
 ```
 
 ## Build
@@ -141,7 +141,7 @@ shell$ echo 2 > .version
 ### Setup for Build 
 
 ```console
-shell$ cd linux-5.15.108-zynqmp-fpga-trial
+shell$ cd linux-5.15.117-zynqmp-fpga-trial
 shell$ export ARCH=arm64
 shell$ export CROSS_COMPILE=aarch64-linux-gnu-
 shell$ make zynqmp_fpga_trial_defconfig
@@ -158,13 +158,13 @@ shell$ make deb-pkg
 ### Install kernel image to this repository
 
 ```console
-shell$ cp arch/arm64/boot/Image.gz ../vmlinuz-5.15.108-zynqmp-fpga-trial-2
-shell$ cp .config             ../files/config-5.15.108-zynqmp-fpga-trial-2
+shell$ cp arch/arm64/boot/Image.gz ../vmlinuz-5.15.117-zynqmp-fpga-trial-1
+shell$ cp .config             ../files/config-5.15.117-zynqmp-fpga-trial-1
 ```
 
 ### Install devicetree to this repository
 
 ```console
-shell$ install -d ../devicetrees/5.15.108-zynqmp-fpga-trial-2
-shell$ cp arch/arm64/boot/dts/xilinx/* ../devicetrees/5.15.108-zynqmp-fpga-trial-2
+shell$ install -d ../devicetrees/5.15.117-zynqmp-fpga-trial-1
+shell$ cp arch/arm64/boot/dts/xilinx/* ../devicetrees/5.15.117-zynqmp-fpga-trial-1
 ```

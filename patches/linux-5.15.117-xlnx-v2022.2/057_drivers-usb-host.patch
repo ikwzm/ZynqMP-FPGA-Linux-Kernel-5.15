@@ -271,10 +271,10 @@ index 972a44b2a..f7b2576d2 100644
  }
  
 diff --git a/drivers/usb/host/xhci-ring.c b/drivers/usb/host/xhci-ring.c
-index 220d83642..828339a12 100644
+index 73f2ff83e..2ea7058f6 100644
 --- a/drivers/usb/host/xhci-ring.c
 +++ b/drivers/usb/host/xhci-ring.c
-@@ -848,7 +848,16 @@ static int xhci_td_cleanup(struct xhci_hcd *xhci, struct xhci_td *td,
+@@ -868,7 +868,16 @@ static int xhci_td_cleanup(struct xhci_hcd *xhci, struct xhci_td *td,
  		/* set isoc urb status to 0 just as EHCI, UHCI, and OHCI */
  		if (usb_pipetype(urb->pipe) == PIPE_ISOCHRONOUS)
  			status = 0;
@@ -292,7 +292,7 @@ index 220d83642..828339a12 100644
  	}
  
  	return 0;
-@@ -1251,6 +1260,84 @@ void xhci_hc_died(struct xhci_hcd *xhci)
+@@ -1271,6 +1280,84 @@ void xhci_hc_died(struct xhci_hcd *xhci)
  		usb_hc_died(xhci_to_hcd(xhci));
  }
  
@@ -377,7 +377,7 @@ index 220d83642..828339a12 100644
  /* Watchdog timer function for when a stop endpoint command fails to complete.
   * In this case, we assume the host controller is broken or dying or dead.  The
   * host may still be completing some other events, so we have to be careful to
-@@ -2660,6 +2747,10 @@ static int handle_tx_event(struct xhci_hcd *xhci,
+@@ -2687,6 +2774,10 @@ static int handle_tx_event(struct xhci_hcd *xhci,
  			td_num++;
  	}
  
@@ -388,7 +388,7 @@ index 220d83642..828339a12 100644
  	/* Look for common error cases */
  	switch (trb_comp_code) {
  	/* Skip codes that require special handling depending on
-@@ -3739,6 +3830,15 @@ int xhci_queue_bulk_tx(struct xhci_hcd *xhci, gfp_t mem_flags,
+@@ -3766,6 +3857,15 @@ int xhci_queue_bulk_tx(struct xhci_hcd *xhci, gfp_t mem_flags,
  	}
  
  	check_trb_math(urb, enqd_len);
@@ -524,7 +524,7 @@ index 1fd2f6a85..d196731f3 100644
  		xhci_warn(xhci, "WARN: SuperSpeed Endpoint Companion"
  				" descriptor for ep 0x%x does not support streams\n",
 diff --git a/drivers/usb/host/xhci.h b/drivers/usb/host/xhci.h
-index b8ad96763..f7fa90e79 100644
+index 0b22e8580..0646fef0f 100644
 --- a/drivers/usb/host/xhci.h
 +++ b/drivers/usb/host/xhci.h
 @@ -1638,6 +1638,9 @@ struct xhci_ring {

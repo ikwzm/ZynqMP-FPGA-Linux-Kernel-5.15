@@ -22,10 +22,10 @@ index fa1d4f5df..eed4f2f1c 100644
 +	 Parameterize the device ID of Lima so that it can be changed at boot time.
 +	 For example, specify lima.of_400_id=arm,mali-400 as a boot paramater.
 diff --git a/drivers/gpu/drm/lima/lima_drv.c b/drivers/gpu/drm/lima/lima_drv.c
-index ab460121f..cfee382f3 100644
+index 39cab4a55..186ff4d99 100644
 --- a/drivers/gpu/drm/lima/lima_drv.c
 +++ b/drivers/gpu/drm/lima/lima_drv.c
-@@ -460,11 +460,30 @@ static int lima_pdev_remove(struct platform_device *pdev)
+@@ -462,11 +462,30 @@ static int lima_pdev_remove(struct platform_device *pdev)
  	return 0;
  }
  

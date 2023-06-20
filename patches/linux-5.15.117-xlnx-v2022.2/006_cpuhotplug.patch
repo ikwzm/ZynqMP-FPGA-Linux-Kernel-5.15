@@ -1,5 +1,5 @@
 diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
-index c88ccc488..63659fc54 100644
+index dbca858ff..fdcad1af3 100644
 --- a/include/linux/cpuhotplug.h
 +++ b/include/linux/cpuhotplug.h
 @@ -150,6 +150,7 @@ enum cpuhp_state {
@@ -10,7 +10,7 @@ index c88ccc488..63659fc54 100644
  	CPUHP_AP_ARM_MVEBU_COHERENCY,
  	CPUHP_AP_MICROCODE_LOADER,
  	CPUHP_AP_PERF_X86_AMD_UNCORE_STARTING,
-@@ -180,6 +181,7 @@ enum cpuhp_state {
+@@ -179,6 +180,7 @@ enum cpuhp_state {
  	CPUHP_AP_RISCV_TIMER_STARTING,
  	CPUHP_AP_CLINT_TIMER_STARTING,
  	CPUHP_AP_CSKY_TIMER_STARTING,
