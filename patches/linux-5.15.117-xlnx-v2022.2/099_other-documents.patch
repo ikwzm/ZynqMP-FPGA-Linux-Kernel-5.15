@@ -225,7 +225,7 @@ index 000000000..8abc053df
 +                reset-gpios = <&gpio 82 1>;
 +        };
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 2d3d2155c..9c1216842 100644
+index 95374d582..0ddd41441 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
 @@ -1363,7 +1363,7 @@ F:	drivers/net/ethernet/aquantia/atlantic/aq_ptp*

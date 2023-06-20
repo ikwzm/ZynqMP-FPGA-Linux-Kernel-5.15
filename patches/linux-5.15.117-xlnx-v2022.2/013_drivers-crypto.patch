@@ -35,7 +35,7 @@ index 000000000..c7be6e2ce
 +		compatible = "xlnx,zynqmp-keccak-384";
 +	};
 diff --git a/drivers/crypto/Kconfig b/drivers/crypto/Kconfig
-index b46343b5c..ff01b8683 100644
+index a40883e11..6ab078a76 100644
 --- a/drivers/crypto/Kconfig
 +++ b/drivers/crypto/Kconfig
 @@ -789,6 +789,39 @@ config CRYPTO_DEV_ROCKCHIP

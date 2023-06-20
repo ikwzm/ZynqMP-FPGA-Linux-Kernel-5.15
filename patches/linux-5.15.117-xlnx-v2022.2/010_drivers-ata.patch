@@ -1,0 +1,13 @@
+diff --git a/Documentation/devicetree/bindings/ata/ceva,ahci-1v84.yaml b/Documentation/devicetree/bindings/ata/ceva,ahci-1v84.yaml
+index 71364c608..9b31f864e 100644
+--- a/Documentation/devicetree/bindings/ata/ceva,ahci-1v84.yaml
++++ b/Documentation/devicetree/bindings/ata/ceva,ahci-1v84.yaml
+@@ -32,7 +32,7 @@ properties:
+     maxItems: 1
+ 
+   iommus:
+-    maxItems: 4
++    maxItems: 1
+ 
+   power-domains:
+     maxItems: 1

@@ -392,7 +392,7 @@ index 69c57273b..7a7e7593a 100644
  	return paddr;
  }
 diff --git a/drivers/gpu/drm/drm_fb_helper.c b/drivers/gpu/drm/drm_fb_helper.c
-index ed589e718..c5a184190 100644
+index 3d9c0444d..c7fe7e931 100644
 --- a/drivers/gpu/drm/drm_fb_helper.c
 +++ b/drivers/gpu/drm/drm_fb_helper.c
 @@ -73,7 +73,7 @@ MODULE_PARM_DESC(drm_fbdev_overalloc,

@@ -390,7 +390,7 @@ index 95344ae49..d8ba05088 100644
 +
  endif
 diff --git a/drivers/dma/pl330.c b/drivers/dma/pl330.c
-index 4ef68ddff..7d1f083e1 100644
+index b9bc82d6a..b4ca374d0 100644
 --- a/drivers/dma/pl330.c
 +++ b/drivers/dma/pl330.c
 @@ -2752,7 +2752,7 @@ static struct dma_async_tx_descriptor *pl330_prep_dma_cyclic(

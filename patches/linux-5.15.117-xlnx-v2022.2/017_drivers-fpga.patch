@@ -224,7 +224,7 @@ index 0bff783d1..fec2e50f1 100644
  obj-$(CONFIG_ALTERA_PR_IP_CORE_PLAT)    += altera-pr-ip-core-plat.o
  
 diff --git a/drivers/fpga/fpga-bridge.c b/drivers/fpga/fpga-bridge.c
-index 798f55670..6a5257520 100644
+index 75a24b045..d60399ecc 100644
 --- a/drivers/fpga/fpga-bridge.c
 +++ b/drivers/fpga/fpga-bridge.c
 @@ -13,6 +13,12 @@

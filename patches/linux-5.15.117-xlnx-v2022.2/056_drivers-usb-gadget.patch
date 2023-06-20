@@ -28,10 +28,10 @@ index 47b4e397a..86f705384 100644
 +			xlnx,has-builtin-dma;
 +		};
 diff --git a/drivers/usb/gadget/composite.c b/drivers/usb/gadget/composite.c
-index 553382ce3..830f4f0d6 100644
+index 0886cff9a..89379ec7b 100644
 --- a/drivers/usb/gadget/composite.c
 +++ b/drivers/usb/gadget/composite.c
-@@ -728,6 +728,17 @@ static int bos_desc(struct usb_composite_dev *cdev)
+@@ -741,6 +741,17 @@ static int bos_desc(struct usb_composite_dev *cdev)
  						      USB_HIGH_SPEED_OPERATION |
  						      USB_5GBPS_OPERATION);
  		ss_cap->bFunctionalitySupport = USB_LOW_SPEED_OPERATION;
